@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <!-- Include meta tag to ensure proper rendering and touch zooming -->
+    <!-- Include jQuery Mobile stylesheets -->
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.css">
+    <!-- Include the jQuery library -->
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <!-- Include the jQuery Mobile library -->
+    <script src="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
+    <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0" />
+
+    <title></title>
+    <script language="javascript" type="text/javascript" src="JavaScript2.js"></script>
+
+    <script>
+
+        $(document).on('pageshow', '#Catalog', function () {
+            if (localStorage.getItem("userId") == "" || localStorage.getItem("userId") == null) {
+                window.location.href = '#login';
+            }
+            else
+                ShowCatalog();
+        });
+
+    </script>
+    <style>
+        .pages {
+            height: 100vh;
+            font-family: 'Canter Bold';
+        }
+
+     
+    </style>
+</head>
+<body>
+    <!--homePage-->
+    <div data-role="page" class="pages" id="home" style="background-color:transparent;">
+        
+        <div data-role="content" id="home_content" style="background-color:navy; height:inherit; align-items:center; background-image:url(images/background1.jpg); background-repeat:no-repeat; background-size:cover">
+            <center>
+                <img src="images/logo2.png" style="margin-top:50%; width:100%" />
+                <a data-role="button" href="#login" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; margin-top:50%">LOGIN</a>
+                <br />
+                <a data-role="button" href="#login" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white;">ABOUT US</a>
+            </center>
+        </div>
+
+    </div> 
+    
+</body>
+</html>
