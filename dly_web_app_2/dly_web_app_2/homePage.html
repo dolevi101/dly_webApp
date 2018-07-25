@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0" />
 
     <title></title>
-    <script language="javascript" type="text/javascript" src="JavaScript2.js"></script>
+    <script language="javascript" type="text/javascript" src="JavaScript.js"></script>
 
     <script>
 
@@ -36,7 +36,7 @@
 <body>
     <!--homePage-->
     <div data-role="page" class="pages" id="home" style="background-color:transparent;">
-        
+
         <div data-role="content" id="home_content" style="background-color:navy; height:inherit; align-items:center; background-image:url(images/background1.jpg); background-repeat:no-repeat; background-size:cover">
             <center>
                 <img src="images/logo2.png" style="margin-top:50%; width:100%" />
@@ -46,7 +46,31 @@
             </center>
         </div>
 
-    </div> 
-    
+    </div>
+    <!--login-->
+    <div data-role="page" class="pages" id="login" style="background-color:transparent;">
+        <!--<div data-role="content" id="login_content" style="background-color:navy; height:inherit; align-items:center; background-image:url(images/background1.jpg); background-repeat:no-repeat; background-size:cover">
+        <center>
+            <input type="text" id="email" placeholder="enter your email..." style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; border-width:0; color:navy; margin-top:50%"/>
+            <br />
+            <input type="password" id="password" placeholder="enter your password..." style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; border-width:0; color:navy;" />
+            <br />
+            <a role="button" id="submit" onclick="function login1() { alert(1) }" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white;">login</a>
+        </center>
+    </div>-->
+
+            <div data-role="content" id="login_content" style="background-color:navy; height:inherit; align-items:center; background-image:url(images/background1.jpg); background-repeat:no-repeat; background-size:cover">
+                <center>
+                    <img src="images/logo2.png" style="margin-top:50%; width:100%" />
+                    <input type="email" id="email" placeholder="ENTER YOUR EMAIL.." style="color:navy;color:white; background-color:#095680;"/>
+                    <br />
+                    <input type="password" id="password" data-clear-btn="true" placeholder="ENTER YOUR PASSWORD.." style="color:navy"/>
+                    <br />
+                    <a data-role="button" href="#login" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white;">LOGIN</a>
+                </center>
+            </div>
+
+        </div>
+
 </body>
 </html>
