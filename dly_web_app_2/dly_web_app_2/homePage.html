@@ -12,18 +12,6 @@
 
     <title></title>
     <script language="javascript" type="text/javascript" src="JavaScript1.js"></script>
-
-    <script>
-
-        $(document).on('pageshow', '#Catalog', function () {
-            if (localStorage.getItem("userId") == "" || localStorage.getItem("userId") == null) {
-                window.location.href = '#login';
-            }
-            else
-                ShowCatalog();
-        });
-
-    </script>
     <style>
         .pages {
             height: 100vh;
@@ -36,7 +24,6 @@
 <body>
     <!--homePage-->
     <div data-role="page" class="pages" id="home" style="background-color:transparent;">
-
         <div data-role="content" id="home_content" style="background-color:navy; height:inherit; align-items:center; background-image:url(images/background1.jpg); background-repeat:no-repeat; background-size:cover">
             <center>
                 <img src="images/logo2.png" style="margin-top:50%; width:100%" />
@@ -72,6 +59,39 @@
                 <input type="password" id="password_r" data-clear-btn="true" placeholder="ENTER YOUR PASSWORD.." style="color:navy" />
                 <br />
                 <a data-role="button" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white;" onclick="register()">REGISTER</a>
+            </center>
+        </div>
+    </div>
+    <!--makeList-->
+
+    <div data-role="page" class="pages" id="makeList" style="background-color:transparent;">
+        <div data-role="content" id="register_content" style="background-color:navy; height:inherit; align-items:center; background-image:url(images/background1.jpg); background-repeat:no-repeat; background-size:cover">
+            <center>
+                <img src="images/logo2.png" style="margin-top:50%; width:100%" />
+                <a data-role="button" href="#oldLists" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; margin-top:50%">USE AN OLD LIST</a>
+                <br />
+                <a data-role="button" href="#createList" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white;">CREATE A NEW LIST</a>
+            </center>
+        </div>
+    </div>
+
+    <!--oldLists-->
+    <div data-role="page" class="pages" id="makeList" style="background-color:transparent;">
+        <div data-role="content" id="register_content" style="background-color:navy; height:inherit; align-items:center; background-image:url(images/background1.jpg); background-repeat:no-repeat; background-size:cover">
+            <center>
+                <h1>MY OLD LISTS</h1>
+                <table id="oldListsTable">
+                </table>
+                <script>
+                    if (localStorage.username)
+                        oldLists(localStorage.username);
+                    else
+                        window.location.href = "#home";
+                </script>
+                <img src="images/logo2.png" style="margin-top:50%; width:100%" />
+                <a data-role="button" href="#oldLists" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; margin-top:50%">USE AN OLD LIST</a>
+                <br />
+                <a data-role="button" href="#createList" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white;">CREATE A NEW LIST</a>
             </center>
         </div>
     </div>
