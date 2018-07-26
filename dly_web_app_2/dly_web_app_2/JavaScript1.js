@@ -1,5 +1,4 @@
-﻿function login()
-{
+﻿function login() {
     alert(1);
     var username = document.getElementById("username_l");
     var password = document.getElementById("password_l");
@@ -7,7 +6,7 @@
     alert(params);
     $.ajax({
         contentType: JSON,
-        data: JSON.stringify({'parameters': params}),
+        data: JSON.stringify({ 'parameters': params }),
         url: "https://menageusers.azurewebsites.net/api/CheckUserPassword?code=DHfAvU1gxX9j3AxwXgye3f20A/5mNCxWgi2iKyUvZm1iNAzhmOPdtQ==",
         type: "POST",
         error: function () { alert('an error occured please try again later'); },
