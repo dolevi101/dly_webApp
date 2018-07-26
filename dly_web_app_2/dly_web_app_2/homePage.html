@@ -42,7 +42,7 @@
                 <img src="images/logo2.png" style="margin-top:50%; width:100%" />
                 <a data-role="button" href="#login" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; margin-top:50%">LOGIN</a>
                 <br />
-                <a data-role="button" href="#login" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white;">ABOUT US</a>
+                <a data-role="button" href="#about" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white;">ABOUT US</a>
             </center>
         </div>
 
@@ -52,24 +52,26 @@
         <div data-role="content" id="login_content" style="background-color:navy; height:inherit; align-items:center; background-image:url(images/background1.jpg); background-repeat:no-repeat; background-size:cover">
             <center>
                 <img src="images/logo2.png" style="margin-top:50%; width:100%" />
-                <input type="email" id="email" placeholder="ENTER YOUR EMAIL.." style="color:navy; " />
+                <input type="text" id="username_l" data-clear-btn="true" placeholder="ENTER YOUR USERNAME.." style="color:navy; " />
                 <br />
-                <input type="password" id="password" data-clear-btn="true" placeholder="ENTER YOUR PASSWORD.." style="color:navy" />
+                <input type="password" id="password_l" data-clear-btn="true" placeholder="ENTER YOUR PASSWORD.." style="color:navy" />
                 <br />
-                <a data-role="button" href="#login" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white;" onclick="alert(1)">LOGIN</a>
+                <a data-role="button" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white;" onclick="login()">LOGIN</a>
             </center>
         </div>
     </div>
-
+    <!--register-->
     <div data-role="page" class="pages" id="register" style="background-color:transparent;">
         <div data-role="content" id="register_content" style="background-color:navy; height:inherit; align-items:center; background-image:url(images/background1.jpg); background-repeat:no-repeat; background-size:cover">
             <center>
                 <img src="images/logo2.png" style="margin-top:50%; width:100%" />
-                <input type="email" id="email" placeholder="ENTER YOUR EMAIL.." style="color:navy; " />
+                <input type="text" id="name_r" data-clear-btn="true" placeholder="ENTER YOUR NAME.." style="color:navy; " />
                 <br />
-                <input type="password" id="password" data-clear-btn="true" placeholder="ENTER YOUR PASSWORD.." style="color:navy" />
+                <input type="text" id="username_r" data-clear-btn="true" placeholder="ENTER YOUR USERNAME.." style="color:navy; " />
                 <br />
-                <a data-role="button" href="#login" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white;" onclick="alert(1)">LOGIN</a>
+                <input type="password" id="password_r" data-clear-btn="true" placeholder="ENTER YOUR PASSWORD.." style="color:navy" />
+                <br />
+                <a data-role="button" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white;" onclick="register()">REGISTER</a>
             </center>
         </div>
     </div>
