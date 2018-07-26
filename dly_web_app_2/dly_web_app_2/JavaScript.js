@@ -1,5 +1,6 @@
 ﻿function login()
 {
+    alert(1);
     var username = document.getElementById("username_l");
     var password = document.getElementById("password_l");
     var params = JSON.stringify({ 'username': username, 'password': password });
