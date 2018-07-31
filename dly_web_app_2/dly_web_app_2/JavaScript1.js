@@ -88,19 +88,63 @@ function register() {
     });
 }
 
-function oldLists(username) {
-    var table = "";
+function createListView(data) {
+    var json, id, date;
+    var lst = "";
+    var array = data.split("|");
+    alert(array[0]);
+    for (let item of array) {
+        json = JSON.parse(item);
+        id = json['orderNum'];
+        date = json['Date'];
+        lst += "<li data-icon='check'><a class='ui-btn ui-btn-icon-right ui-icon-check' style='color:#095680; border-color:#095680 ;background-color:white; font-size:larger; ' href='#' onclick=useList(" + id + ");" + ">" + date + "</a></li>";
+    }
+    $("#oldListsView").html(lst);
+}
 
+function oldLists(username) {
     $.ajax({
         contentType: JSON,
-        url: "url of get list for username",
-        type: "POST",
+        url: "https://manageitemlist.azurewebsites.net/api/GetOrdersFromUsername?code=QdVmZB//EFLn4uCowic9fiWH7il53maCT2Pp7UxVJvG7a0bGrWDQ1A==&parameters={%27username%27:%20%27" + username +"%27}",
+        type: "GET",
         error: function () { alert('an error occured please try again later'); },
         success: function (data) {
-            table = data.d;
+            createListView(data);
         }
     });
-    $("#oldListsTable").text(table);
+}
+
+function useList(id) {
+    var table = "";
+    var json, name, quantity;
+    $.ajax({
+        contentType: JSON,
+        url: "url of get list for id&parameters={%27id%27:%20%27" + id + "%27}",
+        type: "GET",
+        error: function () { alert('an error occured please try again later'); },
+        success: function (data) {
+            var array = data.split("|");
+            for (let item of array) {
+
+                json = JSON.parse(item);
+                name = json['name'];
+                quantity = json['quantity'];
+
+                table += "<tr>";
+                table += "<td>";
+                table += name;
+                table += "</td>";
+                table += "<td>";
+                table += "<input type='number' min='1' placeholder='" + quantity + "' />";
+                table += "</td>";
+                table += "<td>";
+                table += "<center> <a data-role='button' data-icon='delete' id='' style='padding:5%;border-radius:12px; width:90%;background-color:#095680; border-width:0;' onclick=''></a></center>";
+                table += "</td>";
+                table += "</tr>";
+            }
+            $("#curretn_list").html(table);
+        }
+    });
 }
 
 function showUsername(id) {
