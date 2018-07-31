@@ -74,7 +74,7 @@
                     </tr>
                     <tr style="width:100%; height:15%;">
                         <td style="width:inherit; height:inherit;">
-                            <center><a data-role="button" href="#about" class="blueButton">ABOUT US</a></center>
+                            <center><a data-role="button" href="#about" class="blueButton" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">ABOUT US</a></center>
                         </td>
                     </tr>
                 </table>
@@ -97,9 +97,11 @@
                 </table>
             </center>
         </div>
-        <script>
-            showUsername("#login_username");
-        </script>
+        <!--
+    <script>
+        showUsername("#login_username");
+    </script>
+        -->
     </div>
     <!--register-->
     <div data-role="page" class="pages" id="register">
@@ -110,28 +112,51 @@
                         <td id="register_username" style="width:inherit;"></td>
                     </tr>
                     <tr style="width:100%; height:45%;"><td style="width:inherit; height:inherit;"><img src="images/logo2.png" style="width:100%" /></td></tr>
-                    <tr style="width:100%; height:50%;"><td id="isUsernameOK" style="width:inherit; height:inherit; color:white; font-size:larger; font-variant-caps:petite-caps;";"></td></tr>
-                    <tr style="width:100%; height:10%;"><td style="width:inherit; height:inherit;"><input type="text" id="username_r" data-clear-btn="true" placeholder="ENTER YOUR USERNAME.." style="color:#095680;"  onchange="isUsernameOK();"/></td></tr>
+                    <tr style="width:100%; height:50%;"><td id="isUsernameOK" style="width:inherit; height:inherit; color:white; font-size:larger; font-variant-caps:petite-caps;" ;"></td></tr>
+                    <tr style="width:100%; height:10%;"><td style="width:inherit; height:inherit;"><input type="text" id="username_r" data-clear-btn="true" placeholder="ENTER YOUR USERNAME.." style="color:#095680;" onchange="isUsernameOK();" /></td></tr>
                     <tr style="width:100%; height:10%;"><td style="width:inherit; height:inherit;"><input type="text" id="name_r" data-clear-btn="true" placeholder="ENTER YOUR NAME.." style="color:#095680;" /></td></tr>
                     <tr style="width:100%; height:10%;"><td style="width:inherit; height:inherit;"><input type="password" id="password_r" data-clear-btn="true" placeholder="ENTER YOUR PASSWORD.." style="color:#095680;" /></td></tr>
                     <tr style="width:100%; height:10%;"><td style="width:inherit; height:inherit;"><center><a data-role="button" id="registerButton" style="padding:5%;border-radius:12px; width:90%;background-color:#095680; border-width:0; color:white;" onclick="register();">REGISTER</a></center></td></tr>
                 </table>
             </center>
         </div>
-        <script>
-            showUsername("#register_username");
-        </script>
+        <!--
+    <script>
+        showUsername("#register_username");
+    </script>
+        -->
     </div>
 
     <!--makeList-->
     <div data-role="page" class="pages" id="makeList">
         <div data-role="content" class="page_content" id="makeList_content">
-            <center>
-                <img src="images/logo2.png" style="margin-top:50%; width:100%" />
-                <a data-role="button" href="#oldLists" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; margin-top:50%">USE AN OLD LIST</a>
-                <br />
-                <a data-role="button" href="#createList" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white;">CREATE A NEW LIST</a>
+            <center style="height:100%;">
+                <table id="makeList_table" style="height:90%; width:100%;">
+                    <tr style="width:100%; height:10%;"><td id="makeList_username" style="width:inherit;"></td></tr>
+                    <tr style="width:100%; height:60%;">
+                        <td style="width:inherit; height:inherit;">
+                            <img src="images/logo2.png" style="width:100%" />
+                        </td>
+                    </tr>
+                    <tr style="width:100%; height:15%;">
+                        <td style="width:inherit; height:inherit;">
+                            <center>
+                                <a data-role="button" href="#oldLists" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; margin-top:50%">USE AN OLD LIST</a>
+                            </center>
+                        </td>
+                    </tr>
+                    <tr style="width:100%; height:15%;">
+                        <td style="width:inherit; height:inherit;">
+                            <center>
+                                <a data-role="button" href="#createList" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white;">CREATE A NEW LIST</a>
+                            </center>
+                        </td>
+                    </tr>
+                </table>
             </center>
+            <script>
+                showUsername("#makeList_username");
+            </script>    
         </div>
     </div>
 
