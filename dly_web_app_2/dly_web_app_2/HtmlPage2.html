@@ -14,15 +14,23 @@
     <script language="javascript" type="text/javascript" src="JavaScript2.js"></script>
 </head>
 <body>
-    <div data-role="page" id="page1">
-        <div data-role="content">
-
+    <div data-role="page" id="page1" style="height:inherit;">
+        <div data-role="content" style="height:inherit;">
+            <div data-role="popup" id="popupWin" style="background-color:cadetblue; height:90%;">
+                BLA BLA BLA
+                <br />
+                BLA BLA BLABLA BLA BLABLA BLA BLABLABLA BLA BLABLA BLA BLABLA BLA BLABLA BLA BLABLA BLA BLABLA BLA
+                <br />
+                skdkskd
+            </div>
 
         </div>
     </div>
     <script>
         computeRoute("1", "cheese,milk");
-        onNewVertex(1,2);
+        setTimeout(function () { openPopup();}, 0);
+
+        //onNewVertex(1,2);
     </script>
 </body>
 </html>
