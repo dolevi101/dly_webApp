@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="homePage.html" />
+    <Content Include="HtmlPage2.html" />
     <Content Include="images\background1.jpg" />
     <Content Include="images\logo.jpg" />
     <Content Include="images\logo1.jpg" />
