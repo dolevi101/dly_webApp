@@ -23,7 +23,7 @@ function login() {
         success: function (data) {
             if (data === 'Success') {
                 window.localStorage.setItem('username', username);
-                window.location.href = "#makeList";
+                window.location.href = "#options";
             }
             else { alert(data); }
         }
@@ -37,8 +37,10 @@ function logout() {
 
 function isUsernameOK() {
     var username = $("#username_r").val();
-    if (username === "" || username === null)
+    if (username === "" || username === null) {
+        $("#isUsernameOK").html(" ");
         return;
+    }
     var notOK = "<center> username already taken...</center>";
     var OK = "<center> username is OK</center>";
     var parameters = JSON.stringify({ 'username': username});
@@ -74,14 +76,14 @@ function register() {
     var parameters = JSON.stringify({ 'username': username, 'name': name, 'password': password });
     $.ajax({
         contentType: JSON,
-        data: JSON.stringify({ 'parameters': params }),
+        //data: JSON.stringify({ 'parameters': params }),
         url: "https://manageuser1.azurewebsites.net/api/CreateNewUser?code=a3TvjtUk6/wx3rSFj30skJ/Jyd/IE1HemHn1H2Mle0UhjM8kFHshRg==&parameters=" + parameters,
         type: "GET",
         error: function () { alert('an error occured please try again later'); },
         success: function (data) {
             if (data === 'Success') {
                 window.localStorage.setItem('username', username);
-                window.location.href = "#makeList";
+                window.location.href = "#options";
             }
             else { alert(data); }
         }
@@ -102,6 +104,7 @@ function createListView(data) {
 }
 
 function oldLists(username) {
+    alert("old");
     var parameters = JSON.stringify({ 'username': username });
     $.ajax({
         contentType: JSON,
@@ -109,7 +112,17 @@ function oldLists(username) {
         type: "GET",
         error: function () { alert('an error occured please try again later'); },
         success: function (data) {
-            createListView(data);
+            alert(data);
+            if (data === "empty") {
+                var str = "<h1 style='color: white'><center>";
+                str += "YOU DON'T HAVE ANY LISTS YET.";
+                str += "</h1></center>";
+                str += "<center><a data-role='button' href='#makeList' class='blueButton' style='border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white;'>MAKE A LIST</a></center>";
+                $("#oldListsView").html(str);
+            }
+            else {
+                createListView(data);
+            }
         }
     });
 }
@@ -168,4 +181,26 @@ function showUsername(id) {
     }
     else
         $(id).text(" ");
+}
+
+function addToPage() {
+    var page = $(location).attr('href');
+    var hashtag = page.indexOf("#");
+    page = page.substring(hashtag);
+    //alert(page);
+    if (page === "#login" || page === "#register") {
+        if (localStorage.username) {
+            alert("you are aleady logged in as " + localStorage.username);
+            window.location.href = "#logged_in";
+        }
+    } else if (page === "#makeList") {
+        if (!localStorage.username)
+            window.location.href = "#homePage";
+        showUsername("#makeList_username");
+    } else if (page === "#oldLists") {
+        if (!localStorage.username)
+            window.location.href = "#homePage";
+        showUsername("#oldLists_username");
+        //oldLists(localStorage.username);
+    }
 }
