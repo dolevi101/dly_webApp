@@ -18,7 +18,53 @@ function directionsStringToMat(itemsDirectionsString, rows, cols) {
     return itemsDirectionsMat;
 }
 
-function drawMap() {
+function createCanvas(i, j, width, height) {
+    return "<canvas id=\"Canvas" + i + "," + j + "\" width =\"" + width + "\" height=\"" + height + "\"></canvas>";
+}
+
+function createTable(width, height, aisleLength, numOfAisles) {
+    var table = ""
+    table += "<table id=\"aislesTable\" width=\"" + (0.9 * width) + "\" height=\"" + height + "\"";
+    table += " style = \"position: absolute; left: " + width * 0.05 + "px; top: 0px;\">";
+    for (var i = 0; i < aisleLength; i++) {
+        table += "<tr id=\"tr" + i + "\" height=\"" + (height / aisleLength) + "\">";
+        for (var j = 0; j < numOfAisles; j++) {
+            table += "<td id=\"td" + j + "\" width=\"" + (0.9 * width / numOfAisles) + "\">";
+            table += createCanvas(i, j, 0.9 * width / numOfAisles, height / aisleLength);
+            table += "</td>";
+        }
+        table += "</tr>";
+    }
+    table += "</table>";
+    return table;
+}
+
+function createRectangle(canvasName, x, y, width, height) {
+    var c = document.getElementById(canvasName);
+    var ctx = c.getContext("2d");
+    ctx.rect(x, y, width, height);
+    ctx.stroke();
+}
+
+function drawMap(aisleLength, numOfAisles) {//aisleLength = rows / 3, numOfAisles = cols
+    //screen.orientation.lock('landscape');
+    var width = window.screen.availWidth;
+    var height = window.screen.availHeight;
+    var table = createTable(width, height, aisleLength, numOfAisles);
+    $("#MapPage").html(table);
+
+    var x = 0.2 * (0.9 * width / numOfAisles);
+    var y = 0.05 * (height / aisleLength);
+    var rectWidth = 0.6 * (0.9 * width / numOfAisles);
+    var rectHeight = 0.9 * (height / aisleLength);
+    for (var i = 0; i < aisleLength; i++) {
+        for (var j = 0; j < numOfAisles; j++) {
+            var canvasName = "Canvas" + i + "," + j;
+            createRectangle(canvasName, x, y, rectWidth, rectHeight);
+        }
+    }
+            
+    window.location.href = "#MapPage";
 
 }
 
@@ -34,9 +80,11 @@ function computeRoute(superID, itemsList) {
             var responseJson = JSON.parse(response);
             //global variables:
             route = responseJson['route'].split("|");
-            itemsDirectionsMat = directionsStringToMat(responseJson['directions'], responseJson['rows'], responseJson['cols']);
+            var rows = responseJson['rows'];
+            var cols = responseJson['cols'];
+            itemsDirectionsMat = directionsStringToMat(responseJson['directions'], rows, cols);
             currentVertexIndex = 0;
-            //call drawMap() 
+            drawMap(rows/3, cols);
         }
     });
 }

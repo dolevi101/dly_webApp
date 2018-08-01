@@ -12,6 +12,48 @@
 
     <title>SmartCart</title>
     <script language="javascript" type="text/javascript" src="JavaScript2.js"></script>
+
+    <style>
+
+
+        @media screen and (orientation:portrait) {
+            #MapPage {
+                transform: rotate(-90deg);
+                transform-origin: 50% 50%;
+            }
+        }
+        .pages {
+            height: inherit;
+            font-family: 'Canter Bold';
+            background-color: transparent;
+        }
+
+        .page_content {
+            height: inherit;
+            align-items: center;
+            background-image: url(images/background1.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        ::placeholder {
+            color: #095680;
+        }
+
+        ::content {
+        }
+
+        .blueButton {
+            border-radius: 12px;
+            width: 80%;
+            padding-bottom: 5%;
+            padding-top: 5%;
+            background-color: #095680;
+            border-width: 0;
+            color: white;
+        }
+    </style>
+
 </head>
 <body>
     <div data-role="page" id="page1" style="height:inherit;">
@@ -26,9 +68,14 @@
 
         </div>
     </div>
+    <div data-role="page" id="MapPage">
+        
+    </div>
+    
     <script>
-        computeRoute("1", "cheese,milk");
-        setTimeout(function () { openPopup();}, 3000);
+        //computeRoute("1", "cheese,milk");
+        //setTimeout(function () { openPopup();}, 3000);
+        drawMap(2, 3);
 
         //onNewVertex(1,2);
     </script>
