@@ -92,12 +92,11 @@ function createListView(data) {
     var json, id, date;
     var lst = "";
     var array = data.split("|");
-    alert(array[0]);
     for (let item of array) {
         json = JSON.parse(item);
         id = json['orderNum'];
         date = json['Date'];
-        lst += "<li data-icon='check'><a class='ui-btn ui-btn-icon-right ui-icon-check' style='color:#095680; border-color:#095680 ;background-color:white; font-size:larger; ' href='#' onclick=useList(" + id + ");" + ">" + date + "</a></li>";
+        lst += "<li data-icon='check'><a class='ui-btn ui-btn-icon-right ui-icon-check' style='color:#095680; border-color:#095680; border:solid; background-color:white; font-size:larger; ' href='#' onclick=useList(" + id + ");" + ">" + date + "</a></li>";
     }
     $("#oldListsView").html(lst);
 }
@@ -112,6 +111,16 @@ function oldLists(username) {
             createListView(data);
         }
     });
+}
+
+function showMakeList(id){
+    if (id !== -1) {
+        //show loaded list
+    }
+    //new list
+
+
+
 }
 
 function useList(id) {
