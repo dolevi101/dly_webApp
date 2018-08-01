@@ -13,11 +13,11 @@ function login() {
         return false;
     var username = $("#username_l").val();
     var password = $("#password_l").val();
-    //var params = JSON.stringify({ 'username': username, 'password': password });
+    var parameters = JSON.stringify({ 'username': username, 'password': password });
     $.ajax({
         contentType: JSON,
         //data: JSON.stringify({ 'parameters': params }),
-        url: "https://manageuser1.azurewebsites.net/api/CheckUserPassword?code=2iiKpSILpGlmte7kFrmhoylGJbLacEVVQw9K/z5hXzN2k/Oprv8LVg==&parameters={%27username%27:%20%27" + username + "%27,%20%27password%27:%27" + password + "%27}",
+        url: "https://manageuser1.azurewebsites.net/api/CheckUserPassword?code=2iiKpSILpGlmte7kFrmhoylGJbLacEVVQw9K/z5hXzN2k/Oprv8LVg==&parameters=" + parameters,
         type: "GET",
         error: function () { alert('an error occured please try again later'); },
         success: function (data) {
@@ -41,11 +41,11 @@ function isUsernameOK() {
         return;
     var notOK = "<center> username already taken...</center>";
     var OK = "<center> username is OK</center>";
-  //var params = JSON.stringify({ 'username': username});
+    var parameters = JSON.stringify({ 'username': username});
     $.ajax({
         contentType: JSON,
         //data: JSON.stringify({ 'parameters': params }),
-        url: "https://manageuser1.azurewebsites.net/api/isUsernameOK?code=35GCQ4W2iySJ/hYjQs38Dmh9R3aEYNqPtFwCqMDOOn5MC8/UHQzS5w==&parameters={%27username%27:%20%27" + username + "%27}",
+        url: "https://manageuser1.azurewebsites.net/api/isUsernameOK?code=35GCQ4W2iySJ/hYjQs38Dmh9R3aEYNqPtFwCqMDOOn5MC8/UHQzS5w==&parameters=" + parameters,
         type: "GET",
         error: function () { alert('an error occured please try again later'); },
         success: function (data) {
@@ -71,11 +71,11 @@ function register() {
     var name = $("#name_r").val();
     var username = $("#username_r").val();
     var password = $("#password_r").val();
-    var params = JSON.stringify({ 'username': username, 'name': name, 'password': password });
+    var parameters = JSON.stringify({ 'username': username, 'name': name, 'password': password });
     $.ajax({
         contentType: JSON,
         data: JSON.stringify({ 'parameters': params }),
-        url: "https://manageuser1.azurewebsites.net/api/CreateNewUser?code=a3TvjtUk6/wx3rSFj30skJ/Jyd/IE1HemHn1H2Mle0UhjM8kFHshRg==&parameters={%27username%27:%20%27" + username + "%27,%20%27password%27:%27" + password + "%27,%20%27name%27:%27" + name + "%27}",
+        url: "https://manageuser1.azurewebsites.net/api/CreateNewUser?code=a3TvjtUk6/wx3rSFj30skJ/Jyd/IE1HemHn1H2Mle0UhjM8kFHshRg==&parameters=" + parameters,
         type: "GET",
         error: function () { alert('an error occured please try again later'); },
         success: function (data) {
@@ -102,9 +102,10 @@ function createListView(data) {
 }
 
 function oldLists(username) {
+    var parameters = JSON.stringify({ 'username': username });
     $.ajax({
         contentType: JSON,
-        url: "https://manageitemlist.azurewebsites.net/api/GetOrdersFromUsername?code=QdVmZB//EFLn4uCowic9fiWH7il53maCT2Pp7UxVJvG7a0bGrWDQ1A==&parameters={%27username%27:%20%27" + username +"%27}",
+        url: "https://manageitemlist.azurewebsites.net/api/GetOrdersFromUsername?code=QdVmZB//EFLn4uCowic9fiWH7il53maCT2Pp7UxVJvG7a0bGrWDQ1A==&parameters=" + parameters,
         type: "GET",
         error: function () { alert('an error occured please try again later'); },
         success: function (data) {
@@ -126,9 +127,10 @@ function showMakeList(id){
 function useList(id) {
     var table = "";
     var json, name, quantity;
+    var parameters = JSON.stringify({ 'id': id });
     $.ajax({
         contentType: JSON,
-        url: "url of get list for id&parameters={%27id%27:%20%27" + id + "%27}",
+        url: "url of get list for id&parameters=" + parameters,
         type: "GET",
         error: function () { alert('an error occured please try again later'); },
         success: function (data) {
