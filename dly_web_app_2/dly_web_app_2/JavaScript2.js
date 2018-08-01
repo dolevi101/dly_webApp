@@ -18,13 +18,12 @@ function directionsStringToMat(itemsDirectionsString, rows, cols) {
     return itemsDirectionsMat;
 }
 
-function createCanvas(i, j, width, height) {
+/*function createCanvas(i, j, width, height) {
     return "<canvas id=\"Canvas" + i + "," + j + "\" width =\"" + width + "\" height=\"" + height + "\"></canvas>";
 }
-
 function createTable(width, height, aisleLength, numOfAisles) {
     var table = ""
-    table += "<table id=\"aislesTable\" width=\"" + (0.9 * width) + "\" height=\"" + height + "\"";
+    table += "<table id=\"aislesTable\" border =\"1\" width=\"" + (0.9 * width) + "\" height=\"" + height + "\"";
     table += " style = \"position: absolute; left: " + width * 0.05 + "px; top: 0px;\">";
     for (var i = 0; i < aisleLength; i++) {
         table += "<tr id=\"tr" + i + "\" height=\"" + (height / aisleLength) + "\">";
@@ -37,16 +36,43 @@ function createTable(width, height, aisleLength, numOfAisles) {
     }
     table += "</table>";
     return table;
-}
+}*/
 
 function createRectangle(canvasName, x, y, width, height) {
+    //alert("x, y: " + x + " " + y);
     var c = document.getElementById(canvasName);
     var ctx = c.getContext("2d");
     ctx.rect(x, y, width, height);
     ctx.stroke();
 }
 
-function drawMap(aisleLength, numOfAisles) {//aisleLength = rows / 3, numOfAisles = cols
+function drawMap(aisleLength, numOfAisles) {
+    var space = 0.1; //Space for rectangles for the entrance and the counters/exit
+    var rectWidthPercent = 0.7;
+    var rectHeightPercent = 0.1;
+    var width = window.screen.availWidth;
+    var height = window.screen.availHeight;
+    var canvas = "<canvas id=\"mapCanvas\" width =\"" + width + "\" height=\"" + ((1 - 2 * space) * height) + "\" style = \"position: absolute; top: " + (space * height) + "px; left: 0px \"></canvas>";
+    $("#MapPage").html(canvas);
+
+    var cellWidth = width / numOfAisles;
+    var cellHeight = (1 - 2 * space) * height / aisleLength;
+    /*var x = 0.05 * cellWidth;
+    var y = 0.3 * cellHeight;
+    var rectWidth = 0.9 * cellWidth;
+    var rectHeight = 0.4 * cellHeight;*/
+    for (var i = 0; i < aisleLength; i++) {
+        for (var j = 0; j < numOfAisles; j++) {
+            var x = ((1 - rectWidthPercent) / 2 + j) * cellWidth;
+            var y = ((1 - rectHeightPercent) / 2 + i) * cellHeight;
+            createRectangle("mapCanvas", x, y, rectWidthPercent * cellWidth, rectHeightPercent * cellHeight);
+        }
+    }
+    window.location.href = "#MapPage";
+
+}
+
+/*function drawMap(aisleLength, numOfAisles) {//aisleLength = rows / 3, numOfAisles = cols
     //screen.orientation.lock('landscape');
     var width = window.screen.availWidth;
     var height = window.screen.availHeight;
@@ -63,10 +89,8 @@ function drawMap(aisleLength, numOfAisles) {//aisleLength = rows / 3, numOfAisle
             createRectangle(canvasName, x, y, rectWidth, rectHeight);
         }
     }
-            
     window.location.href = "#MapPage";
-
-}
+}*/
 
 function computeRoute(superID, itemsList) {
     var parameters = JSON.stringify({ 'superID': superID, 'itemsList': itemsList});
