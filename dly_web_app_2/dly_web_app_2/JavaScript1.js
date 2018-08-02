@@ -46,7 +46,6 @@ function isUsernameOK() {
     var parameters = JSON.stringify({ 'username': username});
     $.ajax({
         contentType: JSON,
-        //data: JSON.stringify({ 'parameters': params }),
         url: "https://manageuser1.azurewebsites.net/api/isUsernameOK?code=35GCQ4W2iySJ/hYjQs38Dmh9R3aEYNqPtFwCqMDOOn5MC8/UHQzS5w==&parameters=" + parameters,
         type: "GET",
         error: function () { alert('an error occured please try again later'); },
@@ -76,7 +75,6 @@ function register() {
     var parameters = JSON.stringify({ 'username': username, 'name': name, 'password': password });
     $.ajax({
         contentType: JSON,
-        //data: JSON.stringify({ 'parameters': params }),
         url: "https://manageuser1.azurewebsites.net/api/CreateNewUser?code=a3TvjtUk6/wx3rSFj30skJ/Jyd/IE1HemHn1H2Mle0UhjM8kFHshRg==&parameters=" + parameters,
         type: "GET",
         error: function () { alert('an error occured please try again later'); },
@@ -104,7 +102,6 @@ function createListView(data) {
 }
 
 function oldLists(username) {
-    alert("old");
     var parameters = JSON.stringify({ 'username': username });
     $.ajax({
         contentType: JSON,
@@ -112,7 +109,6 @@ function oldLists(username) {
         type: "GET",
         error: function () { alert('an error occured please try again later'); },
         success: function (data) {
-            alert(data);
             if (data === "empty") {
                 var str = "<h1 style='color: white'><center>";
                 str += "YOU DON'T HAVE ANY LISTS YET.";
@@ -127,9 +123,46 @@ function oldLists(username) {
     });
 }
 
-function showMakeList(id){
-    if (id !== -1) {
-        //show loaded list
+function showMakeList() {
+    window.location.href = "#makeList";
+
+    if (localStorage.listId) {
+        //load list
+        var id = localStorage.listId;
+        var table = "";
+        var json, name, quantity;
+        var parameters = JSON.stringify({ 'ordernum': id });
+        $.ajax({
+            contentType: JSON,
+            url: "https://manageitemlist.azurewebsites.net/api/getList?code=aqr86fF0swe0KotNyXaD7Mo8ZUSKxELH0YK24aSoKI1lsGbaWNjc3Q==&parameters=" + parameters,
+            type: "GET",
+            error: function () { alert('an error occured please try again later'); },
+            success: function (data) {
+                alert(data);
+                var array = data.split("|");
+                for (let item of array) {
+
+                    json = JSON.parse(item);
+                    name = json['itemName'];
+                    quantity = json['itemQuantity'];
+
+                    table += "<tr style='width:100%;'>";
+                    table += "<td style='width:33%;'><h4 style='color:white;'>";
+                    table += name;
+                    table += "</h4></td>";
+                    table += "<td style='width:33%;'>";
+                    table += "<input type='number' min='1' placeholder='" + quantity + "' />";
+                    table += "</td>";
+                    table += "<td style='width:33%;'>";
+                    //table += "<center> <a data-role='button' data-icon='delete' id='' style='padding:5%;border-radius:12px; width:90%;background-color:#095680; border-width:0;' onclick=''></a></center>";
+                    table += "<a data-role='button' data-icon='delete' class='ui-link ui-btn ui-shadow ui-corner-all fa fa-close' role='button' style='color:#095680;   background-color:white; border:none;'></a>"
+                    table += "</td>";
+                    table += "</tr>";
+                }
+                alert(table);
+                $("#curretn_list").html(table);
+            }
+        });
     }
     //new list
 
@@ -138,37 +171,8 @@ function showMakeList(id){
 }
 
 function useList(id) {
-    var table = "";
-    var json, name, quantity;
-    var parameters = JSON.stringify({ 'id': id });
-    $.ajax({
-        contentType: JSON,
-        url: "url of get list for id&parameters=" + parameters,
-        type: "GET",
-        error: function () { alert('an error occured please try again later'); },
-        success: function (data) {
-            var array = data.split("|");
-            for (let item of array) {
-
-                json = JSON.parse(item);
-                name = json['name'];
-                quantity = json['quantity'];
-
-                table += "<tr>";
-                table += "<td>";
-                table += name;
-                table += "</td>";
-                table += "<td>";
-                table += "<input type='number' min='1' placeholder='" + quantity + "' />";
-                table += "</td>";
-                table += "<td>";
-                table += "<center> <a data-role='button' data-icon='delete' id='' style='padding:5%;border-radius:12px; width:90%;background-color:#095680; border-width:0;' onclick=''></a></center>";
-                table += "</td>";
-                table += "</tr>";
-            }
-            $("#curretn_list").html(table);
-        }
-    });
+    localStorage.listId = id;
+    window.location.href = "#makeList";
 }
 
 function showUsername(id) {
@@ -197,10 +201,11 @@ function addToPage() {
         if (!localStorage.username)
             window.location.href = "#homePage";
         showUsername("#makeList_username");
+        showMakeList();
     } else if (page === "#oldLists") {
         if (!localStorage.username)
             window.location.href = "#homePage";
         showUsername("#oldLists_username");
-        //oldLists(localStorage.username);
+        oldLists(localStorage.username);
     }
 }

@@ -4,6 +4,7 @@
     <!-- Include meta tag to ensure proper rendering and touch zooming -->
     <!-- Include jQuery Mobile stylesheets -->
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Include the jQuery library -->
     <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
     <!-- Include the jQuery Mobile library -->
@@ -159,15 +160,26 @@
         <div data-role="content" class="page_content" id="makeList_content">
             <center style="height:100%;">
                 <table style="height:90%; width:100%;">
-                    <tr style="width:100%; height:10%;"><td id="makeList_username" style="width:inherit;"></td></tr>
-                    <tr style="width:100%; height:10%;"><td><center><h1 style="color:white">CREATE A NEW LIST</h1></center></td></tr>
-                    <tr style="width:100%; height:10%;"><td><input data-type="search" id="search_item"></td></tr>
-                    <tr style="width:100%; height:10%;"><td><select id="select_item" data-filter="true" data-input="#searchForSelect"></select></td></tr>
-                    <tr style="width:100%; height:70%;">
-                        <td>
-                            <table id="curretn_list"></table>
+                    <tr style="width:100%; height:10%;"><td colspan="2" id="makeList_username" style="width:100%;"></td></tr>
+                    <tr style="width:100%; height:10%;"><td colspan="2"><center><h2 style="color:white">CREATE A NEW LIST</h2></center></td></tr>
+                    <tr style="width:100%; height:25%;"><td colspan="2" style="border:solid;">
+                        <h3 style="text-align:center; color:white; vertical-align:bottom;"> MY LIST</h3>
+                        <select id="filter" data-native-menu="false" class="filterable-select" onchange="changeFunc();">
+                            <option>ADD PRODUCTS:</option>
+                            <option value="de" data-filtertext="Delhi">Delhi</option>
+                            <option value="pu" data-filtertext="Chandigarh">Chandigarh</option>
+                            <option value="ch" data-filtertext="Chennai">Chennai</option>
+                            <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+                        </select></td></tr>
+                    <tr style="width:100%; height:45%;">
+                        <td colspan="2" style="border:solid;">
+                            <div style="overflow:scroll; height:100%; width:inherit; ">
+                                <table id="curretn_list"></table>
+                                
+                            </div>
                         </td>
                     </tr>
+                    <tr style="width:100%; height:10%;"><td style="width:50%;"><center><a data-role="button" href="#oldLists" class="blueButton" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">FINISH</a></center></td><td style="width:50%;"><center><a data-role="button" href="#oldLists" class="blueButton" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">NAVIGATE    </a></center></td></tr>
                 </table>
             </center>
         </div>
