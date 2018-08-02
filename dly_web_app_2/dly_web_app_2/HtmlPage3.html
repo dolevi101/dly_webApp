@@ -51,6 +51,10 @@
     </style>
 </head>
 <body>
+    <script>
+        $(document).on("pageshow", getAllItems());
+
+    </script>
     <div data-role="page" class="pages" id="makeList1">
         <div data-role="content" class="page_content" id="makeList_content1">
             <center style="height:100%;">
@@ -58,40 +62,28 @@
                     <tr style="width:100%; height:10%;"><td id="makeList_username1" style="width:inherit;"></td></tr>
                     <tr style="width:100%; height:10%;"><td><center><h1 style="color:white">CREATE A NEW LIST</h1></center></td></tr>
 
-                    <tr style="width:100%; height:10%;"><td><center>
+                    <tr style="width:100%; height:10%;">
+                        <td>
+                            <center>
 
 
-    <form>
-        <div class="ui-field-contain">
-            <select id="filter" data-native-menu="false" class="filterable-select" onchange="changeFunc();">
-                <option>Select your product</option>
+                                <form>
+                                    <div class="ui-field-contain">
+                                        <select id="filter" data-native-menu="false" class="filterable-select" onchange="changeFunc();">
+                                            <option>Select your product</option>
 
-                <option value="de" data-filtertext="Delhi">Delhi</option>
-                <option value="pu" data-filtertext="Chandigarh">Chandigarh</option>
-                <option value="ch" data-filtertext="Chennai">Chennai</option>
-                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
-                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
-                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
-                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
-                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
-                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
-                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
-                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
-                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
-                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
-                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
-                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
-                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
-                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
-                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
-                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+                                            <option value="de" data-filtertext="Delhi">Delhi</option>
+                                            <option value="pu" data-filtertext="Chandigarh">Chandigarh</option>
+                                            <option value="ch" data-filtertext="Chennai">Chennai</option>
+                                            <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+                                        </select>
 
-            </select>
+                                    </div>
+                                </form>
 
-        </div>
-    </form>
-
-</center></td></tr>
+                            </center>
+                        </td>
+                    </tr>
 
 
 

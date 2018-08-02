@@ -35,6 +35,7 @@ function changeFunc() {
 }
 
 function getAllItems() {
+    alert("in getAllItems function");
     $.ajax({
         contentType: JSON,
         url: "https://manageitemlist.azurewebsites.net/api/GetAllItems?code=Ws3K2/EREH0e34YfpzH12ptdVNWbAjwTV/B7cSsV8L6RHOgetOkTCA==",
@@ -42,10 +43,15 @@ function getAllItems() {
         error: function () { alert('an error occured please try again later'); },
         success: function (data) {
             if (data.includes("error")) {
-               //error
+                //error
             }
             else {
-
+                listItems = document.getElementById("filter");
+                items = data.split("|");
+                items.forEach(function (item) {
+                    listItem.innerHTML = listItem.innerHTML + "<option value=\"" + item + "\" data-filtertext=\"" + item + "\">" + item + "</option>";
+                })
             }
         }
     });
+}
