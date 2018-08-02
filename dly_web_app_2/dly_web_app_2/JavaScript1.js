@@ -201,6 +201,6 @@ function addToPage() {
         if (!localStorage.username)
             window.location.href = "#homePage";
         showUsername("#oldLists_username");
-        //oldLists(localStorage.username);
+        oldLists(localStorage.username);
     }
 }
