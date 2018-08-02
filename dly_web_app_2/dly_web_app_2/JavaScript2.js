@@ -18,79 +18,75 @@ function directionsStringToMat(itemsDirectionsString, rows, cols) {
     return itemsDirectionsMat;
 }
 
-/*function createCanvas(i, j, width, height) {
-    return "<canvas id=\"Canvas" + i + "," + j + "\" width =\"" + width + "\" height=\"" + height + "\"></canvas>";
-}
-function createTable(width, height, aisleLength, numOfAisles) {
-    var table = ""
-    table += "<table id=\"aislesTable\" border =\"1\" width=\"" + (0.9 * width) + "\" height=\"" + height + "\"";
-    table += " style = \"position: absolute; left: " + width * 0.05 + "px; top: 0px;\">";
-    for (var i = 0; i < aisleLength; i++) {
-        table += "<tr id=\"tr" + i + "\" height=\"" + (height / aisleLength) + "\">";
-        for (var j = 0; j < numOfAisles; j++) {
-            table += "<td id=\"td" + j + "\" width=\"" + (0.9 * width / numOfAisles) + "\">";
-            table += createCanvas(i, j, 0.9 * width / numOfAisles, height / aisleLength);
-            table += "</td>";
-        }
-        table += "</tr>";
-    }
-    table += "</table>";
-    return table;
-}*/
-
 function createRectangle(canvasName, x, y, width, height) {
-    //alert("x, y: " + x + " " + y);
     var c = document.getElementById(canvasName);
     var ctx = c.getContext("2d");
     ctx.rect(x, y, width, height);
     ctx.stroke();
 }
 
-function drawMap(aisleLength, numOfAisles) {
-    var space = 0.1; //Space for rectangles for the entrance and the counters/exit
+function create3Circles(canvasName, startXPos, yPos, radius, distanceBetweenCircles, isToColor) {
+    var c = document.getElementById(canvasName);
+    var ctx = c.getContext("2d");
+    var xPos = startXPos;
+    for (var i = 0; i < 3; i++) {
+        ctx.beginPath();
+        ctx.arc(xPos, yPos, radius, 0, 2 * Math.PI);
+        if (isToColor[i]) {
+            ctx.fillStyle = 'green';
+            ctx.fill();
+        }
+        ctx.stroke();
+        xPos += distanceBetweenCircles;
+    }
+}
+
+function drawMap(aisleLength, numOfAisles, itemsDirectionsMat) { //aisleLength = rows / 3, numOfAisles = cols
+    var space = 0.1; //Space for the rectangles of the entrance and the counters/exit
     var rectWidthPercent = 0.7;
-    var rectHeightPercent = 0.1;
+    var rectHeightPercent = 0.3;
     var width = window.screen.availWidth;
     var height = window.screen.availHeight;
     var canvas = "<canvas id=\"mapCanvas\" width =\"" + width + "\" height=\"" + ((1 - 2 * space) * height) + "\" style = \"position: absolute; top: " + (space * height) + "px; left: 0px \"></canvas>";
     $("#MapPage").html(canvas);
 
-    var cellWidth = width / numOfAisles;
-    var cellHeight = (1 - 2 * space) * height / aisleLength;
-    /*var x = 0.05 * cellWidth;
-    var y = 0.3 * cellHeight;
-    var rectWidth = 0.9 * cellWidth;
-    var rectHeight = 0.4 * cellHeight;*/
+    var cellWidth = width / aisleLength;
+    var cellHeight = (1 - 2 * space) * height / numOfAisles;
+    var radius = rectHeightPercent * cellHeight / 7;
+    var distanceBetweenCircles = (rectWidthPercent * cellWidth - 2 * radius - 1 * radius) / 2;
     for (var i = 0; i < aisleLength; i++) {
         for (var j = 0; j < numOfAisles; j++) {
-            var x = ((1 - rectWidthPercent) / 2 + j) * cellWidth;
-            var y = ((1 - rectHeightPercent) / 2 + i) * cellHeight;
+            var x = ((1 - rectWidthPercent) / 2 + i) * cellWidth;
+            var y = ((1 - rectHeightPercent) / 2 + j) * cellHeight;
             createRectangle("mapCanvas", x, y, rectWidthPercent * cellWidth, rectHeightPercent * cellHeight);
+            if (j != 0) {
+                var startXPos = x + radius + 0.5 * radius;
+                var yPos = y + radius + 0.5 * radius;
+                var isToColor = [];
+                for (var k = 0; k < 3; k++) {
+                    //alert("first aisleLength j k i" + aisleLength + " " + j + " " + k + " " + i);
+                    alert("first [" + (aisleLength*3 - 1 - i * 3 - k) + "][" + (j - 1) + "]");
+                    alert(itemsDirectionsMat[aisleLength*3 - 1 - i * 3 - k][j - 1]);
+                    isToColor[k] = (itemsDirectionsMat[aisleLength * 3 - 1 - i * 3 - k][j - 1] != "|");
+                }
+                create3Circles("mapCanvas", startXPos, yPos, radius, distanceBetweenCircles, isToColor);
+            }
+            if (j != numOfAisles - 1) {
+                var startXPos = x + radius + 0.5 * radius;
+                var yPos = y + rectHeightPercent * cellHeight - (radius + 0.5 * radius);
+                var isToColor = [];
+                for (var k = 0; k < 3; k++) {
+                    //alert("second aisleLength j k i " + aisleLength + " " + j + " " + k + " " + i);
+                    alert("second [" + (aisleLength*3 - 1 - i * 3 - k) + "][" + (j) + "]");
+                    alert(itemsDirectionsMat[aisleLength*3 - 1 - i * 3 - k][j]);
+                    isToColor[k] = (itemsDirectionsMat[aisleLength * 3 - 1 - i * 3 - k][j] != "|");
+                }
+                create3Circles("mapCanvas", startXPos, yPos, radius, distanceBetweenCircles, isToColor);
+            }
         }
     }
     window.location.href = "#MapPage";
-
 }
-
-/*function drawMap(aisleLength, numOfAisles) {//aisleLength = rows / 3, numOfAisles = cols
-    //screen.orientation.lock('landscape');
-    var width = window.screen.availWidth;
-    var height = window.screen.availHeight;
-    var table = createTable(width, height, aisleLength, numOfAisles);
-    $("#MapPage").html(table);
-
-    var x = 0.2 * (0.9 * width / numOfAisles);
-    var y = 0.05 * (height / aisleLength);
-    var rectWidth = 0.6 * (0.9 * width / numOfAisles);
-    var rectHeight = 0.9 * (height / aisleLength);
-    for (var i = 0; i < aisleLength; i++) {
-        for (var j = 0; j < numOfAisles; j++) {
-            var canvasName = "Canvas" + i + "," + j;
-            createRectangle(canvasName, x, y, rectWidth, rectHeight);
-        }
-    }
-    window.location.href = "#MapPage";
-}*/
 
 function computeRoute(superID, itemsList) {
     var parameters = JSON.stringify({ 'superID': superID, 'itemsList': itemsList});
@@ -108,7 +104,7 @@ function computeRoute(superID, itemsList) {
             var cols = responseJson['cols'];
             itemsDirectionsMat = directionsStringToMat(responseJson['directions'], rows, cols);
             currentVertexIndex = 0;
-            drawMap(rows/3, cols);
+            drawMap(rows / 3, cols, itemsDirectionsMat);
         }
     });
 }
