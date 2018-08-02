@@ -1,7 +1,4 @@
-﻿body {
-    .ui-selectmenu.ui-popup .ui-input-search
-
-{
+﻿.ui-selectmenu.ui-popup .ui-input-search {
     margin-left: .5em;
     margin-right: .5em;
 }
@@ -22,7 +19,4 @@
 
 .ui-selectmenu.ui-dialog .ui-header {
     border-bottom-width: 1px;
-}
-
-
 }
