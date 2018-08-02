@@ -68,13 +68,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="homePage.html" />
+    <Content Include="..\..\..\..\..\Desktop\homePage.html">
+      <Link>homePage.html</Link>
+    </Content>
     <Content Include="HtmlPage2.html" />
     <Content Include="images\background1.jpg" />
     <Content Include="images\logo.jpg" />
     <Content Include="images\logo1.jpg" />
     <Content Include="images\logo2.png" />
-    <Content Include="JavaScript1.js" />
+    <Content Include="..\..\..\..\..\Desktop\JavaScript1.js">
+      <Link>JavaScript1.js</Link>
+    </Content>
     <Content Include="JavaScript2.js" />
     <Content Include="test.html" />
     <Content Include="Web.config" />
