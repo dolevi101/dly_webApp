@@ -49,7 +49,7 @@ function getAllItems() {
                 listItems = document.getElementById("filter");
                 items = data.split("|");
                 items.forEach(function (item) {
-                    listItem.innerHTML = listItem.innerHTML + "<option value=\"" + item + "\" data-filtertext=\"" + item + "\">" + item + "</option>";
+                    listItems.innerHTML = listItems.innerHTML + "<option value=\"" + item + "\" data-filtertext=\"" + item + "\">" + item + "</option>";
                 })
             }
         }
