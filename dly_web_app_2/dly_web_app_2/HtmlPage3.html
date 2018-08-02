@@ -5,12 +5,11 @@
     <!-- Include jQuery Mobile stylesheets -->
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
     <link rel="stylesheet" type="text/css" href="StyleSheet1.css">
-
-    <!-- Include the jQuery library -->
-    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <!-- Include the jQuery Mobile library -->
-    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
     <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0" />
+
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
 
     <title>SmartCart</title>
     <script language="javascript" type="text/javascript" src="JavaScript1.js"></script>
@@ -52,10 +51,6 @@
     </style>
 </head>
 <body>
-    <script>$(document).on("pageshow", "#makeList1", function () {
-    filteredList();
-    alert("tapuah222");
-        });</script>
     <div data-role="page" class="pages" id="makeList1">
         <div data-role="content" class="page_content" id="makeList_content1">
             <center style="height:100%;">
@@ -64,16 +59,39 @@
                     <tr style="width:100%; height:10%;"><td><center><h1 style="color:white">CREATE A NEW LIST</h1></center></td></tr>
 
                     <tr style="width:100%; height:10%;"><td><center>
-    <form>
-        <select id="filter-menu" data-native-menu="false">
-            <option value="SFO">San Francisco</option>
-            <option value="LAX">Los Angeles</option>
-            <option value="YVR">Vancouver</option>
-            <option value="YYZ">Toronto</option>
-        </select>
-    </form>
-</center></td></tr>
 
+
+    <form>
+        <div class="ui-field-contain">
+            <select id="filter" data-native-menu="false" class="filterable-select" onchange="changeFunc();">
+                <option>Select your product</option>
+
+                <option value="de" data-filtertext="Delhi">Delhi</option>
+                <option value="pu" data-filtertext="Chandigarh">Chandigarh</option>
+                <option value="ch" data-filtertext="Chennai">Chennai</option>
+                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+                <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+
+            </select>
+
+        </div>
+    </form>
+
+</center></td></tr>
 
 
 
