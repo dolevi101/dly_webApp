@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <!-- Include meta tag to ensure proper rendering and touch zooming -->
+    <!-- Include jQuery Mobile stylesheets -->
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+    <link rel="stylesheet" type="text/css" href="StyleSheet1.css">
+
+    <!-- Include the jQuery library -->
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <!-- Include the jQuery Mobile library -->
+    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0" />
+
+    <title>SmartCart</title>
+    <script language="javascript" type="text/javascript" src="JavaScript1.js"></script>
+    <script language="javascript" type="text/javascript" src="JavaScript2.js"></script>
+    <script language="javascript" type="text/javascript" src="JavaScript3.js"></script>
+
+
+    <style>
+        .pages {
+            height: inherit;
+            font-family: 'Canter Bold';
+            background-color: transparent;
+        }
+
+        .page_content {
+            height: inherit;
+            align-items: center;
+            background-image: url(images/background1.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        ::placeholder {
+            color: #095680;
+        }
+
+        ::content {
+        }
+
+        .blueButton {
+            border-radius: 12px;
+            width: 80%;
+            padding-bottom: 5%;
+            padding-top: 5%;
+            background-color: #095680;
+            border-width: 0;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <script>$(document).on("pageshow", "#makeList1", function () {
+    filteredList();
+    alert("tapuah222");
+        });</script>
+    <div data-role="page" class="pages" id="makeList1">
+        <div data-role="content" class="page_content" id="makeList_content1">
+            <center style="height:100%;">
+                <table style="height:90%; width:100%;">
+                    <tr style="width:100%; height:10%;"><td id="makeList_username1" style="width:inherit;"></td></tr>
+                    <tr style="width:100%; height:10%;"><td><center><h1 style="color:white">CREATE A NEW LIST</h1></center></td></tr>
+
+                    <tr style="width:100%; height:10%;"><td><center>
+    <form>
+        <select id="filter-menu" data-native-menu="false">
+            <option value="SFO">San Francisco</option>
+            <option value="LAX">Los Angeles</option>
+            <option value="YVR">Vancouver</option>
+            <option value="YYZ">Toronto</option>
+        </select>
+    </form>
+</center></td></tr>
+
+
+
+
+                    <tr style="width:100%; height:70%;">
+                        <td>
+                            <table id="current_list1"></table>
+                        </td>
+                    </tr>
+                </table>
+            </center>
+            <script>
+                if (!localStorage.username)
+                    window.location.href = "#homePage";
+                showUsername("#makeList_username");
+            </script>
+        </div>
+    </div>
+
+</body>
+</html>
