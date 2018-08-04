@@ -18,7 +18,7 @@
     <style>
         .pages {
             height: inherit;
-            font-family: 'Canter Bold';
+            font-family:Tahoma;
             background-color: transparent;
         }
 
@@ -46,148 +46,115 @@
             border-width: 0;
             color: white;
         }
+
+
     </style>
 </head>
 <body>
     <script>
         $(document).on("pageshow", function () { addToPage(); });
-
     </script>
+
     <!--homePage-->
     <div data-role="page" class="pages" id="home">
-        <div data-role="content" class="page_content" id="home_content">
-            <center style="height:100%;">
-                <table id="home_table" style="height:90%; width:100%;">
-                    <tr style="width:100%; height:10%;"><td id="home_username" style="width:inherit;"></td></tr>
-                    <tr style="width:100%; height:60%;">
-                        <td style="width:inherit; height:inherit;">
-                            <img src="images/logo2.png" style="width:100%" />
-                        </td>
-                    </tr>
-                    <tr style="width:100%; height:15%;">
-                        <td style="width:inherit; height:inherit;">
-                            <center><a data-role="button" href="#login" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; margin-top:50%">LOGIN</a></center>
-                        </td>
-                    </tr>
-                    <tr style="width:100%; height:15%;">
-                        <td style="width:inherit; height:inherit;">
-                            <center><a data-role="button" href="#about" class="blueButton" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">ABOUT US</a></center>
-                        </td>
-                    </tr>
-                </table>
-            </center>
+        <div data-role="content" class="page_content" id="home_content" style="align-self:center;">
+            <center style="height:100%;"><table id="home_table" style="height:95%;">
+                    <tr style="height:10%;"><td id="home_username" style="width:inherit;"></td></tr>
+                    <tr style="height:60%;"><td>
+                        <img src="images/logo2.png" style="width:100%" />
+                    </td></tr>
+                    <tr style="height:15%;"><td><center>
+                            <a data-role="button" href="#login" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; margin-top:50%">LOGIN</a>
+                        </center></td></tr>
+                    <tr style="height:15%;"><td><center>
+                        <a data-role="button" href="#about" class="blueButton" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">ABOUT US</a>
+                    </center></td></tr>
+                </table></center>
         </div>
-
     </div>
+
     <!--login-->
     <div data-role="page" class="pages" id="login">
         <div data-role="content" class="page_content" id="login_content">
-            <center style="height:100%;">
-                <table id="login_table" style="height:90%; width:100%;">
-                    <tr style="width:0%; height:10%;">
-                        <td id="login_username" style="width:inherit;"></td>
-                    </tr>
-                    <tr style="width:100%; height:60%;"><td style="width:inherit; height:inherit;"><img src="images/logo2.png" style="width:100%" /></td></tr>
-                    <tr style="width:100%; height:10%;"><td style="width:inherit; height:inherit;"><input type="text" class="textinput" id="username_l" data-clear-btn="true" placeholder="ENTER YOUR USERNAME.." style="color:#095680;" /></td></tr>
-                    <tr style="width:100%; height:10%;"><td style="width:inherit; height:inherit;"><input type="password" id="password_l" data-clear-btn="true" placeholder="ENTER YOUR PASSWORD.." style="color:#095680;" /></td></tr>
-                    <tr style="width:100%; height:10%;"><td style="width:inherit; height:inherit;"><center><a data-role="button" style="padding:5%;border-radius:12px; width:90%;background-color:#095680; border-width:0; color:white;" onclick="login()">LOGIN</a></center></td></tr>
-                    <tr style="width:100%; height:10%;"><td style="width:inherit; height:inherit;"><center><a href="#register" style="color:#095680;">NOT A MEMBER YET ? SIGN UP NOW</a></center></td></tr>
-                </table>
-            </center>
+            <center style="height:100%;"><table id="login_table" style="height:95%;">
+                    <tr style="height:10%;"><td></td></tr>
+                    <tr style="height:60%;"><td><img src="images/logo2.png" style="width:100%" /></td></tr>
+                    <tr style="height:10%;"><td><input type="text" class="textinput" id="username_l" data-clear-btn="true" placeholder="ENTER YOUR USERNAME.." style="color:#095680;" /></td></tr>
+                    <tr style="height:10%;"><td><input type="password" id="password_l" data-clear-btn="true" placeholder="ENTER YOUR PASSWORD.." style="color:#095680;" /></td></tr>
+                    <tr style="height:10%;"><td><center><a data-role="button" style="padding:5%;border-radius:12px; width:90%;background-color:#095680; border-width:0; color:white;" onclick="login()">LOGIN</a></center></td></tr>
+                    <tr style="height:10%;"><td><center><a href="#register" style="color:#095680;">NOT A MEMBER YET ? SIGN UP NOW</a></center></td></tr>
+            </table></center>
         </div>
     </div>
+
     <!--register-->
     <div data-role="page" class="pages" id="register">
         <div data-role="content" class="page_content" id="register_content">
-            <center style="height:100%;">
-                <table id="register_table" style="height:95%; width:100%;">
-                    <tr style="width:100%; height:10%;">
-                        <td id="register_username" style="width:inherit;"></td>
-                    </tr>
-                    <tr style="width:100%; height:45%;"><td style="width:inherit; height:inherit;"><img src="images/logo2.png" style="width:100%" /></td></tr>
-                    <tr style="width:100%; height:50%;"><td id="isUsernameOK" style="width:inherit; height:inherit; color:white; font-size:larger; font-variant-caps:petite-caps;" ;"></td></tr>
-                    <tr style="width:100%; height:10%;"><td style="width:inherit; height:inherit;"><input type="text" id="username_r" data-clear-btn="true" placeholder="ENTER YOUR USERNAME.." style="color:#095680;" onchange="isUsernameOK();" /></td></tr>
-                    <tr style="width:100%; height:10%;"><td style="width:inherit; height:inherit;"><input type="text" id="name_r" data-clear-btn="true" placeholder="ENTER YOUR NAME.." style="color:#095680;" /></td></tr>
-                    <tr style="width:100%; height:10%;"><td style="width:inherit; height:inherit;"><input type="password" id="password_r" data-clear-btn="true" placeholder="ENTER YOUR PASSWORD.." style="color:#095680;" /></td></tr>
-                    <tr style="width:100%; height:10%;"><td style="width:inherit; height:inherit;"><center><a data-role="button" id="registerButton" style="padding:5%;border-radius:12px; width:90%;background-color:#095680; border-width:0; color:white;" onclick="register();">REGISTER</a></center></td></tr>
-                </table>
-            </center>
+            <center style="height:100%;"><table id="register_table" style="height:95%;">
+                    <tr style="height:10%;"><td></td></tr>
+                    <tr style="height:45%;"><td><img src="images/logo2.png" style="width:100%" /></td></tr>
+                    <tr style="height:50%;"><td id="isUsernameOK" style="width:inherit; height:inherit; color:white; font-size:larger; font-variant-caps:petite-caps;" ;"></td></tr>
+                    <tr style="height:10%;"><td><input type="text" id="username_r" data-clear-btn="true" placeholder="ENTER YOUR USERNAME.." style="color:#095680;" onchange="isUsernameOK();" /></td></tr>
+                    <tr style="height:10%;"><td><input type="text" id="name_r" data-clear-btn="true" placeholder="ENTER YOUR NAME.." style="color:#095680;" /></td></tr>
+                    <tr style="height:10%;"><td><input type="password" id="password_r" data-clear-btn="true" placeholder="ENTER YOUR PASSWORD.." style="color:#095680;" /></td></tr>
+                    <tr style="height:10%;"><td><center><a data-role="button" id="registerButton" style="padding:5%;border-radius:12px; width:90%;background-color:#095680; border-width:0; color:white;" onclick="register();">REGISTER</a></center></td></tr>
+            </table></center>
         </div>
     </div>
+
     <!--logged_in-->
     <div data-role="page" class="pages" id="logged_in">
         <div data-role="content" class="page_content" id="login_content">
-            <center style="height:100%;">
-                <table id="login_table" style="height:90%; width:100%;">
-                    <tr style="width:100%; height:00%;">
-                        <td id="login_username" style="width:inherit;"></td>
-                    </tr>
-                    <tr style="width:100%; height:70%;"><td style="width:inherit; height:inherit;"><img src="images/logo2.png" style="width:100%" /></td></tr>
-                    <tr style="width:100%; height:10%;"><td style="width:inherit; height:inherit;"><center><a data-role="button" href="#options" style="padding:5%;border-radius:12px; width:90%;background-color:#095680; border-width:0; color:white;">CONTINUE</a></center></td></tr>
-                    <tr style="width:100%; height:10%;"><td style="width:inherit; height:inherit;"><center><a data-role="button" style="padding:5%;border-radius:12px; width:90%;background-color:#095680; border-width:0; color:white;" onclick="{ logout(); return false; }">LOG IN AS A DIFFERENT USER</a></center></td></tr>
-                </table>
-            </center>
+            <center style="height:100%;"><table id="login_table" style="height:95%;">
+                    <tr style="height:10%;"><td></td></tr>
+                    <tr style="height:70%;"><td><img src="images/logo2.png" style="width:100%" /></td></tr>
+                    <tr style="height:10%;"><td><center><a data-role="button" href="#options" style="padding:5%;border-radius:12px; width:90%;background-color:#095680; border-width:0; color:white;">CONTINUE</a></center></td></tr>
+                    <tr style="height:10%;"><td><center><a data-role="button" style="padding:5%;border-radius:12px; width:90%;background-color:#095680; border-width:0; color:white;" onclick="{ logout(); return false; }">LOG IN AS A DIFFERENT USER</a></center></td></tr>
+           </table></center>
         </div>
     </div>
+
     <!--options-->
     <div data-role="page" class="pages" id="options">
         <div data-role="content" class="page_content" id="options_content">
-            <center style="height:100%;">
-                <table style="height:90%; width:100%;">
-                    <tr style="width:100%; height:10%;"><td id="options_username" style="width:inherit;"></td></tr>
-                    <tr style="width:100%; height:60%;">
-                        <td style="width:inherit; height:inherit;">
-                            <img src="images/logo2.png" style="width:100%" />
-                        </td>
-                    </tr>
-                    <tr style="width:100%; height:15%;">
-                        <td style="width:inherit; height:inherit;">
-                            <center><a data-role="button" href="#makeList" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; margin-top:50%">CREATE A NEW LIST</a></center>
-                        </td>
-                    </tr>
-                    <tr style="width:100%; height:15%;">
-                        <td style="width:inherit; height:inherit;">
-                            <center><a data-role="button" href="#oldLists" class="blueButton" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">LOAD A LIST</a></center>
-                        </td>
-                    </tr>
-                </table>
-            </center>
+            <center style="height:100%;"><table style="height:95%;">
+                    <tr style="height:10%;"><td id="options_username"></td></tr>
+                    <tr style="height:60%;"><td>
+                        <img src="images/logo2.png" style="width:100%" />
+                    </td></tr>
+                    <tr style="height:15%;"><td>
+                        <center><a data-role="button" href="#makeList" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; margin-top:50%">CREATE A NEW LIST</a></center>
+                    </td></tr>
+                    <tr style="height:15%;"><td>
+                        <center><a data-role="button" href="#oldLists" class="blueButton" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">LOAD A LIST</a></center>
+                    </td></tr>
+            </table></center>
         </div>
     </div>
 
     <!--makeList-->
     <div data-role="page" class="pages" id="makeList">
         <div data-role="content" class="page_content" id="makeList_content">
-            <center style="height:100%;">
-                <table style="height:90%; width:100%;">
-                    <tr style="width:100%; height:10%;"><td colspan="2" id="makeList_username" style="width:100%;"></td></tr>
-                    <tr style="width:100%; height:10%;"><td colspan="2"><center><h2 style="color:white">CREATE A NEW LIST</h2></center></td></tr>
-                    <tr style="width:100%; height:25%;"><td colspan="2" style="border:solid;">
-                        <h3 style="text-align:center; color:white; vertical-align:bottom;"> MY LIST</h3>
-                        <select id="filter" data-native-menu="false" class="filterable-select" onchange="changeFunc();">
-                            <option>ADD PRODUCTS:</option>
-                            <option value="de" data-filtertext="Delhi">Delhi</option>
-                            <option value="pu" data-filtertext="Chandigarh">Chandigarh</option>
-                            <option value="ch" data-filtertext="Chennai">Chennai</option>
-                            <option value="mu" data-filtertext="Mumbai">Mumbai</option>
-                        </select></td></tr>
-                    <tr style="width:100%; height:45%;">
-                        <td colspan="2" style="border:solid; width:100%;">
-                            <div style="overflow:scroll; height:100%; width:100%; width:inherit; ">
-                                <table id="curretn_list" style="width:100%;">
-                                    <tr style='width:100%;'>
-                                        <td style='width:33%;'><h4 style='color:white;'>apple</h4></td>
-                                        <td style='width:33%;'><input type='number' min='1' placeholder='5' /></td>
-                                        <td style='width:33%;'>
-                                            <center>
-                                                <a data-role='button' data-icon='delete' class='ui-link ui-btn ui-shadow ui-corner-all fa fa-close' role='button' style='color:#095680;   background-color:white; border:none;'></a>"
-                                            </center></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr style="width:100%; height:10%;"><td style="width:50%;"><center><a data-role="button" href="#oldLists" class="blueButton" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">FINISH</a></center></td><td style="width:50%;"><center><a data-role="button" href="#oldLists" class="blueButton" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">NAVIGATE    </a></center></td></tr>
+            <center style="height:100%;"><table style="height:95%; width:100%;">
+                <tr style="height:10%;"><td colspan="2" id="makeList_username"></td></tr>
+                <tr style="height:10%;"><td colspan="2"><center><h2 style="color:white">CREATE A LIST</h2></center></td></tr>
+                <tr style="height:10%; width:100%;"><td colspan="2" style="border:solid;">
+                    <select id="filter" data-native-menu="false" class="filterable-select" onchange="changeFunc();">
+                        <option>ADD PRODUCTS:</option>
+                        <option value="de" data-filtertext="Delhi">Delhi</option>
+                        <option value="pu" data-filtertext="Chandigarh">Chandigarh</option>
+                        <option value="ch" data-filtertext="Chennai">Chennai</option>
+                        <option value="mu" data-filtertext="Mumbai">Mumbai</option>
+                    </select></td></tr>
+                <tr style="height:60%; width:100%;">
+                    <td colspan="2" style="border:solid;">
+                        <div style="overflow:scroll; height:100%; width:100%; width:inherit;">
+                            <ul data-role="listview" id="current_list" style="height:initial;">
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                    <tr style="width:100%; height:10%;"><td style="width:50%;"><center><a data-role="button" href="#oldLists" class="blueButton" style=" border-radius:12px; width:80% ;padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">FINISH</a></center></td><td style="width:50%;"><center><a data-role="button" href="#oldLists" class="blueButton" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">NAVIGATE    </a></center></td></tr>
                 </table>
             </center>
         </div>
@@ -197,7 +164,7 @@
     <div data-role="page" class="pages" id="oldLists">
         <div data-role="content" class="page_content" id="oldList_content">
             <center style="height:100%;">
-                <table style="height:90%; width:100%;">
+                <table style="height:95%; width:100%;">
                     <tr style="width:100%; height:10%;"><td id="oldLists_username" style="width:inherit; "></td></tr>
                     <tr style="width:100%; height:10%;"><td><center><h1 style="color:white">MY OLD LISTS</h1></center></td></tr>
                     <tr style="width:100%; height:80%;">

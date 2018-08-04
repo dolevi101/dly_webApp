@@ -138,29 +138,25 @@ function showMakeList() {
             type: "GET",
             error: function () { alert('an error occured please try again later'); },
             success: function (data) {
-                alert(data);
+                //var count = 0;
+                var lst = "";
                 var array = data.split("|");
                 for (let item of array) {
-
                     json = JSON.parse(item);
                     name = json['itemName'];
                     quantity = json['itemQuantity'];
 
-                    table += "<tr style='width:100%;'>";
-                    table += "<td style='width:33%;'><h4 style='color:white;'>";
-                    table += name;
-                    table += "</h4></td>";
-                    table += "<td style='width:33%;'>";
-                    table += "<input type='number' min='1' placeholder='" + quantity + "' />";
-                    table += "</td>";
-                    table += "<td style='width:33%;'>";
-                    //table += "<center> <a data-role='button' data-icon='delete' id='' style='padding:5%;border-radius:12px; width:90%;background-color:#095680; border-width:0;' onclick=''></a></center>";
-                    table += "<a data-role='button' data-icon='delete' class='ui-link ui-btn ui-shadow ui-corner-all fa fa-close' role='button' style='color:#095680;   background-color:white; border:none;'></a>"
-                    table += "</td>";
-                    table += "</tr>";
+                    lst += '<li id="item_'+name+'" style="color:#095680; height:44px; padding-top:5px;" class="ui-li-static ui-body-inherit ui-first-child">';
+                    lst += '<table><tbody><tr style="height:initial;">';
+                    lst += ('<td style="width:60%"><center>' + name.toUpperCase() + '</center></td>');
+                    lst += ('<td style="width:20%"><center><div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset"><input type="number" style="opacity:1;" value="' + quantity + '"></div></center></td>');
+                    lst += '<td style="width:20%"><center><a data-role="button" class="fa fa-close ui-btn" style="color:#095680; border-radius:12px;" role="button" onclick="removeFromList(\'' + name+'\')"></a></center></td>';
+                    lst += '</tr></tbody></table>';
+                    lst += '</li>';
+                    //count = count + 1;
+
                 }
-                alert(table);
-                $("#curretn_list").html(table);
+                $("#current_list").html(lst);
             }
         });
     }
@@ -170,9 +166,47 @@ function showMakeList() {
 
 }
 
+
+function removeFromList(id) {
+    var toRemove = "#item_" + id.replace(" ", "\\ ");
+    $(toRemove).remove();
+}
+
+function addToList(name, quantity) {
+    lst = $("#current_list").html();
+    lst += '<li id="item_' + name + '" style="color:#095680; height:44px; padding-top:5px;" class="ui-li-static ui-body-inherit ui-first-child">';
+    lst += '<table><tbody><tr style="height:initial;">';
+    lst += ('<td style="width:60%"><center>' + name.toUpperCase() + '</center></td>');
+    lst += ('<td style="width:20%"><center><div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset"><input type="number" style="opacity:1;" value="' + quantity + '"></div></center></td>');
+    lst += '<td style="width:20%"><center><a data-role="button" class="fa fa-close ui-btn" style="color:#095680; border-radius:12px;" role="button" onclick="removeFromList(\'' + name + '\')"></a></center></td>';
+    lst += '</tr></tbody></table>';
+    lst += '</li>';
+    $("#current_list").html(lst);
+}
+
 function useList(id) {
     localStorage.listId = id;
     window.location.href = "#makeList";
+}
+
+function saveList() {
+    var lst = $("#current_list").html();
+    var id, name, quantity, index;
+    //parse the name and quantity of every line in the list
+    var lines = lst.split('<li id="');
+    for (let line of lines) {
+        index = line.indexOf("\"");
+        id = line.substring(0, index);
+        name = id.substring(5);
+        id = id.replace(" ", "\"");
+        quantity = $("#" + id).val();
+        addToShoppingList(name, quantity);
+    }
+}
+
+function addToShoppingList(name, quantity) {
+    //TO DO: 
+    //this function sends ajax to add this item to a shopping list
 }
 
 function showUsername(id) {
