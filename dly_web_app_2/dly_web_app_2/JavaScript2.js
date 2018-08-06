@@ -9,8 +9,6 @@ function directionsStringToMat(itemsDirectionsString, rows, cols) {
         itemsDirectionsMat[k] = new Array(cols);
     }
     var index = 0;
-    alert("rows " + rows); ////////////////////////////////////////////////////////////////////////6
-    alert("cols " + cols); ////////////////////////////////////////////////////////////////////////3
     for (var i = 0; i < rows; i++) {
         for (var j = 0; j < cols; j++) {
             itemsDirectionsMat[i][j] = itemsDirectionsArray[index];
@@ -43,21 +41,30 @@ function create3Circles(canvasName, startXPos, yPos, radius, distanceBetweenCirc
     }
 }
 
-function createLine(canvasName, startWPos, startHPos, wDistance, hDistance, route, maxRow) {//starting point: row -1, col 0 
+function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDistance, route, maxRow) {//starting point: row -1, col 0 
     var wPos = startWPos;
     var hPos = startHPos;
     var sameRectWDistance = wDistance / 2; //Width distance between points of the same rectangle
-    var betRectsWDistance = (1 - wDistance) / 2; //Width distance between points of different rectangles
-    var onEdgeWDistance = (1 - wDistance) / 4; //Width distance between points of the same rectangle
+    var betRectsWDistance = (cellWidth - wDistance) / 2; //Width distance between points of different rectangles
+    var onEdgeWDistance = (cellWidth - wDistance) / 4; //Width distance between points of the same rectangle
     var onEdge = true;
 
     var c = document.getElementById(canvasName);
     var ctx = c.getContext("2d");
+    var curr;
+    var next;
+    /*ctx.beginPath();
+    ctx.arc(startWPos, startHPos, 10, 0, 2 * Math.PI);
+    ctx.fillStyle = 'green';
+    ctx.fill();*/
+
     ctx.beginPath();
-    ctx.moveTo(startWPos, startWPos);
+    ctx.moveTo(startWPos, 0); //Temporary until entrance rectangle is added
+    ctx.lineTo(startWPos, startHPos);
+
     for (var i = 0; i < route.length - 1; i++) {
-        var curr = route[i].split(',');
-        var next = route[i + 1].split(',');
+        curr = route[i].split(',');
+        next = route[i + 1].split(',');
         if (curr[0] == next[0]) { //Stays on the same row --> add a line from (wPos, hPos) to (wPos, hPos + hDistance)
             if (!onEdge) { // The cart just finished the aisle
                 if (curr[0] == 0) //Going downwards
@@ -65,6 +72,7 @@ function createLine(canvasName, startWPos, startHPos, wDistance, hDistance, rout
                 else  //Going upwards
                     wPos += onEdgeWDistance;
                 onEdge = true;
+                ctx.lineTo(wPos, hPos);
             }
             hPos += hDistance;
             ctx.lineTo(wPos, hPos);
@@ -93,11 +101,31 @@ function createLine(canvasName, startWPos, startHPos, wDistance, hDistance, rout
             ctx.lineTo(wPos, hPos);
         }
     }
+    // Drawing line to the counters
+    curr = route[route.length - 1].split(',');
+    if (curr[0] == 0 /*&& !onEdge*/) {
+        wPos -= onEdgeWDistance;
+        ctx.lineTo(wPos, hPos);
+    }
+    else if (curr[0] == maxRow /*&& !onEdge*/) {
+        wPos += onEdgeWDistance;
+        ctx.lineTo(wPos, hPos);
+    }
+    else if (parseInt(curr[0]) % 3 == 0) {
+        wPos += betRectsWDistance;
+        ctx.lineTo(wPos, hPos);
+    }
+    else { //curr[0] % 3 = 2
+        wPos += betRectsWDistance;
+        ctx.lineTo(wPos, hPos);
+    }
+    hPos += hDistance;
+    ctx.lineTo(wPos, hPos);
     ctx.stroke();
 }
 
 function drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat) { //aisleLength = rows / 3, numOfAisles = cols
-    var numOfShelves = parseInt(numOfAisles, 10) + 1;
+    var numOfShelves = parseInt(numOfAisles) + 1;
     var space = 0.1; //Space for the rectangles of the entrance and the counters/exit
     var rectWidthPercent = 0.7;
     var rectHeightPercent = 0.3;
@@ -138,10 +166,10 @@ function drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat) { //aisleL
 
     var wDistance = rectWidthPercent * cellWidth;
     var hDistance = cellHeight;
-    var startWPos = width - (cellWidth - wDistance) / 4;
-    var startHPos = space * height + hDistance;
-    var maxRow = parseInt(aisleLength, 10) * 3 - 1;
-    //createLine("mapCanvas", startWPos, startHPos, wDistance, hDistance, route, aisleLength * 3 - 1);
+    var startWPos = (cellWidth - wDistance) / 4;
+    var startHPos = /*space * height +*/ hDistance;
+    var maxRow = parseInt(aisleLength) * 3 - 1;
+    createLine("mapCanvas", startWPos, startHPos, cellWidth, wDistance, hDistance, route, maxRow);
     window.location.href = "#MapPage";
 }
 
