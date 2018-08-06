@@ -9,6 +9,8 @@ function directionsStringToMat(itemsDirectionsString, rows, cols) {
         itemsDirectionsMat[k] = new Array(cols);
     }
     var index = 0;
+    alert("rows " + rows); ////////////////////////////////////////////////////////////////////////6
+    alert("cols " + cols); ////////////////////////////////////////////////////////////////////////3
     for (var i = 0; i < rows; i++) {
         for (var j = 0; j < cols; j++) {
             itemsDirectionsMat[i][j] = itemsDirectionsArray[index];
@@ -41,7 +43,61 @@ function create3Circles(canvasName, startXPos, yPos, radius, distanceBetweenCirc
     }
 }
 
-function drawMap(aisleLength, numOfAisles, itemsDirectionsMat) { //aisleLength = rows / 3, numOfAisles = cols
+function createLine(canvasName, startWPos, startHPos, wDistance, hDistance, route, maxRow) {//starting point: row -1, col 0 
+    var wPos = startWPos;
+    var hPos = startHPos;
+    var sameRectWDistance = wDistance / 2; //Width distance between points of the same rectangle
+    var betRectsWDistance = (1 - wDistance) / 2; //Width distance between points of different rectangles
+    var onEdgeWDistance = (1 - wDistance) / 4; //Width distance between points of the same rectangle
+    var onEdge = true;
+
+    var c = document.getElementById(canvasName);
+    var ctx = c.getContext("2d");
+    ctx.beginPath();
+    ctx.moveTo(startWPos, startWPos);
+    for (var i = 0; i < route.length - 1; i++) {
+        var curr = route[i].split(',');
+        var next = route[i + 1].split(',');
+        if (curr[0] == next[0]) { //Stays on the same row --> add a line from (wPos, hPos) to (wPos, hPos + hDistance)
+            if (!onEdge) { // The cart just finished the aisle
+                if (curr[0] == 0) //Going downwards
+                    wPos -= onEdgeWDistance;
+                else  //Going upwards
+                    wPos += onEdgeWDistance;
+                onEdge = true;
+            }
+            hPos += hDistance;
+            ctx.lineTo(wPos, hPos);
+        }
+        else { //Stays on the same column --> add a line from (wPos, hPos) to (wPos, hPos + hDistance)
+            if (onEdge) { //Adding line from the egde to the nearest point
+                if (curr[0] == 0) //Going upwards
+                    wPos += onEdgeWDistance;
+                else //Going downwards
+                    wPos -= onEdgeWDistance;
+                onEdge = false;
+                ctx.lineTo(wPos, hPos);
+            }
+            if (curr[0] % 3 == 1 || next[0] % 3 == 1) { //The points are of the same rectangle
+                if (curr[0] < next[0]) //Going upwards
+                    wPos += sameRectWDistance;
+                else //Going downwards
+                    wPos -= sameRectWDistance;
+            }
+            else { //The points are of different rectangles
+                if (curr[0] < next[0]) //Going upwards
+                    wPos += betRectsWDistance;
+                else //Going downwards
+                    wPos -= betRectsWDistance;
+            }
+            ctx.lineTo(wPos, hPos);
+        }
+    }
+    ctx.stroke();
+}
+
+function drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat) { //aisleLength = rows / 3, numOfAisles = cols
+    var numOfShelves = parseInt(numOfAisles, 10) + 1;
     var space = 0.1; //Space for the rectangles of the entrance and the counters/exit
     var rectWidthPercent = 0.7;
     var rectHeightPercent = 0.3;
@@ -51,11 +107,11 @@ function drawMap(aisleLength, numOfAisles, itemsDirectionsMat) { //aisleLength =
     $("#MapPage").html(canvas);
 
     var cellWidth = width / aisleLength;
-    var cellHeight = (1 - 2 * space) * height / numOfAisles;
+    var cellHeight = (1 - 2 * space) * height / numOfShelves;
     var radius = rectHeightPercent * cellHeight / 7;
     var distanceBetweenCircles = (rectWidthPercent * cellWidth - 2 * radius - 1 * radius) / 2;
     for (var i = 0; i < aisleLength; i++) {
-        for (var j = 0; j < numOfAisles; j++) {
+        for (var j = 0; j < numOfShelves; j++) {
             var x = ((1 - rectWidthPercent) / 2 + i) * cellWidth;
             var y = ((1 - rectHeightPercent) / 2 + j) * cellHeight;
             createRectangle("mapCanvas", x, y, rectWidthPercent * cellWidth, rectHeightPercent * cellHeight);
@@ -64,27 +120,28 @@ function drawMap(aisleLength, numOfAisles, itemsDirectionsMat) { //aisleLength =
                 var yPos = y + radius + 0.5 * radius;
                 var isToColor = [];
                 for (var k = 0; k < 3; k++) {
-                    //alert("first aisleLength j k i" + aisleLength + " " + j + " " + k + " " + i);
-                    alert("first [" + (aisleLength*3 - 1 - i * 3 - k) + "][" + (j - 1) + "]");
-                    alert(itemsDirectionsMat[aisleLength*3 - 1 - i * 3 - k][j - 1]);
-                    isToColor[k] = (itemsDirectionsMat[aisleLength * 3 - 1 - i * 3 - k][j - 1] != "|");
+                    isToColor[k] = (itemsDirectionsMat[i * 3 + k][j - 1] != "|");
                 }
                 create3Circles("mapCanvas", startXPos, yPos, radius, distanceBetweenCircles, isToColor);
             }
-            if (j != numOfAisles - 1) {
+            if (j != numOfShelves - 1) {
                 var startXPos = x + radius + 0.5 * radius;
                 var yPos = y + rectHeightPercent * cellHeight - (radius + 0.5 * radius);
                 var isToColor = [];
                 for (var k = 0; k < 3; k++) {
-                    //alert("second aisleLength j k i " + aisleLength + " " + j + " " + k + " " + i);
-                    alert("second [" + (aisleLength*3 - 1 - i * 3 - k) + "][" + (j) + "]");
-                    alert(itemsDirectionsMat[aisleLength*3 - 1 - i * 3 - k][j]);
-                    isToColor[k] = (itemsDirectionsMat[aisleLength * 3 - 1 - i * 3 - k][j] != "|");
+                    isToColor[k] = (itemsDirectionsMat[i * 3 + k][j] != "|");
                 }
                 create3Circles("mapCanvas", startXPos, yPos, radius, distanceBetweenCircles, isToColor);
             }
         }
     }
+
+    var wDistance = rectWidthPercent * cellWidth;
+    var hDistance = cellHeight;
+    var startWPos = width - (cellWidth - wDistance) / 4;
+    var startHPos = space * height + hDistance;
+    var maxRow = parseInt(aisleLength, 10) * 3 - 1;
+    //createLine("mapCanvas", startWPos, startHPos, wDistance, hDistance, route, aisleLength * 3 - 1);
     window.location.href = "#MapPage";
 }
 
@@ -104,7 +161,7 @@ function computeRoute(superID, itemsList) {
             var cols = responseJson['cols'];
             itemsDirectionsMat = directionsStringToMat(responseJson['directions'], rows, cols);
             currentVertexIndex = 0;
-            drawMap(rows / 3, cols, itemsDirectionsMat);
+            drawMap(rows / 3, cols, route, itemsDirectionsMat);
         }
     });
 }
