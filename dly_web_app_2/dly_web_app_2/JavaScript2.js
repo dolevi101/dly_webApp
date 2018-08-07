@@ -33,7 +33,7 @@ function create3Circles(canvasName, startXPos, yPos, radius, distanceBetweenCirc
         ctx.beginPath();
         ctx.arc(xPos, yPos, radius, 0, 2 * Math.PI);
         if (isToColor[i]) {
-            ctx.fillStyle = 'green';
+            ctx.fillStyle = 'red';
             ctx.fill();
         }
         ctx.stroke();
@@ -53,10 +53,6 @@ function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDis
     var ctx = c.getContext("2d");
     var curr;
     var next;
-    /*ctx.beginPath();
-    ctx.arc(startWPos, startHPos, 10, 0, 2 * Math.PI);
-    ctx.fillStyle = 'green';
-    ctx.fill();*/
 
     ctx.beginPath();
     ctx.moveTo(startWPos, 0); //Temporary until entrance rectangle is added
@@ -160,6 +156,7 @@ function drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat) { //aisleL
                     isToColor[k] = (itemsDirectionsMat[i * 3 + k][j] != "|");
                 }
                 create3Circles("mapCanvas", startXPos, yPos, radius, distanceBetweenCircles, isToColor);
+                //create3CirclesGreen("mapCanvas", startXPos, yPos, radius, distanceBetweenCircles, isToColor);
             }
         }
     }
@@ -170,6 +167,17 @@ function drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat) { //aisleL
     var startHPos = /*space * height +*/ hDistance;
     var maxRow = parseInt(aisleLength) * 3 - 1;
     createLine("mapCanvas", startWPos, startHPos, cellWidth, wDistance, hDistance, route, maxRow);
+
+
+    /*var image = "<img id=\"Shelf\" width=\"10\" height=\"50\" src=\"Shelf.jpeg\" style=\"display: none; position: absolute; top: 1px; left: 1px; \" alt=\"Shelf\">";
+    $("#MapPage").html(image);
+    var c = document.getElementById("mapCanvas");
+    var ctx = c.getContext("2d");
+    var img = document.getElementById("Shelf");
+    ctx.drawImage(img, 50, 50);/**/
+
+
+
     window.location.href = "#MapPage";
 }
 
@@ -207,6 +215,7 @@ function onNewVertex(row, col) {
             //alert(left);
             right = leftRightItems[1].substring(1).split(","); //substring() in order to remove the first comma
             //alert(right);
+            //need to create a green circle above the red circle we have just visited (maybe save data in the db?)
             //call function to add the items to the map
         }
     //}, 3000);

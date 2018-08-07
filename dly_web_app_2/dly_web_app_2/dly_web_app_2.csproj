@@ -78,6 +78,7 @@
     <Content Include="JavaScript1.js" />
     <Content Include="JavaScript2.js" />
     <Content Include="JavaScript3.js" />
+    <Content Include="Shelf.jpeg" />
     <Content Include="StyleSheet1.css" />
     <Content Include="test.html" />
     <Content Include="Web.config">
