@@ -117,6 +117,12 @@ function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDis
     }
     hPos += hDistance;
     ctx.lineTo(wPos, hPos);
+    //drawing arrowhead
+    var headlen = 20;   // length of head in pixels
+    var angle = Math.atan2(hDistance, 0);
+    ctx.lineTo(wPos - headlen * Math.cos(angle - Math.PI / 6), hPos - headlen * Math.sin(angle - Math.PI / 6));
+    ctx.moveTo(wPos, hPos);
+    ctx.lineTo(wPos - headlen * Math.cos(angle + Math.PI / 6), hPos - headlen * Math.sin(angle + Math.PI / 6));
     ctx.stroke();
 }
 
@@ -176,13 +182,47 @@ function drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat) { //aisleL
     var img = document.getElementById("Shelf");
     ctx.drawImage(img, 50, 50);/**/
 
-
-
     window.location.href = "#MapPage";
 }
 
+function recolorCircle(canvasName, xPos, yPos, radius, isToColor) {
+    var c = document.getElementById(canvasName);
+    var ctx = c.getContext("2d");
+    ctx.beginPath();
+    ctx.arc(xPos, yPos, radius, 0, 2 * Math.PI);
+    ctx.fillStyle = 'green';
+    ctx.fill();
+    ctx.stroke();
+}
+
+function computeCirclePosition(i, j, numOfAisles, aisleLength, itemsDirectionsMat) {
+    var space = 0.1; //Space for the rectangles of the entrance and the counters/exit
+    var rectWidthPercent = 0.7;
+    var rectHeightPercent = 0.3;
+    var numOfShelves = parseInt(numOfAisles) + 1;
+
+    var cellWidth = window.screen.availWidth / aisleLength;
+    var cellHeight = (1 - 2 * space) * window.screen.availHeight / numOfShelves;
+    var radius = rectHeightPercent * cellHeight / 7;
+
+    var x = ((1 - rectWidthPercent) / 2 + Math.floor(i / 3)) * cellWidth;
+    var y = ((1 - rectHeightPercent) / 2 + j) * cellHeight;
+    if (j != 0) {
+        var xPos = x + radius + 0.5 * radius;
+        var yPos = y + radius + 0.5 * radius;
+        var isToColor = (itemsDirectionsMat[i][j - 1] != "|");
+        recolorCircle("mapCanvas", xPos, yPos, radius, isToColor);
+    }
+    if (j != numOfShelves - 1) {
+        var xPos = x + radius + 0.5 * radius;
+        var yPos = y + rectHeightPercent * cellHeight - (radius + 0.5 * radius);
+        var isToColor = (itemsDirectionsMat[i][j] != "|");
+        recolorCircle("mapCanvas", xPos, yPos, radius, isToColor);
+    }
+}
+
 function computeRoute(superID, itemsList) {
-    var parameters = JSON.stringify({ 'superID': superID, 'itemsList': itemsList});
+    var parameters = JSON.stringify({ 'superID': superID, 'itemsList': itemsList });
     $.ajax({
         contentType: JSON,
         url: "https://manageitemslist.azurewebsites.net/api/HttpTriggerCSharp1?code=GHkR/DMv0Cvw77Hp5bT6KaD4OK5X8xHnJMhGtDXwaS1VzoNPm/s8KQ==&parameters=" + parameters,
@@ -198,30 +238,31 @@ function computeRoute(superID, itemsList) {
             itemsDirectionsMat = directionsStringToMat(responseJson['directions'], rows, cols);
             currentVertexIndex = 0;
             drawMap(rows / 3, cols, route, itemsDirectionsMat);
+            computeCirclePosition(1, 1, 3, 2, itemsDirectionsMat);
         }
     });
 }
 
 function onNewVertex(row, col) {
     //setTimeout(function () {
-        if (route[currentVertexIndex++].split(",")[2] === "0") {
-            //An empty vertex
-            alert("nope");
-        }
-        else {
-            alert(itemsDirectionsMat[row][col]);
-            leftRightItems = itemsDirectionsMat[row][col].split("|");
-            left = leftRightItems[0].substring(0, leftRightItems[0].length - 1).split(","); //substring() in order to remove the last comma
-            //alert(left);
-            right = leftRightItems[1].substring(1).split(","); //substring() in order to remove the first comma
-            //alert(right);
-            //need to create a green circle above the red circle we have just visited (maybe save data in the db?)
-            //call function to add the items to the map
-        }
+    if (route[currentVertexIndex++].split(",")[2] === "0") {
+        //An empty vertex
+        alert("nope");
+    }
+    else {
+        alert(itemsDirectionsMat[row][col]);
+        leftRightItems = itemsDirectionsMat[row][col].split("|");
+        left = leftRightItems[0].substring(0, leftRightItems[0].length - 1).split(","); //substring() in order to remove the last comma
+        //alert(left);
+        right = leftRightItems[1].substring(1).split(","); //substring() in order to remove the first comma
+        //alert(right);
+        //need to create a green circle above the red circle we have just visited (maybe save data in the db?)
+        //call function to add the items to the map
+    }
     //}, 3000);
 }
 
 function openPopup() {
     $("#popupWin").popup("open");
-        //evt.preventDefault();
+    //evt.preventDefault();
 }
