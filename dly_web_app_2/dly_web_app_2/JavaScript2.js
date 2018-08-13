@@ -41,7 +41,7 @@ function create3Circles(canvasName, startXPos, yPos, radius, distanceBetweenCirc
     }
 }
 
-function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDistance, route, maxRow) {//starting point: row -1, col 0 
+function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDistance, route, maxRow, exitRectPos) {//starting point: row -1, col 0 
     var wPos = startWPos;
     var hPos = startHPos;
     var sameRectWDistance = wDistance / 2; //Width distance between points of the same rectangle
@@ -56,6 +56,8 @@ function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDis
 
     ctx.beginPath();
     ctx.moveTo(wPos, hPos);
+    wPos -= onEdgeWDistance;
+    ctx.lineTo(wPos, hPos);
     hPos += hDistance;
     ctx.lineTo(wPos, hPos);
 
@@ -98,7 +100,7 @@ function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDis
             ctx.lineTo(wPos, hPos);
         }
     }
-    // Drawing line to the counters
+    // Drawing line to the exit
     curr = route[route.length - 1].split(',');
     if (curr[0] == 0 /*&& !onEdge*/) {
         wPos -= onEdgeWDistance;
@@ -116,7 +118,11 @@ function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDis
         wPos += betRectsWDistance;
         ctx.lineTo(wPos, hPos);
     }
-    hPos += hDistance;
+    hPos += hDistance * 6 / 7;///////Change both of line if needed
+    ctx.lineTo(wPos, hPos);
+    wPos = exitRectPos;
+    ctx.lineTo(wPos, hPos);
+    hPos += hDistance / 7;///////////Change both of line if needed
     ctx.lineTo(wPos, hPos);
     //drawing arrowhead
     var headlen = 20;   // length of head in pixels
@@ -127,65 +133,6 @@ function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDis
     ctx.stroke();
 }
 
-function drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat) { //aisleLength = rows / 3, numOfAisles = cols
-    var numOfShelves = parseInt(numOfAisles) + 1;
-    var space = 0.1; //Space for the rectangles of the entrance and the counters/exit
-    var rectWidthPercent = 0.7;
-    var rectHeightPercent = 0.3;
-    var width = window.screen.availWidth;
-    var height = window.screen.availHeight;
-    var canvas = "<canvas id=\"mapCanvas\" width =\"" + width + "\" height=\"" + ((1 - 2 * space) * height) + "\" style = \"position: absolute; top: " + (space * height) + "px; left: 0px \"></canvas>";
-    $("#MapPage").html(canvas);
-
-    var cellWidth = width / aisleLength;
-    var cellHeight = (1 - 2 * space) * height / numOfShelves;
-    var radius = rectHeightPercent * cellHeight / 7;
-    var distanceBetweenCircles = (rectWidthPercent * cellWidth - 2 * radius - 1 * radius) / 2;
-    for (var i = 0; i < aisleLength; i++) {
-        for (var j = 0; j < numOfShelves; j++) {
-            var x = ((1 - rectWidthPercent) / 2 + i) * cellWidth;
-            var y = ((1 - rectHeightPercent) / 2 + j) * cellHeight;
-            createRectangle("mapCanvas", x, y, rectWidthPercent * cellWidth, rectHeightPercent * cellHeight);
-            if (j != 0) {
-                var startXPos = x + radius + 0.5 * radius;
-                var yPos = y + radius + 0.5 * radius;
-                var isToColor = [];
-                for (var k = 0; k < 3; k++) {
-                    isToColor[k] = (itemsDirectionsMat[i * 3 + k][j - 1] != "|");
-                }
-                create3Circles("mapCanvas", startXPos, yPos, radius, distanceBetweenCircles, isToColor);
-            }
-            if (j != numOfShelves - 1) {
-                var startXPos = x + radius + 0.5 * radius;
-                var yPos = y + rectHeightPercent * cellHeight - (radius + 0.5 * radius);
-                var isToColor = [];
-                for (var k = 0; k < 3; k++) {
-                    isToColor[k] = (itemsDirectionsMat[i * 3 + k][j] != "|");
-                }
-                create3Circles("mapCanvas", startXPos, yPos, radius, distanceBetweenCircles, isToColor);
-                //create3CirclesGreen("mapCanvas", startXPos, yPos, radius, distanceBetweenCircles, isToColor);
-            }
-        }
-    }
-
-    var wDistance = rectWidthPercent * cellWidth;
-    var hDistance = cellHeight;
-    var startWPos = (cellWidth - wDistance) / 4;
-    var startHPos = /*space * height +*/ hDistance;
-    var maxRow = parseInt(aisleLength) * 3 - 1;
-    createLine("mapCanvas", startWPos, startHPos, cellWidth, wDistance, hDistance, route, maxRow);
-
-
-    /*var image = "<img id=\"Shelf\" width=\"10\" height=\"50\" src=\"Shelf.jpeg\" style=\"display: none; position: absolute; top: 1px; left: 1px; \" alt=\"Shelf\">";
-    $("#MapPage").html(image);
-    var c = document.getElementById("mapCanvas");
-    var ctx = c.getContext("2d");
-    var img = document.getElementById("Shelf");
-    ctx.drawImage(img, 50, 50);/**/
-
-    window.location.href = "#MapPage";
-}
-
 function createEntrance(canvasName, cellHeight, x, y) {
     var c = document.getElementById(canvasName);
     var ctx = c.getContext("2d");
@@ -194,11 +141,11 @@ function createEntrance(canvasName, cellHeight, x, y) {
     var fontSize = cellHeight * 0.5 / ratio;
     ctx.font = fontSize + 'px Arial';
     //The width of the string
-    var width = ctx.measureText("Entrance").width;
+    var width = ctx.measureText(" Entrance ").width;
     // draw the rect
     ctx.strokeRect(x, y - cellHeight, width, cellHeight);
     // draw our text
-    ctx.fillText("Entrance", x, y - cellHeight / 3);
+    ctx.fillText(" Entrance ", x, y - cellHeight / 3);
 }
 
 function createExit(canvasName, cellHeight, x, y) {
@@ -209,15 +156,15 @@ function createExit(canvasName, cellHeight, x, y) {
     var fontSize = cellHeight * 0.5 / ratio;
     ctx.font = fontSize + 'px Arial';
     //The width of the string
-    var width = ctx.measureText("Exit").width;
+    var width = ctx.measureText(" Exit ").width;
     x -= width;
     // draw the rect
     ctx.strokeRect(x, y - cellHeight, width, cellHeight);
     // draw our text
-    ctx.fillText("Entrance", x, y - cellHeight / 3);
+    ctx.fillText(" Exit ", x, y - cellHeight / 3);
 }
 
-function drawMap2(aisleLength, numOfAisles, route, itemsDirectionsMat) { //aisleLength = rows / 3, numOfAisles = cols
+function drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat) { //aisleLength = rows / 3, numOfAisles = cols
     var numOfShelves = parseInt(numOfAisles) + 1;
     var space = 0.05; //Space for the rectangles of the entrance and the counters/exit
     var rectWidthPercent = 0.7;
@@ -228,7 +175,7 @@ function drawMap2(aisleLength, numOfAisles, route, itemsDirectionsMat) { //aisle
     $("#MapPage").html(canvas);
 
     createEntrance("mapCanvas", space * height, (1 - rectWidthPercent) / 2 * (width / aisleLength), space * height);
-    createEntrance("mapCanvas", space * height, width - (1 - rectWidthPercent) / 2 * (width / aisleLength), height);
+    createExit("mapCanvas", space * height, width - (1 - rectWidthPercent) / 2 * (width / aisleLength), height);
 
     var cellWidth = width / aisleLength;
     var cellHeight = (1 - 2 * space) * height / numOfShelves;
@@ -261,10 +208,11 @@ function drawMap2(aisleLength, numOfAisles, route, itemsDirectionsMat) { //aisle
     }
     var wDistance = rectWidthPercent * cellWidth;
     var hDistance = cellHeight;
-    var startWPos = (cellWidth - wDistance) / 4;
-    var startHPos = space * height /*+ hDistance*/;
+    var startWPos = (cellWidth - wDistance) / 2;
+    var startHPos = space * height;
     var maxRow = parseInt(aisleLength) * 3 - 1;
-    createLine("mapCanvas", startWPos, startHPos, cellWidth, wDistance, hDistance, route, maxRow);
+    var exitRectPos = width - (1 - rectWidthPercent) / 2 * (width / aisleLength);
+    createLine("mapCanvas", startWPos, startHPos, cellWidth, wDistance, hDistance, route, maxRow, exitRectPos);
 
 
     /*var image = "<img id=\"Shelf\" width=\"10\" height=\"50\" src=\"Shelf.jpeg\" style=\"display: none; position: absolute; top: 1px; left: 1px; \" alt=\"Shelf\">";
@@ -276,7 +224,6 @@ function drawMap2(aisleLength, numOfAisles, route, itemsDirectionsMat) { //aisle
 
     window.location.href = "#MapPage";
 }
-
 
 function recolorCircle(canvasName, xPos, yPos, radius, isToColor) {
     var c = document.getElementById(canvasName);
@@ -291,9 +238,9 @@ function recolorCircle(canvasName, xPos, yPos, radius, isToColor) {
     ctx.stroke();
 }
 
+function computeCirclePosition(i, j, numOfAisles, aisleLength, itemsDirectionsMat) {
 //i - the vertex row number (0 < i < aisleLength)
 //j - the vertex col number (0 < j < numOfAisles)
-function computeCirclePosition(i, j, numOfAisles, aisleLength, itemsDirectionsMat) {
     var space = 0.05; //Space for the rectangles of the entrance and the counters/exit
     var rectWidthPercent = 0.7;
     var rectHeightPercent = 0.3;
@@ -335,7 +282,7 @@ function computeRoute(superID, itemsList) {
             var cols = responseJson['cols'];
             itemsDirectionsMat = directionsStringToMat(responseJson['directions'], rows, cols);
             currentVertexIndex = 0;
-            drawMap2(rows / 3, cols, route, itemsDirectionsMat);
+            drawMap(rows / 3, cols, route, itemsDirectionsMat);
             computeCirclePosition(0, 0, 3, 2, itemsDirectionsMat);
             computeCirclePosition(0, 1, 3, 2, itemsDirectionsMat);
             computeCirclePosition(0, 2, 3, 2, itemsDirectionsMat);
