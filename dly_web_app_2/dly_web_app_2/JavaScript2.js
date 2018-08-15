@@ -283,12 +283,24 @@ function computeRoute(superID, itemsList) {
             itemsDirectionsMat = directionsStringToMat(responseJson['directions'], rows, cols);
             currentVertexIndex = 0;
             drawMap(rows / 3, cols, route, itemsDirectionsMat);
-            computeCirclePosition(0, 0, 3, 2, itemsDirectionsMat);
+
+            while (true) {
+                $.ajax({
+                    contentType: JSON,
+                    url: "https://manageitemslist.azurewebsites.net/api/HttpTriggerCSharp1?code=GHkR/DMv0Cvw77Hp5bT6KaD4OK5X8xHnJMhGtDXwaS1VzoNPm/s8KQ==&parameters=" + parameters,
+                    type: "GET",
+                    error: function() { alert('An error occured...'); },
+                    success: function(response) {
+
+                    }
+                });
+            }
+            /*computeCirclePosition(0, 0, 3, 2, itemsDirectionsMat);
             computeCirclePosition(0, 1, 3, 2, itemsDirectionsMat);
             computeCirclePosition(0, 2, 3, 2, itemsDirectionsMat);
             computeCirclePosition(1, 2, 3, 2, itemsDirectionsMat);
             computeCirclePosition(2, 2, 3, 2, itemsDirectionsMat);
-            computeCirclePosition(2, 3, 3, 2, itemsDirectionsMat);
+            computeCirclePosition(2, 3, 3, 2, itemsDirectionsMat);*/
         }
     });
 }
