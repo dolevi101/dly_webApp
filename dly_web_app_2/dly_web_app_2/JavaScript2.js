@@ -1,8 +1,4 @@
-﻿var route;
-var itemsDirectionsMat;
-var currentVertexIndex;
-
-function directionsStringToMat(itemsDirectionsString, rows, cols) {
+﻿function directionsStringToMat(itemsDirectionsString, rows, cols) {
     var itemsDirectionsArray = itemsDirectionsString.split("$");
     var itemsDirectionsMat = [];
     for (var k = 0; k < rows; k++) {
@@ -39,6 +35,98 @@ function create3Circles(canvasName, startXPos, yPos, radius, distanceBetweenCirc
         ctx.stroke();
         xPos += distanceBetweenCircles;
     }
+}
+
+function createLine__Origin(canvasName, startWPos, startHPos, cellWidth, wDistance, hDistance, route, maxRow, exitRectPos) {//starting point: row -1, col 0 
+    var wPos = startWPos;
+    var hPos = startHPos;
+    var sameRectWDistance = wDistance / 2; //Width distance between points of the same rectangle
+    var betRectsWDistance = (cellWidth - wDistance) / 2; //Width distance between points of different rectangles
+    var onEdgeWDistance = (cellWidth - wDistance) / 4; //Width distance between points of the same rectangle
+    var onEdge = true;
+
+    var c = document.getElementById(canvasName);
+    var ctx = c.getContext("2d");
+    var curr;
+    var next;
+
+    ctx.beginPath();
+    ctx.moveTo(wPos, hPos);
+    wPos -= onEdgeWDistance;
+    ctx.lineTo(wPos, hPos);
+    hPos += hDistance;
+    ctx.lineTo(wPos, hPos);
+
+    for (var i = 0; i < route.length - 1; i++) {
+        curr = route[i].split(',');
+        next = route[i + 1].split(',');
+        if (curr[0] == next[0]) { //Stays on the same row --> add a line from (wPos, hPos) to (wPos, hPos + hDistance)
+            if (!onEdge) { // The cart just finished the aisle
+                if (curr[0] == 0) //Going downwards
+                    wPos -= onEdgeWDistance;
+                else  //Going upwards
+                    wPos += onEdgeWDistance;
+                onEdge = true;
+                ctx.lineTo(wPos, hPos);
+            }
+            hPos += hDistance;
+            ctx.lineTo(wPos, hPos);
+        }
+        else { //Stays on the same column --> add a line from (wPos, hPos) to (wPos, hPos + hDistance)
+            if (onEdge) { //Adding line from the egde to the nearest point
+                if (curr[0] == 0) //Going upwards
+                    wPos += onEdgeWDistance;
+                else //Going downwards
+                    wPos -= onEdgeWDistance;
+                onEdge = false;
+                ctx.lineTo(wPos, hPos);
+            }
+            if (curr[0] % 3 == 1 || next[0] % 3 == 1) { //The points are of the same rectangle
+                if (curr[0] < next[0]) //Going upwards
+                    wPos += sameRectWDistance;
+                else //Going downwards
+                    wPos -= sameRectWDistance;
+            }
+            else { //The points are of different rectangles
+                if (curr[0] < next[0]) //Going upwards
+                    wPos += betRectsWDistance;
+                else //Going downwards
+                    wPos -= betRectsWDistance;
+            }
+            ctx.lineTo(wPos, hPos);
+        }
+    }
+    // Drawing line to the exit
+    curr = route[route.length - 1].split(',');
+    if (curr[0] == 0 /*&& !onEdge*/) {
+        wPos -= onEdgeWDistance;
+        ctx.lineTo(wPos, hPos);
+    }
+    else if (curr[0] == maxRow /*&& !onEdge*/) {
+        wPos += onEdgeWDistance;
+        ctx.lineTo(wPos, hPos);
+    }
+    else if (parseInt(curr[0]) % 3 == 0) {
+        wPos += betRectsWDistance;
+        ctx.lineTo(wPos, hPos);
+    }
+    else { //curr[0] % 3 = 2
+        wPos += betRectsWDistance;
+        ctx.lineTo(wPos, hPos);
+    }
+    hPos += hDistance * 6 / 7;///////Change both of line if needed
+    ctx.lineTo(wPos, hPos);
+    wPos = exitRectPos;
+    ctx.lineTo(wPos, hPos);
+    hPos += hDistance / 7;///////////Change both of line if needed
+    ctx.lineTo(wPos, hPos);
+    //drawing arrowhead
+    var headlen = 20;   // length of head in pixels
+    var angle = Math.atan2(hDistance, 0);
+    ctx.lineTo(wPos - headlen * Math.cos(angle - Math.PI / 6), hPos - headlen * Math.sin(angle - Math.PI / 6));
+    ctx.moveTo(wPos, hPos);
+    ctx.lineTo(wPos - headlen * Math.cos(angle + Math.PI / 6), hPos - headlen * Math.sin(angle + Math.PI / 6));
+    ctx.stroke();
 }
 
 function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDistance, route, maxRow, exitRectPos) {//starting point: row -1, col 0 
@@ -238,7 +326,7 @@ function recolorCircle(canvasName, xPos, yPos, radius, isToColor) {
     ctx.stroke();
 }
 
-function computeCirclePosition(i, j, numOfAisles, aisleLength, itemsDirectionsMat) {
+function computePositionAndRecolorCircles(i, j, numOfAisles, aisleLength, itemsDirectionsMat) {
 //i - the vertex row number (0 < i < aisleLength)
 //j - the vertex col number (0 < j < numOfAisles)
     var space = 0.05; //Space for the rectangles of the entrance and the counters/exit
@@ -266,7 +354,54 @@ function computeCirclePosition(i, j, numOfAisles, aisleLength, itemsDirectionsMa
     recolorCircle("mapCanvas", xPos, yPos2, radius, isToColor2);
 }
 
-function computeRoute(superID, itemsList) {
+function displayItems(route, routeIndex, itemsDirectionsMat, row, col) {
+    if (itemsDirectionsMat[row][col] != "|") {
+        alert(itemsDirectionsMat[row][col]);
+        allItems = itemsDirectionsMat[row][col].split("|");
+        leftItems = allItems[0].substring(0, leftRightItems[0].length - 1).split(","); //substring() in order to remove the last comma
+        rightItems = allItems[1].substring(1).split(","); //substring() in order to remove the first comma
+        curr = route[routeIndex].split(",");
+        if (curr[2] == 0) { // Changing oriantaion :O
+            var tmp = leftItems;
+            leftItems = rightItems;
+            rightItems = leftItems;
+        }
+        var remainder = "Don't forget!!"
+            + "\nOn your left: " + leftItems
+            + "\nOn your right: " + rightItems;
+        alert(remainder);
+    }
+    else {
+        alert("Let's continue!");
+    }
+}
+
+function navigateRoute(route, cartID, numOfAisles, aislesLength, itemsDirectionsMat) {
+    var row = 0;
+    var col = 0;
+    var routeIndex = 0;
+    while (true) { //breaking condition if !(col < numOfAisles)
+        $.ajax({
+            contentType: JSON,
+            url: "https://manageitemslist.azurewebsites.net/api/PollingForNewVertex?code=SP3MAK6X4vwWPgJuUEcc2nBTPiTSWsaOm4qPSFB1ONXnmxSnmYgMQw==&cartID=" + cartID,
+            type: "GET",
+            error: function () { alert('An error occured...'); },
+            success: function (response) { //response = json(row,col)
+                alert(response);
+                var responseJson = JSON.parse(response);
+                if (responseJson['row'] != row || responseJson['col'] != col) {
+                    row = responseJson['row'];
+                    col = responseJson['col'];
+                    computePositionAndRecolorCircles(row, col, numOfAisles, aisleLength, itemsDirectionsMat);
+                    displayItems(route, currentRouteIndex, isUp, itemsDirectionsMat, row, col);
+                    routeIndex++;
+                }
+            }
+        });
+    }
+}
+
+function computeRoute(superID, cartID, itemsList) {
     var parameters = JSON.stringify({ 'superID': superID, 'itemsList': itemsList });
     $.ajax({
         contentType: JSON,
@@ -276,33 +411,15 @@ function computeRoute(superID, itemsList) {
         success: function (response) {
             alert(response);
             var responseJson = JSON.parse(response);
-            //global variables:
-            route = responseJson['route'].split("|");
+            var route = responseJson['route'].split("|");
             var rows = responseJson['rows'];
             var cols = responseJson['cols'];
-            itemsDirectionsMat = directionsStringToMat(responseJson['directions'], rows, cols);
-            currentVertexIndex = 0;
-            drawMap(rows / 3, cols, route, itemsDirectionsMat);
-
-            var parameters = JSON.stringify({ 'cartID': cartID });/////////////////needs cartID
-            while (true) {
-                $.ajax({
-                    contentType: JSON,
-                    url: "https://manageitemslist.azurewebsites.net/api/PollingForNewVertex?code=SP3MAK6X4vwWPgJuUEcc2nBTPiTSWsaOm4qPSFB1ONXnmxSnmYgMQw==&parameters=" + parameters,
-                    type: "GET",
-                    error: function() { alert('An error occured...'); },
-                    success: function (response) { //response = "location,row,col"
-                        alert(response);
-                        var responseJson = JSON.parse(response);
-                        
-                        if (responseJson['location'] !== currentLocation) {////////needs currentLocation
-                            var row = responseJson['row'];
-                            var col = responseJson['col'];
-                            onNewVertex(row, col)
-                        }
-                    }
-                });
-            }
+            var itemsDirectionsMat = directionsStringToMat(responseJson['directions'], rows, cols);
+            var aisleLength = rows / 3;
+            var numOfAisles = cols
+            drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat);
+            navigateRoute(route, cartID, numOfAisles, aislesLength, itemsDirectionsMat);
+            
             /*computeCirclePosition(0, 0, 3, 2, itemsDirectionsMat);
             computeCirclePosition(0, 1, 3, 2, itemsDirectionsMat);
             computeCirclePosition(0, 2, 3, 2, itemsDirectionsMat);
@@ -311,25 +428,6 @@ function computeRoute(superID, itemsList) {
             computeCirclePosition(2, 3, 3, 2, itemsDirectionsMat);*/
         }
     });
-}
-
-function onNewVertex(row, col) {
-    //setTimeout(function () {
-    if (route[currentVertexIndex++].split(",")[2] === "0") {
-        //An empty vertex
-        alert("nope");
-    }
-    else {
-        alert(itemsDirectionsMat[row][col]);
-        leftRightItems = itemsDirectionsMat[row][col].split("|");
-        left = leftRightItems[0].substring(0, leftRightItems[0].length - 1).split(","); //substring() in order to remove the last comma
-        //alert(left);
-        right = leftRightItems[1].substring(1).split(","); //substring() in order to remove the first comma
-        //alert(right);
-        //need to create a green circle above the red circle we have just visited (maybe save data in the db?)
-        //call function to add the items to the map
-    }
-    //}, 3000);
 }
 
 function openPopup() {
