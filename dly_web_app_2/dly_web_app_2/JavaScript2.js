@@ -284,14 +284,22 @@ function computeRoute(superID, itemsList) {
             currentVertexIndex = 0;
             drawMap(rows / 3, cols, route, itemsDirectionsMat);
 
+            var parameters = JSON.stringify({ 'cartID': cartID });/////////////////needs cartID
             while (true) {
                 $.ajax({
                     contentType: JSON,
-                    url: "https://manageitemslist.azurewebsites.net/api/HttpTriggerCSharp1?code=GHkR/DMv0Cvw77Hp5bT6KaD4OK5X8xHnJMhGtDXwaS1VzoNPm/s8KQ==&parameters=" + parameters,
+                    url: "https://manageitemslist.azurewebsites.net/api/PollingForNewVertex?code=SP3MAK6X4vwWPgJuUEcc2nBTPiTSWsaOm4qPSFB1ONXnmxSnmYgMQw==&parameters=" + parameters,
                     type: "GET",
                     error: function() { alert('An error occured...'); },
-                    success: function(response) {
-
+                    success: function (response) { //response = "location,row,col"
+                        alert(response);
+                        var responseJson = JSON.parse(response);
+                        
+                        if (responseJson['location'] !== currentLocation) {////////needs currentLocation
+                            var row = responseJson['row'];
+                            var col = responseJson['col'];
+                            onNewVertex(row, col)
+                        }
                     }
                 });
             }
