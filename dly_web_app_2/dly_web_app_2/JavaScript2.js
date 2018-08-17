@@ -361,7 +361,7 @@ function displayItems(route, routeIndex, itemsDirectionsMat, row, col) {
         leftItems = allItems[0].substring(0, leftRightItems[0].length - 1).split(","); //substring() in order to remove the last comma
         rightItems = allItems[1].substring(1).split(","); //substring() in order to remove the first comma
         curr = route[routeIndex].split(",");
-        if (curr[2] == 0) { // Changing oriantaion :O
+        if (curr[2] == 0) { // The direction is down --> Changing oriantaion
             var tmp = leftItems;
             leftItems = rightItems;
             rightItems = leftItems;
@@ -380,24 +380,26 @@ function navigateRoute(route, cartID, numOfAisles, aislesLength, itemsDirections
     var row = 0;
     var col = 0;
     var routeIndex = 0;
-    while (true) { //breaking condition if !(col < numOfAisles)
-        $.ajax({
-            contentType: JSON,
-            url: "https://manageitemslist.azurewebsites.net/api/PollingForNewVertex?code=SP3MAK6X4vwWPgJuUEcc2nBTPiTSWsaOm4qPSFB1ONXnmxSnmYgMQw==&cartID=" + cartID,
-            type: "GET",
-            error: function () { alert('An error occured...'); },
-            success: function (response) { //response = json(row,col)
-                alert(response);
-                var responseJson = JSON.parse(response);
-                if (responseJson['row'] != row || responseJson['col'] != col) {
-                    row = responseJson['row'];
-                    col = responseJson['col'];
-                    computePositionAndRecolorCircles(row, col, numOfAisles, aisleLength, itemsDirectionsMat);
-                    displayItems(route, currentRouteIndex, isUp, itemsDirectionsMat, row, col);
-                    routeIndex++;
+    while (routeIndex < route.length) { //Break when the route is finished
+        setTimeout(function () {
+            $.ajax({
+                contentType: JSON,
+                url: "https://manageitemslist.azurewebsites.net/api/PollingForNewVertex?code=SP3MAK6X4vwWPgJuUEcc2nBTPiTSWsaOm4qPSFB1ONXnmxSnmYgMQw==&cartID=" + cartID,
+                type: "GET",
+                error: function () { alert('An error occured...'); },
+                success: function (response) { //response = json(row,col)
+                    alert(response);
+                    var responseJson = JSON.parse(response);
+                    if (responseJson['row'] != row || responseJson['col'] != col) {
+                        row = responseJson['row'];
+                        col = responseJson['col'];
+                        computePositionAndRecolorCircles(row, col, numOfAisles, aisleLength, itemsDirectionsMat);
+                        displayItems(route, currentRouteIndex, isUp, itemsDirectionsMat, row, col);
+                        routeIndex++;
+                    }
                 }
-            }
-        });
+            });
+        }, 2000);
     }
 }
 
@@ -418,7 +420,7 @@ function computeRoute(superID, cartID, itemsList) {
             var aisleLength = rows / 3;
             var numOfAisles = cols
             drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat);
-            navigateRoute(route, cartID, numOfAisles, aislesLength, itemsDirectionsMat);
+            //navigateRoute(route, cartID, numOfAisles, aislesLength, itemsDirectionsMat);
             
             /*computeCirclePosition(0, 0, 3, 2, itemsDirectionsMat);
             computeCirclePosition(0, 1, 3, 2, itemsDirectionsMat);
