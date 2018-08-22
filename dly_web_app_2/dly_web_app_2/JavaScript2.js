@@ -149,13 +149,11 @@ function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDis
     hPos += hDistance;
     ctx.lineTo(wPos, hPos);
 
-    var toRun = 10;
-    //for (var i = 0; i < route.length - 1; i++) {
-    for (var i = 0; i < toRun; i++) {
+    //var toRun = 10;
+    for (var i = 0; i < route.length - 1; i++) {
+    //for (var i = 0; i < toRun; i++) {
         curr = route[i].split(',');
         next = route[i + 1].split(',');
-        if (i == toRun - 1)
-            alert("curr=" + curr + ", next=" + next);
         if (curr[0] == next[0]) { //Stays on the same row --> add a line from (wPos, hPos) to (wPos, hPos + hDistance)
             if (!onEdge && (curr[0] == 0 || curr[0] == maxRow)) { // The cart just finished the aisle
                 if (curr[0] == 0) //Going downwards
@@ -381,7 +379,7 @@ function displayItems(route, routeIndex, itemsDirectionsMat, row, col) {
         leftItems = allItems[0].substring(0, leftRightItems[0].length - 1).split(","); //substring() in order to remove the last comma
         rightItems = allItems[1].substring(1).split(","); //substring() in order to remove the first comma
         curr = route[routeIndex].split(",");
-        if (curr[2] == 0) { // The direction is down --> Changing oriantaion
+        if (curr[3] == 0) { // The direction is down --> Changing oriantaion
             var tmp = leftItems;
             leftItems = rightItems;
             rightItems = leftItems;
