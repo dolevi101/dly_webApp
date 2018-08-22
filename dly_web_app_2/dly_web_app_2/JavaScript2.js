@@ -133,7 +133,7 @@ function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDis
     var wPos = startWPos;
     var hPos = startHPos;
     var sameRectWDistance = wDistance / 2; //Width distance between points of the same rectangle
-    var betRectsWDistance = (cellWidth - wDistance) / 2; //Width distance between points of different rectangles
+    var betRectsWDistance = (cellWidth - wDistance) /*/ 2*/; //Width distance between points of different rectangles
     var onEdgeWDistance = (cellWidth - wDistance) / 4; //Width distance between points of the same rectangle
     var onEdge = true;
 
@@ -149,26 +149,46 @@ function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDis
     hPos += hDistance;
     ctx.lineTo(wPos, hPos);
 
-    for (var i = 0; i < route.length - 1; i++) {
+    var toRun = 10;
+    //for (var i = 0; i < route.length - 1; i++) {
+    for (var i = 0; i < toRun; i++) {
         curr = route[i].split(',');
         next = route[i + 1].split(',');
+        if (i == toRun - 1)
+            alert("curr=" + curr + ", next=" + next);
         if (curr[0] == next[0]) { //Stays on the same row --> add a line from (wPos, hPos) to (wPos, hPos + hDistance)
-            if (!onEdge) { // The cart just finished the aisle
+            if (!onEdge && (curr[0] == 0 || curr[0] == maxRow)) { // The cart just finished the aisle
                 if (curr[0] == 0) //Going downwards
                     wPos -= onEdgeWDistance;
                 else  //Going upwards
                     wPos += onEdgeWDistance;
                 onEdge = true;
                 ctx.lineTo(wPos, hPos);
+                hPos += hDistance;
+                ctx.lineTo(wPos, hPos);
             }
-            hPos += hDistance;
-            ctx.lineTo(wPos, hPos);
+            else {
+                var s = 1 / 6;
+                hPos += s * hDistance;
+                ctx.lineTo(wPos, hPos);
+                if (curr[0] % 3 == 0)
+                    wPos -= betRectsWDistance / 2;
+                else if (curr[0] % 3 == 2)
+                    wPos += betRectsWDistance / 2;
+                ctx.lineTo(wPos, hPos);
+                hPos += (1 - s) * hDistance;
+                ctx.lineTo(wPos, hPos);
+                if (curr[0] % 3 == 0)
+                    wPos += betRectsWDistance / 2;
+                else if (curr[0] % 3 == 2)
+                    wPos -= betRectsWDistance / 2;
+            }
         }
         else { //Stays on the same column --> add a line from (wPos, hPos) to (wPos, hPos + hDistance)
             if (onEdge) { //Adding line from the egde to the nearest point
                 if (curr[0] == 0) //Going upwards
                     wPos += onEdgeWDistance;
-                else //Going downwards
+                if (curr[0] == maxRow) //Going downwards
                     wPos -= onEdgeWDistance;
                 onEdge = false;
                 ctx.lineTo(wPos, hPos);
@@ -217,7 +237,7 @@ function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDis
     var angle = Math.atan2(hDistance, 0);
     ctx.lineTo(wPos - headlen * Math.cos(angle - Math.PI / 6), hPos - headlen * Math.sin(angle - Math.PI / 6));
     ctx.moveTo(wPos, hPos);
-    ctx.lineTo(wPos - headlen * Math.cos(angle + Math.PI / 6), hPos - headlen * Math.sin(angle + Math.PI / 6));
+    ctx.lineTo(wPos - headlen * Math.cos(angle + Math.PI / 6), hPos - headlen * Math.sin(angle + Math.PI / 6));/**/
     ctx.stroke();
 }
 
@@ -274,21 +294,21 @@ function drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat) { //aisleL
             var x = ((1 - rectWidthPercent) / 2 + i) * cellWidth;
             var y = ((1 - rectHeightPercent) / 2 + j) * cellHeight + space * height;
             createRectangle("mapCanvas", x, y, rectWidthPercent * cellWidth, rectHeightPercent * cellHeight);
-            if (j != 0) {
+            if (j != 0) { //up
                 var startXPos = x + radius + 0.5 * radius;
                 var yPos = y + radius + 0.5 * radius;
                 var isToColor = [];
                 for (var k = 0; k < 3; k++) {
-                    isToColor[k] = (itemsDirectionsMat[i * 3 + k][j - 1] != "|");
+                    isToColor[k] = (itemsDirectionsMat[i * 3 + k][j - 1].includes("|,"));
                 }
                 create3Circles("mapCanvas", startXPos, yPos, radius, distanceBetweenCircles, isToColor);
             }
-            if (j != numOfShelves - 1) {
+            if (j != numOfShelves - 1) { //down
                 var startXPos = x + radius + 0.5 * radius;
                 var yPos = y + rectHeightPercent * cellHeight - (radius + 0.5 * radius);
                 var isToColor = [];
                 for (var k = 0; k < 3; k++) {
-                    isToColor[k] = (itemsDirectionsMat[i * 3 + k][j] != "|");
+                    isToColor[k] = (itemsDirectionsMat[i * 3 + k][j].includes(",|"));
                 }
                 create3Circles("mapCanvas", startXPos, yPos, radius, distanceBetweenCircles, isToColor);
             }
