@@ -138,11 +138,11 @@ function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDis
     var alreadyOnEdge = true;
     var diagonalRemainder = 0, parallelRemainder = 0;
     var parallelReminder = false;
+    var already1Div6 = false;
 
     var c = document.getElementById(canvasName);
     var ctx = c.getContext("2d");
-    var curr;
-    var next;
+    var curr, next, prev;
 
     ctx.beginPath();
     ctx.moveTo(wPos, hPos);
@@ -176,10 +176,12 @@ function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDis
                     ctx.lineTo(wPos, hPos);
                 }
                 else { //curr[0] % 3 == 0,2 but !=0,maxRow
-                    if (parallelRemainder == 0) {
+                    if (already1Div6)
+                        hpos -= hDistance / 6;
+                    if (parallelRemainder == 0) {//create the parallel remainder
                         var tmpHPos = hPos;
                         if (curr[0] % 3 == 0) {
-                            if (curr[3] == 1) {
+                            if (curr[0] < next[0]) {
                                 tmpHPos += hDistance / 6
                                 ctx.lineTo(wPos, tmpHPos);
                             }
@@ -187,7 +189,7 @@ function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDis
                             parallelRemainder = betRectsWDistance / 2;
                         }
                         else {
-                            if (curr[3] == 0) {
+                            if (curr[0] > next[0]) {
                                 tmpHPos += hDistance / 6
                                 ctx.lineTo(wPos, tmpHPos);
                             }
@@ -277,6 +279,14 @@ function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDis
                             wPos -= onEdgeWDistance;
                         alreadyOnEdge = false;
                         ctx.lineTo(wPos, hPos);
+                    }
+                    if (i > 0) {
+                        prev = route[i - 1].split(',');
+                        if (prev[0] == next[0]) {//suddenly changing the direction
+                            hPos += hDistance / 6;
+                            ctx.lineTo(wPos, hPos);
+                            already1Div6 = true;
+                        }
                     }
                     if (curr[0] % 3 == 1 || next[0] % 3 == 1) { //The points are of the same rectangle
                         if (curr[0] < next[0]) //Going upwards
