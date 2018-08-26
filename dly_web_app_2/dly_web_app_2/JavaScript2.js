@@ -129,6 +129,144 @@ function createLine__Origin(canvasName, startWPos, startHPos, cellWidth, wDistan
     ctx.stroke();
 }
 
+
+function createLine2(canvasName, startWPos, startHPos, cellWidth, wDistance, hDistance, route, maxRow, exitRectPos) {//starting point: row -1, col 0 
+    var wPos = startWPos;
+    var hPos = startHPos;
+    var sameRectWDistance = wDistance / 2; //Width distance between points of the same rectangle
+    var betRectsWDistance = (cellWidth - wDistance); //Width distance between points of different rectangles
+    var onEdgeWDistance = (cellWidth - wDistance) / 4; //Width distance between points of the same rectangle
+    var already1Div6 = false;
+    var need1Div6 = false;
+
+    var c = document.getElementById(canvasName);
+    var ctx = c.getContext("2d");
+    var curr;
+    var next;
+
+    ctx.beginPath();
+    ctx.moveTo(wPos, hPos);
+    wPos -= onEdgeWDistance;
+    ctx.lineTo(wPos, hPos);
+    hPos += hDistance;
+    ctx.lineTo(wPos, hPos);
+
+    var toRun = 88;
+    //for (var i = 0; i < route.length - 1; i++) {
+    for (var i = 0; i <= toRun && i < route.length - 1; i++) {
+        curr = route[i].split(',');
+        next = route[i + 1].split(',');
+        if (i == toRun) {
+            alert(curr + " " + next);
+        }
+        if (curr[0] == next[0]) { //Stays on the same row --> add a line from (wPos, hPos) to (wPos, hPos + hDistance)
+            if (i < route.length - 2) { //In the next aisle, not going in the same direction as planned
+                var after = route[i + 2].split(',');
+                //alert("here curr = " + curr + " ,next = "+next+" ,after = "+after);
+                if (next[0] != after[0] && Math.sign(after[3] - 0.5) != Math.sign(after[0] - next[0])) {
+                    alert("here2");
+                    hPos -= hDistance / 6;
+                    need1Div6 = true;
+                }
+            }
+            if (already1Div6) { 
+                hPos -= hDistance / 6;
+                already1Div6 = false;
+            }
+            hPos += hDistance;
+            ctx.lineTo(wPos, hPos);
+        }
+        else { //Stays on the same column --> add a line from (wPos, hPos) to (wPos, hPos + hDistance)
+            if (i > 0) {
+                var prev = route[i - 1].split(',');
+                if (Math.sign(prev[0] - curr[0]) == Math.sign(next[0] - curr[0])) { // changing direction after getting to max/min of the aisle
+
+
+                    if (curr[1] == 2)
+                        alert(curr + "  changing direction after reaching max/min");
+
+
+
+                    hPos += hDistance / 6;
+                    ctx.lineTo(wPos, hPos);
+                    already1Div6 = true;
+                }
+            }
+            if (Math.abs(curr[0] - next[0]) == 0.5) {
+                if (curr[0] > 0 && curr[0] < maxRow) {
+                    wPos += betRectsWDistance * (next[0] - curr[0]);
+                }
+                else {
+                    wPos += onEdgeWDistance * (next[0] - curr[0]) * 2;
+                }
+                ctx.lineTo(wPos, hPos);
+            }
+            else {
+                /*if (i > 0) {
+                    var prev = route[i - 1].split(',');
+                    if (prev[0] == next[0]) {
+                        hPos += hDistance / 6;
+                        ctx.lineTo(wPos, hPos);
+                        already1Div6 = true;
+                    }
+                }*/
+                if (curr[0] % 3 == 1 || next[0] % 3 == 1) { //The points are of the same rectangle
+                    if (curr[0] < next[0]) //Going upwards
+                        wPos += sameRectWDistance;
+                    else //Going downwards
+                        wPos -= sameRectWDistance;
+                }
+                else { //The points are of different rectangles
+                    if (curr[0] < next[0]) //Going upwards
+                        wPos += betRectsWDistance;
+                    else //Going downwards
+                        wPos -= betRectsWDistance;
+                }
+                ctx.lineTo(wPos, hPos);
+                if (need1Div6 && (curr[3] - 0.5) * 2 == next[0] - curr[0]) { //Adding the missing hDistance/6
+                    if (curr[1] == 2)
+                        alert(curr + "  need1Div6");
+                    hPos += hDistance / 6;
+                    ctx.lineTo(wPos, hPos);
+                    need1Div6 = false;
+                }
+            }
+        }
+    }
+    // Drawing line to the exit
+    /*curr = route[route.length - 1].split(',');
+    if (curr[0] == 0) {
+        wPos -= onEdgeWDistance;
+        ctx.lineTo(wPos, hPos);
+    }
+    else if (curr[0] == maxRow) {
+        wPos += onEdgeWDistance;
+        ctx.lineTo(wPos, hPos);
+    }
+    else if (parseInt(curr[0]) % 3 == 0) {
+        wPos += betRectsWDistance;
+        ctx.lineTo(wPos, hPos);
+    }
+    else { //curr[0] % 3 = 2
+        wPos += betRectsWDistance;
+        ctx.lineTo(wPos, hPos);
+    }
+    hPos += hDistance * 6 / 7;///////Change both of line if needed
+    ctx.lineTo(wPos, hPos);
+    wPos = exitRectPos;
+    ctx.lineTo(wPos, hPos);
+    hPos += hDistance / 7;///////////Change both of line if needed
+    ctx.lineTo(wPos, hPos);
+    //drawing arrowhead
+    var headlen = 20;   // length of head in pixels
+    var angle = Math.atan2(hDistance, 0);
+    ctx.lineTo(wPos - headlen * Math.cos(angle - Math.PI / 6), hPos - headlen * Math.sin(angle - Math.PI / 6));
+    ctx.moveTo(wPos, hPos);
+    ctx.lineTo(wPos - headlen * Math.cos(angle + Math.PI / 6), hPos - headlen * Math.sin(angle + Math.PI / 6));/**/
+    ctx.stroke();
+}
+
+
 function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDistance, route, maxRow, exitRectPos) {//starting point: row -1, col 0 
     var wPos = startWPos;
     var hPos = startHPos;
@@ -151,9 +289,9 @@ function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDis
     hPos += hDistance;
     ctx.lineTo(wPos, hPos);
 
-    var toRun = 11;
-    for (var i = 0; i < route.length - 1; i++) {
-    //for (var i = 0; i <= toRun; i++) {
+    var toRun = 2;
+    //for (var i = 0; i < route.length - 1; i++) {
+    for (var i = 0; i <= toRun; i++) {
         curr = route[i].split(',');
         next = route[i + 1].split(',');
         if (i == toRun) {
@@ -176,31 +314,35 @@ function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDis
                     ctx.lineTo(wPos, hPos);
                 }
                 else { //curr[0] % 3 == 0,2 but !=0,maxRow
-                    if (already1Div6)
-                        hpos -= hDistance / 6;
                     if (parallelRemainder == 0) {//create the parallel remainder
+                        alert("here3");
                         var tmpHPos = hPos;
                         if (curr[0] % 3 == 0) {
-                            if (curr[0] < next[0]) {
+                            /*if (curr[0] < next[0]) {
                                 tmpHPos += hDistance / 6
                                 ctx.lineTo(wPos, tmpHPos);
-                            }
+                            }*/
                             wPos -= betRectsWDistance / 2;
                             parallelRemainder = betRectsWDistance / 2;
                         }
                         else {
-                            if (curr[0] > next[0]) {
+                            /*if (curr[0] > next[0]) {
                                 tmpHPos += hDistance / 6
                                 ctx.lineTo(wPos, tmpHPos);
-                            }
+                            }*/
                             wPos += betRectsWDistance / 2;
                             parallelRemainder = -betRectsWDistance / 2;
                         }
-                        ctx.lineTo(wPos, tmpHPos);
-                        hPos += hDistance * 5 / 6;
+                        ctx.lineTo(wPos, hPos);
+                        if (already1Div6) {
+                            hPos -= hDistance / 6;/////////////////////////////////////////////////////
+                            alert("here1");
+                        }
+                        hPos += hDistance;
                         ctx.lineTo(wPos, hPos);
                     }
                     else {
+                        alert("here2");
                         hPos += hDistance;
                         ctx.lineTo(wPos, hPos);
                     }
@@ -327,7 +469,7 @@ function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDis
         }
     }
     // Drawing line to the exit
-    curr = route[route.length - 1].split(',');
+/*    curr = route[route.length - 1].split(',');
     prev = route[route.length - 2].split(',');
     var tmpHPos = hPos;
     if (curr[0] == 0) {
@@ -366,6 +508,245 @@ function createLine(canvasName, startWPos, startHPos, cellWidth, wDistance, hDis
     ctx.lineTo(wPos - headlen * Math.cos(angle - Math.PI / 6), hPos - headlen * Math.sin(angle - Math.PI / 6));
     ctx.moveTo(wPos, hPos);
     ctx.lineTo(wPos - headlen * Math.cos(angle + Math.PI / 6), hPos - headlen * Math.sin(angle + Math.PI / 6));/**/
+    ctx.stroke();
+}
+
+function createLine3(canvasName, startWPos, startHPos, cellWidth, wDistance, hDistance, route, maxRow, exitRectPos) {//starting point: row -1, col 0 
+    var wPos = startWPos;
+    var hPos = startHPos;
+    var sameRectWDistance = wDistance / 2; //Width distance between points of the same rectangle
+    var betRectsWDistance = (cellWidth - wDistance) /*/ 2*/; //Width distance between points of different rectangles
+    var onEdgeWDistance = (cellWidth - wDistance) / 4; //Width distance between points of the same rectangle
+    var alreadyOnEdge = true;
+    var diagonalRemainder = 0, parallelRemainder = 0;
+    var parallelReminder = false;
+    var already1Div6 = false;
+
+    var c = document.getElementById(canvasName);
+    var ctx = c.getContext("2d");
+    var curr, next, prev;
+
+    ctx.beginPath();
+    ctx.moveTo(wPos, hPos);
+    wPos -= onEdgeWDistance;
+    ctx.lineTo(wPos, hPos);
+    hPos += hDistance;
+    ctx.lineTo(wPos, hPos);
+
+    var toRun = 7;
+    //for (var i = 0; i < route.length - 1; i++) {
+    for (var i = 0; i <= toRun; i++) {
+        curr = route[i].split(',');
+        next = route[i + 1].split(',');
+        if (i == toRun) {
+            alert(curr + ", " + next);
+        }/**/
+        if (curr[0] == next[0]) { //Stays on the same row --> add a line from (wPos, hPos) to (wPos, hPos + hDistance)            
+            if (!alreadyOnEdge && (curr[0] == 0 || curr[0] == maxRow)) { // The cart just finished the aisle
+                if (curr[0] == 0) //Going downwards
+                    wPos -= onEdgeWDistance;
+                else  //Going upwards
+                    wPos += onEdgeWDistance;
+                alreadyOnEdge = true;
+                ctx.lineTo(wPos, hPos);
+                hPos += hDistance;
+                ctx.lineTo(wPos, hPos);
+            }
+            else { //curr[0] % 3 == 0,2 but !=0,maxRow
+                if (parallelRemainder == 0) {//create the parallel remainder
+                    alert("here3");
+                    var tmpHPos = hPos;
+                    if (curr[0] % 3 == 0) {
+                        /*if (curr[0] < next[0]) {
+                            tmpHPos += hDistance / 6
+                            ctx.lineTo(wPos, tmpHPos);
+                        }*/
+                        wPos -= betRectsWDistance / 2;
+                        parallelRemainder = betRectsWDistance / 2;
+                    }
+                    else {
+                        /*if (curr[0] > next[0]) {
+                            tmpHPos += hDistance / 6
+                            ctx.lineTo(wPos, tmpHPos);
+                        }*/
+                        wPos += betRectsWDistance / 2;
+                        parallelRemainder = -betRectsWDistance / 2;
+                    }
+                    ctx.lineTo(wPos, hPos);
+                    if (already1Div6) {
+                        hPos -= hDistance / 6;/////////////////////////////////////////////////////
+                        alert("here1");
+                    }
+                    hPos += hDistance;
+                    ctx.lineTo(wPos, hPos);
+                }
+                else {
+                    alert("here2");
+                    hPos += hDistance;
+                    ctx.lineTo(wPos, hPos);
+                }
+            }
+            
+        }
+        else {
+            if (curr[1] == next[1]) { //Stays on the same column --> add a line from (wPos, hPos) to (wPos, hPos + hDistance)
+                if (diagonalRemainder != 0) {
+                    if (curr[0] % 3 == 1 || next[0] % 3 == 1) { //The points are of the same rectangle
+                        hPos += hDistance / 6;
+                        ctx.lineTo(wPos, hPos);
+                        wPos += diagonalRemainder;
+                        ctx.lineTo(wPos, hPos);
+                        if (curr[0] < next[0]) //Going upwards
+                            wPos += sameRectWDistance;
+                        else //Going downwards
+                            wPos -= sameRectWDistance;
+                        ctx.lineTo(wPos, hPos);
+                    }
+                    else { //The points are of different rectangles
+                        wPos += diagonalRemainder;
+                        ctx.lineTo(wPos, hPos);
+                        hPos += hDistance / 6;
+                        ctx.lineTo(wPos, hPos);
+                        if (curr[0] < next[0]) //Going upwards
+                            wPos += betRectsWDistance;
+                        else //Going downwards
+                            wPos -= betRectsWDistance;
+                        ctx.lineTo(wPos, hPos);
+                    }
+                    diagonalRemainder = 0;
+                }
+                else {
+                    if (!parallelReminder && parallelRemainder != 0) {
+                        if (parallelRemainder > 0 && next[3] == 1) {
+                            hPos += hDistance / 6;
+                            ctx.lineTo(wPos, hPos);
+                            wPos += parallelRemainder;
+                            ctx.lineTo(wPos, hPos);
+                            parallelRemainder = 0;
+                        }
+                        else if (parallelRemainder > 0 && next[3] == 0) {
+                            wPos += parallelRemainder;
+                            ctx.lineTo(wPos, hPos);
+                            parallelReminder = true;
+                            /*hPos += hDistance / 6;
+                            ctx.lineTo(wPos, hPos);*/
+                        }
+                        else if (parallelRemainder < 0 && next[3] == 1) {
+                            wPos += parallelRemainder;
+                            ctx.lineTo(wPos, hPos);
+                            parallelReminder = true;
+                            /*hPos += hDistance / 6;
+                            ctx.lineTo(wPos, hPos);*/
+                        }
+                        else {//if (parallelRemainder < 0 && next[3] == 0)
+                            hPos += hDistance / 6;
+                            ctx.lineTo(wPos, hPos);
+                            wPos += parallelRemainder;
+                            ctx.lineTo(wPos, hPos);
+                            parallelRemainder = 0;
+                        }
+                    }
+                    if (parallelReminder) {
+                        if ((curr[0] < next[0] && next[3] == 1) || (curr[0] > next[0] && next[3] == 0)) {//actually going up/down
+                            hPos += hDistance / 6;
+                            ctx.lineTo(wPos, hPos);
+                            parallelReminder = false;
+                        }
+                    }
+                    if (alreadyOnEdge) { //Adding line from the egde to the nearest point
+                        if (curr[0] == 0) //Going upwards
+                            wPos += onEdgeWDistance;
+                        if (curr[0] == maxRow) //Going downwards
+                            wPos -= onEdgeWDistance;
+                        alreadyOnEdge = false;
+                        ctx.lineTo(wPos, hPos);
+                    }
+                    if (i > 0) {
+                        prev = route[i - 1].split(',');
+                        if (prev[0] == next[0]) {//suddenly changing the direction
+                            hPos += hDistance / 6;
+                            ctx.lineTo(wPos, hPos);
+                            already1Div6 = true;
+                        }
+                    }
+                    if (curr[0] % 3 == 1 || next[0] % 3 == 1) { //The points are of the same rectangle
+                        if (curr[0] < next[0]) //Going upwards
+                            wPos += sameRectWDistance;
+                        else //Going downwards
+                            wPos -= sameRectWDistance;
+                    }
+                    else { //The points are of different rectangles
+                        if (curr[0] < next[0])  //Going upwards
+                            wPos += betRectsWDistance;
+                        else  //Going downwards
+                            wPos -= betRectsWDistance;
+                    }
+                    ctx.lineTo(wPos, hPos);
+
+                }
+            }
+            else { // Switches both row and column (special case)
+                if (curr[3] == 1) {//Going up
+                    wPos += betRectsWDistance / 2;
+                    ctx.lineTo(wPos, hPos);
+                    diagonalRemainder = betRectsWDistance / 2;
+                }
+                else {//Going down
+                    wPos -= betRectsWDistance / 2;
+                    ctx.lineTo(wPos, hPos);
+                    diagonalRemainder = - betRectsWDistance / 2;
+                }
+                hPos += hDistance * 5 / 6;
+                ctx.lineTo(wPos, hPos);
+                if (i + 1 == route.length - 1) {
+                    wPos += diagonalRemainder;
+                    ctx.lineTo(wPos, hPos);
+                    hPos += hDistance / 6;
+                    ctx.lineTo(wPos, hPos);
+                }
+            }
+        }
+    }
+    // Drawing line to the exit
+    /*    curr = route[route.length - 1].split(',');
+        prev = route[route.length - 2].split(',');
+        var tmpHPos = hPos;
+        if (curr[0] == 0) {
+            wPos -= onEdgeWDistance;
+            ctx.lineTo(wPos, hPos);
+        }
+        else if (curr[0] == maxRow) {
+            wPos += onEdgeWDistance;
+            ctx.lineTo(wPos, hPos);
+        }
+        else if (parseInt(curr[0]) % 3 == 0) {
+            if (curr[0] >= prev[0]) {
+                tmpHPos += hDistance / 6;
+                ctx.lineTo(wPos, tmpHPos);
+            }
+            wPos -= betRectsWDistance / 2;
+            ctx.lineTo(wPos, tmpHPos);
+        }
+        else { //curr[0] % 3 = 2
+            if (curr[0] <= prev[0]) {
+                tmpHPos += hDistance / 6;
+                ctx.lineTo(wPos, tmpHPos);
+            }
+            wPos += betRectsWDistance / 2;
+            ctx.lineTo(wPos, tmpHPos);
+        }
+        hPos += hDistance * 6 / 7;///////Change both of these (code) line if needed
+        ctx.lineTo(wPos, hPos);
+        wPos = exitRectPos;
+        ctx.lineTo(wPos, hPos);
+        hPos += hDistance / 7;///////////Change both of these (code) lines if needed
+        ctx.lineTo(wPos, hPos);
+        //drawing arrowhead
+        var headlen = 20;   // length of head in pixels
+        var angle = Math.atan2(hDistance, 0);
+        ctx.lineTo(wPos - headlen * Math.cos(angle - Math.PI / 6), hPos - headlen * Math.sin(angle - Math.PI / 6));
+        ctx.moveTo(wPos, hPos);
+        ctx.lineTo(wPos - headlen * Math.cos(angle + Math.PI / 6), hPos - headlen * Math.sin(angle + Math.PI / 6));/**/
     ctx.stroke();
 }
 
@@ -448,16 +829,7 @@ function drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat) { //aisleL
     var startHPos = space * height;
     var maxRow = parseInt(aisleLength) * 3 - 1;
     var exitRectPos = width - (1 - rectWidthPercent) / 2 * (width / aisleLength);
-    createLine("mapCanvas", startWPos, startHPos, cellWidth, wDistance, hDistance, route, maxRow, exitRectPos);
-
-
-    /*var image = "<img id=\"Shelf\" width=\"10\" height=\"50\" src=\"Shelf.jpeg\" style=\"display: none; position: absolute; top: 1px; left: 1px; \" alt=\"Shelf\">";
-    $("#MapPage").html(image);
-    var c = document.getElementById("mapCanvas");
-    var ctx = c.getContext("2d");
-    var img = document.getElementById("Shelf");
-    ctx.drawImage(img, 50, 50);/**/
-
+    createLine2("mapCanvas", startWPos, startHPos, cellWidth, wDistance, hDistance, route, maxRow, exitRectPos);
     window.location.href = "#MapPage";
 }
 
