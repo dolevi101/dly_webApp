@@ -425,7 +425,7 @@ function drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat) { //aisleL
     window.location.href = "#MapPage";
 }
 
-function recolorCircle(canvasName, xPos, yPos, radius, isToColor) {
+function recolorCircle(canvasName, xPos, yPos, radius, isToColor, i, j) {
     if (isToColor) {
         /*var c = document.getElementById(canvasName);
         var p = c.getContext("2d");
@@ -453,6 +453,8 @@ function recolorCircle(canvasName, xPos, yPos, radius, isToColor) {
 function computePositionAndRecolorCircles(i, j, numOfAisles, aisleLength, itemsDirectionsMat) {
     //i - the vertex row number (0 < i < aisleLength * 3)
     //j - the vertex col number (0 < j < numOfAisles)
+    i = parseInt(i);
+    j = parseInt(j);
     var space = 0.05; //Space for the rectangles of the entrance and the counters/exit
     var rectWidthPercent = 0.7;
     var rectHeightPercent = 0.3;
@@ -478,21 +480,22 @@ function computePositionAndRecolorCircles(i, j, numOfAisles, aisleLength, itemsD
     recolorCircle("mapCanvas", xPos, yPos2, radius, isToColor2);
 }
 
-function displayItems(route, routeIndex, itemsDirectionsMat, row, col) {
+function displayItems(curr, itemsDirectionsMat, row, col) {
     if (itemsDirectionsMat[row][col] != "|") {
         alert(itemsDirectionsMat[row][col]);
         allItems = itemsDirectionsMat[row][col].split("|");
-        leftItems = allItems[0].substring(0, leftRightItems[0].length - 1).split(","); //substring() in order to remove the last comma
+        leftItems = allItems[0].substring(0, allItems[0].length - 1).split(","); //substring() in order to remove the last comma
         rightItems = allItems[1].substring(1).split(","); //substring() in order to remove the first comma
-        curr = route[routeIndex].split(",");
-        if (curr[3] == 0) { // The direction is down --> Changing oriantaion
+        if (curr.split(",")[3] == 0) { // The direction is down --> Changing oriantaion
             var tmp = leftItems;
             leftItems = rightItems;
-            rightItems = leftItems;
+            rightItems = tmp;
         }
-        var reminder = "Don't forget!!"
-            + "\nOn your left: " + leftItems
-            + "\nOn your right: " + rightItems;
+        var reminder = "Don't forget!!";
+        if (leftItems != "")
+            reminder += "\nOn your left: " + leftItems;
+        if (rightItems != "")
+            reminder += "\nOn your right: " + rightItems;
         alert(reminder);
     }
     else {
@@ -500,11 +503,15 @@ function displayItems(route, routeIndex, itemsDirectionsMat, row, col) {
     }
 }
 
-function navigateRoute(route, cartID, numOfAisles, aislesLength, itemsDirectionsMat) {
+function navigateRoute_origin(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat) {
+    alert("here1");
     var row = 0;
     var col = 0;
     var routeIndex = 0;
-    while (routeIndex < route.length) { //Break when the route is finished
+    while (route[routeIndex].split(",")[0] % 1 != 0)
+        routeIndex++;
+    while (routeIndex < route.length) { //Break when the route is finished        
+        alert("here2");
         setTimeout(function () {
             $.ajax({
                 contentType: JSON,
@@ -521,38 +528,81 @@ function navigateRoute(route, cartID, numOfAisles, aislesLength, itemsDirections
                             computePositionAndRecolorCircles(row, col, numOfAisles, aisleLength, itemsDirectionsMat);
                         displayItems(route, currentRouteIndex, isUp, itemsDirectionsMat, row, col);
                         routeIndex++;
+                        while (route[routeIndex].split(",")[0] % 1 != 0)
+                            routeIndex++;
                     }
                 }
             });
-        }, 2000);
+        }, 1000);
     }
 }
 
+function navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat, routeIndex, row, col) {
+    alert("here1   route = " + route + ", routeIndex = " + routeIndex);
+    while (routeIndex < route.length && route[routeIndex].split(",")[0] % 1 != 0) { //Break when the route is finished        
+        //alert("here2   current position = " + route[routeIndex]);
+        routeIndex++;
+    }
+    if (routeIndex == route.length) {
+        alert("Done!");
+        return;
+    }
+    alert("here333333   current position = " + route[routeIndex]);
+    $.ajax({
+        contentType: JSON,
+        url: "https://manageitemslist.azurewebsites.net/api/PollingForNewVertex?code=SP3MAK6X4vwWPgJuUEcc2nBTPiTSWsaOm4qPSFB1ONXnmxSnmYgMQw==&cartID=" + cartID,
+        type: "GET",
+        error: function () { alert('An error occured...'); },
+        success: function (response) { //response = json(row,col)
+            alert("response = " + response);
+            var responseJson = JSON.parse(response);
+            if (responseJson['row'] != row || responseJson['col'] != col) {
+                row = responseJson['row'];
+                col = responseJson['col'];
+                if (route[routeIndex].split(",")[2] == 1) //There are products now
+                    computePositionAndRecolorCircles(row, col, numOfAisles, aisleLength, itemsDirectionsMat);
+                displayItems(route[routeIndex], itemsDirectionsMat, row, col);
+                routeIndex++;
+            }
+            setTimeout(function () {
+                navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat, routeIndex, row, col);
+            }, 1000);
+        }
+    });
+}
+
+
 function computeRoute(superID, cartID, itemsList) {
     var parameters = JSON.stringify({ 'superID': superID, 'itemsList': itemsList });
+    var route, numOfAisles, aisleLength, itemsDirectionsMat;
     $.ajax({
         contentType: JSON,
         url: "https://manageitemslist.azurewebsites.net/api/HttpTriggerCSharp1?code=GHkR/DMv0Cvw77Hp5bT6KaD4OK5X8xHnJMhGtDXwaS1VzoNPm/s8KQ==&parameters=" + parameters,
         type: "GET",
         error: function () { alert('An error occured in computeRoute...'); },
         success: function (response) {
-            alert(response);
+            //alert(response);
             var responseJson = JSON.parse(response);
-            var route = responseJson['route'].split("|");
+            /*var*/ route = responseJson['route'].split("|");
             var rows = responseJson['rows'];
             var cols = responseJson['cols'];
-            var itemsDirectionsMat = directionsStringToMat(responseJson['directions'], rows, cols);
-            var aisleLength = rows / 3;
-            var numOfAisles = cols
+            /*var*/ itemsDirectionsMat = directionsStringToMat(responseJson['directions'], rows, cols);
+            /*var*/ aisleLength = rows / 3;
+            /*var*/ numOfAisles = cols
             drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat);
             //navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat);
-            computePositionAndRecolorCircles(0, 0, numOfAisles, aisleLength, itemsDirectionsMat)
+            /*computePositionAndRecolorCircles(0, 0, numOfAisles, aisleLength, itemsDirectionsMat)
             computePositionAndRecolorCircles(1, 0, numOfAisles, aisleLength, itemsDirectionsMat)
             computePositionAndRecolorCircles(2, 0, numOfAisles, aisleLength, itemsDirectionsMat)            
-            computePositionAndRecolorCircles(3, 0, numOfAisles, aisleLength, itemsDirectionsMat)
+            computePositionAndRecolorCircles(3, 0, numOfAisles, aisleLength, itemsDirectionsMat)*/
 
         }
     });
+    /**/
+    setTimeout(function () {
+        navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat, 0, -1, -1);
+    }, 2500);
+    /**/
 }
 
 function openPopup() {
