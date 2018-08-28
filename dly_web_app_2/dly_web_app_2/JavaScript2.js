@@ -517,7 +517,8 @@ function navigateRoute(route, cartID, numOfAisles, aislesLength, itemsDirections
                     if (responseJson['row'] != row || responseJson['col'] != col) {
                         row = responseJson['row'];
                         col = responseJson['col'];
-                        computePositionAndRecolorCircles(row, col, numOfAisles, aisleLength, itemsDirectionsMat);
+                        if (route[routeIndex].split(",")[2] == 1) //There are products now
+                            computePositionAndRecolorCircles(row, col, numOfAisles, aisleLength, itemsDirectionsMat);
                         displayItems(route, currentRouteIndex, isUp, itemsDirectionsMat, row, col);
                         routeIndex++;
                     }
@@ -547,9 +548,7 @@ function computeRoute(superID, cartID, itemsList) {
             //navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat);
             computePositionAndRecolorCircles(0, 0, numOfAisles, aisleLength, itemsDirectionsMat)
             computePositionAndRecolorCircles(1, 0, numOfAisles, aisleLength, itemsDirectionsMat)
-            computePositionAndRecolorCircles(2, 0, numOfAisles, aisleLength, itemsDirectionsMat)
-
-
+            computePositionAndRecolorCircles(2, 0, numOfAisles, aisleLength, itemsDirectionsMat)            
             computePositionAndRecolorCircles(3, 0, numOfAisles, aisleLength, itemsDirectionsMat)
 
         }
