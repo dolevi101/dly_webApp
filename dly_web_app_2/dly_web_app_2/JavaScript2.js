@@ -14,11 +14,22 @@
     return itemsDirectionsMat;
 }
 
+function drawBorder(ctx, xPos, yPos, width, height) {
+    var thickness = 1;
+    ctx.fillStyle = '#000';
+    ctx.fillRect(xPos - (thickness), yPos - (thickness), width + (thickness * 2), height + (thickness * 2));
+}
+
 function createRectangle(canvasName, x, y, width, height) {
     var c = document.getElementById(canvasName);
     var ctx = c.getContext("2d");
-    ctx.rect(x, y, width, height);
-    ctx.stroke();
+
+    drawBorder(ctx, x, y, width, height);
+    ctx.fillStyle = "lightgray";
+    ctx.fillRect(x, y, width, height);
+
+    /*ctx.rect(x, y, width, height);
+    ctx.stroke();*/
 }
 
 function create3Circles(canvasName, startXPos, yPos, radius, distanceBetweenCircles, isToColor) {
@@ -26,13 +37,18 @@ function create3Circles(canvasName, startXPos, yPos, radius, distanceBetweenCirc
     var ctx = c.getContext("2d");
     var xPos = startXPos;
     for (var i = 0; i < 3; i++) {
-        ctx.beginPath();
-        ctx.arc(xPos, yPos, radius, 0, 2 * Math.PI);
         if (isToColor[i]) {
-            ctx.fillStyle = 'red';
+            ctx.beginPath();
+            ctx.arc(xPos, yPos, radius, 0, 2 * Math.PI);
+            //if (isToColor[i]) {
+            ctx.fillStyle = 'white';//'#02334E';
+            ctx.lineWidth = 3;
             ctx.fill();
+            //}
+            ctx.stroke();
+            ctx.lineWidth = 1;
+
         }
-        ctx.stroke();
         xPos += distanceBetweenCircles;
     }
 }
@@ -61,7 +77,7 @@ function createLine2(canvasName, startWPos, startHPos, cellWidth, wDistance, hDi
 
     //var toRun = 9;
     for (var i = 0; i < route.length - 1; i++) {
-    //for (var i = 0; i <= toRun && i < route.length - 1; i++) {
+        //for (var i = 0; i <= toRun && i < route.length - 1; i++) {
         curr = route[i].split(',');
         next = route[i + 1].split(',');
         /*if (i == toRun) {
@@ -185,7 +201,7 @@ function createLine2(canvasName, startWPos, startHPos, cellWidth, wDistance, hDi
         wPos += betRectsWDistance;
         ctx.lineTo(wPos, hPos);
     }*/
-    
+
     if (need1Div6 > 0) {
         hPos += hDistance / 6 * need1Div6;
         //alert("Need 1Div6 in the end");
@@ -208,6 +224,8 @@ function createLine2(canvasName, startWPos, startHPos, cellWidth, wDistance, hDi
     ctx.lineTo(wPos - headlen * Math.cos(angle - Math.PI / 6), hPos - headlen * Math.sin(angle - Math.PI / 6));
     ctx.moveTo(wPos, hPos);
     ctx.lineTo(wPos - headlen * Math.cos(angle + Math.PI / 6), hPos - headlen * Math.sin(angle + Math.PI / 6));/**/
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = "white";
     ctx.stroke();
 }
 
@@ -264,9 +282,9 @@ function createLine3(canvasName, startWPos, startHPos, cellWidth, wDistance, hDi
                 }
             }
             if (Math.abs(curr[0] - next[0]) == 0.5) {
-                if (curr[0] > 0 && curr[0] < maxRow) 
+                if (curr[0] > 0 && curr[0] < maxRow)
                     wPos += betRectsWDistance * (next[0] - curr[0]);
-                else 
+                else
                     wPos += onEdgeWDistance * (next[0] - curr[0]) * 2;
                 ctx.lineTo(wPos, hPos);
             }
@@ -287,9 +305,9 @@ function createLine3(canvasName, startWPos, startHPos, cellWidth, wDistance, hDi
             }
         }
     }
-    if (need1Div6 > 0) 
+    if (need1Div6 > 0)
         hPos += hDistance / 6 * need1Div6;
-    if (already1Div6 > 0) 
+    if (already1Div6 > 0)
         hPos -= hDistance / 6 * already1Div6;
     hPos += hDistance * 6 / 7;///////Change both of line if needed
     ctx.lineTo(wPos, hPos);
@@ -304,7 +322,12 @@ function createLine3(canvasName, startWPos, startHPos, cellWidth, wDistance, hDi
     ctx.lineTo(wPos - headlen * Math.cos(angle - Math.PI / 6), hPos - headlen * Math.sin(angle - Math.PI / 6));
     ctx.moveTo(wPos, hPos);
     ctx.lineTo(wPos - headlen * Math.cos(angle + Math.PI / 6), hPos - headlen * Math.sin(angle + Math.PI / 6));/**/
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = "white";
     ctx.stroke();
+
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "black";
 }
 
 
@@ -318,8 +341,13 @@ function createEntrance(canvasName, cellHeight, x, y) {
     //The width of the string
     var width = ctx.measureText(" Entrance ").width;
     // draw the rect
-    ctx.strokeRect(x, y - cellHeight, width, cellHeight);
+    drawBorder(ctx, x, y - cellHeight, width, cellHeight);
+    ctx.fillStyle = "lightgray";
+    ctx.fillRect(x, y - cellHeight, width, cellHeight);/**/
+    //ctx.strokeRect(x, y - cellHeight, width, cellHeight);
+
     // draw our text
+    ctx.fillStyle = "black";
     ctx.fillText(" Entrance ", x, y - cellHeight / 3);
 }
 
@@ -334,8 +362,13 @@ function createExit(canvasName, cellHeight, x, y) {
     var width = ctx.measureText(" Exit ").width;
     x -= width;
     // draw the rect
-    ctx.strokeRect(x, y - cellHeight, width, cellHeight);
+    drawBorder(ctx, x, y - cellHeight, width, cellHeight);
+    ctx.fillStyle = "lightgray";
+    ctx.fillRect(x, y - cellHeight, width, cellHeight);/**/
+    //ctx.strokeRect(x, y - cellHeight, width, cellHeight);
+
     // draw our text
+    ctx.fillStyle = "black";
     ctx.fillText(" Exit ", x, y - cellHeight / 3);
 }
 
@@ -346,7 +379,8 @@ function drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat) { //aisleL
     var rectHeightPercent = 0.3;
     var width = window.screen.availWidth;
     var height = window.screen.availHeight;
-    var canvas = "<canvas id=\"mapCanvas\" width =\"" + width + "\" height=\"" + height + "\" style = \"position: absolute; top: " + /*height + */"0px; left: 0px \"></canvas>";
+
+    var canvas = "<canvas id=\"mapCanvas\" width =\"" + width + "\" height=\"" + height + "\" style = \"position: absolute; top: 0px; left: 0px; background: #095680\"></canvas>";
     $("#MapPage").html(canvas);
 
     createEntrance("mapCanvas", space * height, (1 - rectWidthPercent) / 2 * (width / aisleLength), space * height);
@@ -392,20 +426,32 @@ function drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat) { //aisleL
 }
 
 function recolorCircle(canvasName, xPos, yPos, radius, isToColor) {
-    var c = document.getElementById(canvasName);
-    var ctx = c.getContext("2d");
-    ctx.beginPath();
-    ctx.arc(xPos, yPos, radius, 0, 2 * Math.PI);
-    if (isToColor)
-        ctx.fillStyle = 'green';
-    else
-        ctx.fillStyle = 'LawnGreen';
-    ctx.fill();
-    ctx.stroke();
+    if (isToColor) {
+        /*var c = document.getElementById(canvasName);
+        var p = c.getContext("2d");
+        p.beginPath();
+        p.arc(xPos, yPos, radius*1.2, 0, 2 * Math.PI);
+        p.lineWidth = 0;
+        //p.stroke();
+        p.fillStyle = '#777';
+        p.fill();*/
+        var c = document.getElementById(canvasName);
+        var ctx = c.getContext("2d");
+        ctx.beginPath();
+        ctx.arc(xPos, yPos, radius * 1.2, 0, 2 * Math.PI);
+        //if (isToColor)
+        ctx.fillStyle = '#00b300'; //'green';
+        //ctx.strokeStyle = "#00b300";
+
+        //else
+        //    ctx.fillStyle = '#397DA1';//'LawnGreen';
+        ctx.fill();
+        //ctx.stroke();
+    }
 }
 
 function computePositionAndRecolorCircles(i, j, numOfAisles, aisleLength, itemsDirectionsMat) {
-    //i - the vertex row number (0 < i < aisleLength)
+    //i - the vertex row number (0 < i < aisleLength * 3)
     //j - the vertex col number (0 < j < numOfAisles)
     var space = 0.05; //Space for the rectangles of the entrance and the counters/exit
     var rectWidthPercent = 0.7;
@@ -424,11 +470,11 @@ function computePositionAndRecolorCircles(i, j, numOfAisles, aisleLength, itemsD
         return;
     //up circles
     var yPos1 = y + radius + 0.5 * radius + cellHeight;
-    var isToColor1 = (itemsDirectionsMat[i][j] != "|");
+    var isToColor1 = (itemsDirectionsMat[i][j].includes("|,"));
     recolorCircle("mapCanvas", xPos, yPos1, radius, isToColor1);
     //down circles
     var yPos2 = y + rectHeightPercent * cellHeight - (radius + 0.5 * radius);
-    var isToColor2 = (itemsDirectionsMat[i][j] != "|");
+    var isToColor2 = (itemsDirectionsMat[i][j].includes(",|"));
     recolorCircle("mapCanvas", xPos, yPos2, radius, isToColor2);
 }
 
@@ -498,7 +544,14 @@ function computeRoute(superID, cartID, itemsList) {
             var aisleLength = rows / 3;
             var numOfAisles = cols
             drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat);
-            //navigateRoute(route, cartID, numOfAisles, aislesLength, itemsDirectionsMat);
+            //navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat);
+            computePositionAndRecolorCircles(0, 0, numOfAisles, aisleLength, itemsDirectionsMat)
+            computePositionAndRecolorCircles(1, 0, numOfAisles, aisleLength, itemsDirectionsMat)
+            computePositionAndRecolorCircles(2, 0, numOfAisles, aisleLength, itemsDirectionsMat)
+
+
+            computePositionAndRecolorCircles(3, 0, numOfAisles, aisleLength, itemsDirectionsMat)
+
         }
     });
 }
