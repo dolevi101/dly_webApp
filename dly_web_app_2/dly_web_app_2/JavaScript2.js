@@ -482,7 +482,7 @@ function computePositionAndRecolorCircles(i, j, numOfAisles, aisleLength, itemsD
 
 function displayItems(curr, itemsDirectionsMat, row, col) {
     if (itemsDirectionsMat[row][col] != "|") {
-        alert(itemsDirectionsMat[row][col]);
+        //alert(itemsDirectionsMat[row][col]);
         allItems = itemsDirectionsMat[row][col].split("|");
         leftItems = allItems[0].substring(0, allItems[0].length - 1).split(","); //substring() in order to remove the last comma
         rightItems = allItems[1].substring(1).split(","); //substring() in order to remove the first comma
@@ -503,42 +503,8 @@ function displayItems(curr, itemsDirectionsMat, row, col) {
     }
 }
 
-function navigateRoute_origin(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat) {
-    alert("here1");
-    var row = 0;
-    var col = 0;
-    var routeIndex = 0;
-    while (route[routeIndex].split(",")[0] % 1 != 0)
-        routeIndex++;
-    while (routeIndex < route.length) { //Break when the route is finished        
-        alert("here2");
-        setTimeout(function () {
-            $.ajax({
-                contentType: JSON,
-                url: "https://manageitemslist.azurewebsites.net/api/PollingForNewVertex?code=SP3MAK6X4vwWPgJuUEcc2nBTPiTSWsaOm4qPSFB1ONXnmxSnmYgMQw==&cartID=" + cartID,
-                type: "GET",
-                error: function () { alert('An error occured...'); },
-                success: function (response) { //response = json(row,col)
-                    alert(response);
-                    var responseJson = JSON.parse(response);
-                    if (responseJson['row'] != row || responseJson['col'] != col) {
-                        row = responseJson['row'];
-                        col = responseJson['col'];
-                        if (route[routeIndex].split(",")[2] == 1) //There are products now
-                            computePositionAndRecolorCircles(row, col, numOfAisles, aisleLength, itemsDirectionsMat);
-                        displayItems(route, currentRouteIndex, isUp, itemsDirectionsMat, row, col);
-                        routeIndex++;
-                        while (route[routeIndex].split(",")[0] % 1 != 0)
-                            routeIndex++;
-                    }
-                }
-            });
-        }, 1000);
-    }
-}
-
 function navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat, routeIndex, row, col) {
-    alert("here1   route = " + route + ", routeIndex = " + routeIndex);
+    //alert("here1   route = " + route + ", routeIndex = " + routeIndex);
     while (routeIndex < route.length && route[routeIndex].split(",")[0] % 1 != 0) { //Break when the route is finished        
         //alert("here2   current position = " + route[routeIndex]);
         routeIndex++;
@@ -547,28 +513,47 @@ function navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsM
         alert("Done!");
         return;
     }
-    alert("here333333   current position = " + route[routeIndex]);
+
+    ////////////////////////////maually updating shopping carts positions
+    var newPosition = route[routeIndex].split(",");
+    //alert(newPosition[0] + "," + newPosition[1] + "," + cartID);
     $.ajax({
         contentType: JSON,
-        url: "https://manageitemslist.azurewebsites.net/api/PollingForNewVertex?code=SP3MAK6X4vwWPgJuUEcc2nBTPiTSWsaOm4qPSFB1ONXnmxSnmYgMQw==&cartID=" + cartID,
+        url: "https://manageitemslist.azurewebsites.net/api/UpdatingPositionManualy?code=VS25ItApL1ijOh1CaI7tLU/97UziIT5PGIAT5am1ljDm0Dm9UkNeHQ==&parameters=" + newPosition[0] + "," + newPosition[1] + "," + cartID,
         type: "GET",
-        error: function () { alert('An error occured...'); },
-        success: function (response) { //response = json(row,col)
-            alert("response = " + response);
-            var responseJson = JSON.parse(response);
-            if (responseJson['row'] != row || responseJson['col'] != col) {
-                row = responseJson['row'];
-                col = responseJson['col'];
-                if (route[routeIndex].split(",")[2] == 1) //There are products now
-                    computePositionAndRecolorCircles(row, col, numOfAisles, aisleLength, itemsDirectionsMat);
-                displayItems(route[routeIndex], itemsDirectionsMat, row, col);
-                routeIndex++;
-            }
-            setTimeout(function () {
-                navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat, routeIndex, row, col);
-            }, 1000);
-        }
+        error: function () { alert('Failed updating...'); },
+        success: function () { alert("Updated successfully: " + newPosition[0] + "," + newPosition[1]); }
     });
+
+    setTimeout(function () {
+        $.ajax({
+            contentType: JSON,
+            url: "https://manageitemslist.azurewebsites.net/api/PollingForNewVertex?code=SP3MAK6X4vwWPgJuUEcc2nBTPiTSWsaOm4qPSFB1ONXnmxSnmYgMQw==&cartID=" + cartID,
+            type: "GET",
+            error: function () { alert('An error occured...'); },
+            success: function (response) { //response = json(row,col)
+                //alert("response = " + response);
+                var responseJson = JSON.parse(response);
+                var newPosition = route[routeIndex].split(",");
+                if (responseJson['row'] != row || responseJson['col'] != col) {
+                    if (newPosition[0] = responseJson['row'] || newPosition[1] == responseJson['col']) {
+                        row = responseJson['row'];
+                        col = responseJson['col'];
+                        if (newPosition[2] == 1) //There are products now
+                            computePositionAndRecolorCircles(row, col, numOfAisles, aisleLength, itemsDirectionsMat);
+                        displayItems(route[routeIndex], itemsDirectionsMat, row, col);
+                        routeIndex++;
+                    }
+                    else
+                        alert("Please continue along the suggested route :)");
+                }
+                setTimeout(function () {
+                    navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat, routeIndex, row, col);
+                }, 10);
+            }
+        });
+    }, 1000);
+
 }
 
 
@@ -590,7 +575,9 @@ function computeRoute(superID, cartID, itemsList) {
             /*var*/ aisleLength = rows / 3;
             /*var*/ numOfAisles = cols
             drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat);
-            //navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat);
+            setTimeout(function () {
+                navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat, 0, -1, -1);
+            }, 1000);
             /*computePositionAndRecolorCircles(0, 0, numOfAisles, aisleLength, itemsDirectionsMat)
             computePositionAndRecolorCircles(1, 0, numOfAisles, aisleLength, itemsDirectionsMat)
             computePositionAndRecolorCircles(2, 0, numOfAisles, aisleLength, itemsDirectionsMat)            
@@ -598,10 +585,10 @@ function computeRoute(superID, cartID, itemsList) {
 
         }
     });
-    /**/
+    /*
     setTimeout(function () {
         navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat, 0, -1, -1);
-    }, 2500);
+    }, 5000);
     /**/
 }
 
