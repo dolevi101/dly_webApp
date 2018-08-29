@@ -24,7 +24,7 @@
             .on("filterablefilter", function () {
                 selectmenu.selectmenu("refresh");
             });
-    })
+    });
 
 
 
@@ -50,7 +50,7 @@ function getAllItems() {
                 items = data.split("|");
                 items.forEach(function (item) {
                     listItems.innerHTML = listItems.innerHTML + "<option value=\"" + item + "\" data-filtertext=\"" + item + "\">" + item + "</option>";
-                })
+                });
             }
         }
     });

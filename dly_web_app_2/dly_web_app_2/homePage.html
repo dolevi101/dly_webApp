@@ -53,44 +53,61 @@
 <body>
     <script>
         $(document).on("pageshow", function () { addToPage(); });
+        $(document).on("pageload", function () { addToPage(); });
     </script>
 
     <!--homePage-->
     <div data-role="page" class="pages" id="home">
         <div data-role="content" class="page_content" id="home_content" style="align-self:center;">
-            <center style="height:100%;"><table id="home_table" style="height:95%;">
+            <center style="height:100%;">
+                <table id="home_table" style="height:95%;">
                     <tr style="height:10%;"><td id="home_username" style="width:inherit;"></td></tr>
-                    <tr style="height:60%;"><td>
-                        <img src="images/logo2.png" style="width:100%" />
-                    </td></tr>
-                    <tr style="height:15%;"><td><center>
-                            <a data-role="button" href="#login" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; margin-top:50%">LOGIN</a>
-                        </center></td></tr>
-                    <tr style="height:15%;"><td><center>
-                        <a data-role="button" href="#about" class="blueButton" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">ABOUT US</a>
-                    </center></td></tr>
-                </table></center>
+                    <tr style="height:60%;">
+                        <td>
+                            <img src="images/logo2.png" style="width:100%" />
+                            <a href="#selectSupermarket">bla bla bla</a>
+                        </td>
+                    </tr>
+                    <tr style="height:15%;">
+                        <td>
+                            <center>
+                                <a data-role="button" href="#login" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; margin-top:50%">LOGIN</a>
+                            </center>
+                        </td>
+                    </tr>
+                    <tr style="height:15%;">
+                        <td>
+                            <center>
+                                <a data-role="button" href="#about" class="blueButton" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">ABOUT US</a>
+                            </center>
+                        </td>
+                    </tr>
+                </table>
+            </center>
         </div>
     </div>
 
     <!--login-->
     <div data-role="page" class="pages" id="login">
         <div data-role="content" class="page_content" id="login_content">
-            <center style="height:100%;"><table id="login_table" style="height:95%;">
+            <center style="height:100%;">
+                <table id="login_table" style="height:95%;">
                     <tr style="height:10%;"><td></td></tr>
                     <tr style="height:60%;"><td><img src="images/logo2.png" style="width:100%" /></td></tr>
                     <tr style="height:10%;"><td><input type="text" class="textinput" id="username_l" data-clear-btn="true" placeholder="ENTER YOUR USERNAME.." style="color:#095680;" /></td></tr>
                     <tr style="height:10%;"><td><input type="password" id="password_l" data-clear-btn="true" placeholder="ENTER YOUR PASSWORD.." style="color:#095680;" /></td></tr>
                     <tr style="height:10%;"><td><center><a data-role="button" style="padding:5%;border-radius:12px; width:90%;background-color:#095680; border-width:0; color:white;" onclick="login()">LOGIN</a></center></td></tr>
                     <tr style="height:10%;"><td><center><a href="#register" style="color:#095680;">NOT A MEMBER YET ? SIGN UP NOW</a></center></td></tr>
-            </table></center>
+                </table>
+            </center>
         </div>
     </div>
 
     <!--register-->
     <div data-role="page" class="pages" id="register">
         <div data-role="content" class="page_content" id="register_content">
-            <center style="height:100%;"><table id="register_table" style="height:95%;">
+            <center style="height:100%;">
+                <table id="register_table" style="height:95%;">
                     <tr style="height:10%;"><td></td></tr>
                     <tr style="height:45%;"><td><img src="images/logo2.png" style="width:100%" /></td></tr>
                     <tr style="height:50%;"><td id="isUsernameOK" style="width:inherit; height:inherit; color:white; font-size:larger; font-variant-caps:petite-caps;" ;"></td></tr>
@@ -98,66 +115,87 @@
                     <tr style="height:10%;"><td><input type="text" id="name_r" data-clear-btn="true" placeholder="ENTER YOUR NAME.." style="color:#095680;" /></td></tr>
                     <tr style="height:10%;"><td><input type="password" id="password_r" data-clear-btn="true" placeholder="ENTER YOUR PASSWORD.." style="color:#095680;" /></td></tr>
                     <tr style="height:10%;"><td><center><a data-role="button" id="registerButton" style="padding:5%;border-radius:12px; width:90%;background-color:#095680; border-width:0; color:white;" onclick="register();">REGISTER</a></center></td></tr>
-            </table></center>
+                </table>
+            </center>
         </div>
     </div>
 
     <!--logged_in-->
     <div data-role="page" class="pages" id="logged_in">
         <div data-role="content" class="page_content" id="login_content">
-            <center style="height:100%;"><table id="login_table" style="height:95%;">
+            <center style="height:100%;">
+                <table id="login_table" style="height:95%;">
                     <tr style="height:10%;"><td></td></tr>
                     <tr style="height:70%;"><td><img src="images/logo2.png" style="width:100%" /></td></tr>
                     <tr style="height:10%;"><td><center><a data-role="button" href="#options" style="padding:5%;border-radius:12px; width:90%;background-color:#095680; border-width:0; color:white;">CONTINUE</a></center></td></tr>
                     <tr style="height:10%;"><td><center><a data-role="button" style="padding:5%;border-radius:12px; width:90%;background-color:#095680; border-width:0; color:white;" onclick="{ logout(); return false; }">LOG IN AS A DIFFERENT USER</a></center></td></tr>
-           </table></center>
+                </table>
+            </center>
         </div>
     </div>
 
     <!--options-->
     <div data-role="page" class="pages" id="options">
         <div data-role="content" class="page_content" id="options_content">
-            <center style="height:100%;"><table style="height:95%;">
+            <center style="height:100%;">
+                <table style="height:95%;">
                     <tr style="height:10%;"><td id="options_username"></td></tr>
-                    <tr style="height:60%;"><td>
-                        <img src="images/logo2.png" style="width:100%" />
-                    </td></tr>
-                    <tr style="height:15%;"><td>
-                        <center><a data-role="button" href="#makeList" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; margin-top:50%">CREATE A NEW LIST</a></center>
-                    </td></tr>
-                    <tr style="height:15%;"><td>
-                        <center><a data-role="button" href="#oldLists" class="blueButton" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">LOAD A LIST</a></center>
-                    </td></tr>
-            </table></center>
+                    <tr style="height:60%;">
+                        <td>
+                            <img src="images/logo2.png" style="width:100%" />
+                        </td>
+                    </tr>
+                    <tr style="height:15%;">
+                        <td>
+                            <center><a data-role="button" href="#makeList" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; margin-top:50%">CREATE A NEW LIST</a></center>
+                        </td>
+                    </tr>
+                    <tr style="height:15%;">
+                        <td>
+                            <center><a data-role="button" href="#oldLists" class="blueButton" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">LOAD A LIST</a></center>
+                        </td>
+                    </tr>
+                </table>
+            </center>
         </div>
     </div>
 
     <!--makeList-->
     <div data-role="page" class="pages" id="makeList">
         <div data-role="content" class="page_content" id="makeList_content">
-            <center style="height:100%;"><table style="height:95%; width:100%;">
-                <tr style="height:10%;"><td colspan="2" id="makeList_username"></td></tr>
-                <tr style="height:10%;"><td colspan="2"><center><h2 style="color:white">CREATE A LIST</h2></center></td></tr>
-                <tr style="height:10%; width:100%;"><td colspan="2" style="border:solid;">
-                    <select id="filter" data-native-menu="false" class="filterable-select" onchange="changeFunc();">
-                        <option>ADD PRODUCTS:</option>
-                        <option value="de" data-filtertext="Delhi">Delhi</option>
-                        <option value="pu" data-filtertext="Chandigarh">Chandigarh</option>
-                        <option value="ch" data-filtertext="Chennai">Chennai</option>
-                        <option value="mu" data-filtertext="Mumbai">Mumbai</option>
-                    </select></td></tr>
-                <tr style="height:60%; width:100%;">
-                    <td colspan="2" style="border:solid;">
-                        <div style="overflow:scroll; height:100%; width:100%; width:inherit;">
-                            <ul data-role="listview" id="current_list" style="height:initial;">
-                            </ul>
-                        </div>
-                    </td>
-                </tr>
+            <center style="height:100%;">
+                <div data-role="popup" id="quantity_popup" style="background-color:white; color:#095680; height:200px; width:300px; align-content:center; vertical-align:central;">
+                    <h3 id="name_of_item"></h3>
+                    <input type="hidden" id="itemName" value="undefined" />
+                    <input type="number" placeholder="how many?" min="1" max="10" id="quantity_of_item" />
+                    <center><a data-role="button" onclick="addItem($('#itemName').val());" class="blueButton" style=" border-radius:12px; width:80% ;padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">ADD TO CART</a></center>
+
+                </div>
+                <table style="height:95%; width:100%;">
+                    <tr style="height:10%;"><td colspan="2" id="makeList_username"></td></tr>
+                    <tr style="height:10%;"><td colspan="2"><center><h2 style="color:white">CREATE A LIST</h2></center></td></tr>
+                    <tr style="height:30%; width:100%;">
+                        <!--<td colspan="2" style="border:solid;" id="select_placeholder2">
+
+            </td>-->
+                        <td colspan="2" style="border:solid;">
+                            <div style="overflow:scroll; height:100%; width:100%; width:inherit;">
+                                <ul data-role="listview" id="items_list" data-filter="true" data-filter-placeholder="Search for item..." data-inset="true" style="height:initial;"></ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr style="height:40%; width:100%;">
+                        <td colspan="2" style="border:solid;">
+                            <div style="overflow:scroll; height:100%; width:100%; width:inherit;">
+                                <ul data-role="listview" id="current_list" style="height:initial;"></ul>
+                            </div>
+                        </td>
+                    </tr>
                     <tr style="width:100%; height:10%;"><td style="width:50%;"><center><a data-role="button" href="#oldLists" class="blueButton" style=" border-radius:12px; width:80% ;padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">FINISH</a></center></td><td style="width:50%;"><center><a data-role="button" href="#oldLists" class="blueButton" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">NAVIGATE    </a></center></td></tr>
                 </table>
             </center>
         </div>
+
     </div>
 
     <!--oldLists-->
@@ -170,6 +208,86 @@
                     <tr style="width:100%; height:80%;">
                         <td>
                             <ul data-role="listview" id="oldListsView" class="ui-listview"></ul>
+                        </td>
+                    </tr>
+                </table>
+            </center>
+        </div>
+    </div>
+
+    <!--selectSupermarket-->
+    <div data-role="page" class="pages" id="selectSupermarket">
+        <div data-role="content" class="page_content" id="selectSupermarket_content">
+            <center style="height:100%;">
+                <table style="height:95%; width:100%;">
+                    <tr style="height:10%;"><td id="selectSupermarket_username"></td></tr>
+                    <tr style="width:100%; height:10%;"><td><center><h1 style="color:white">CHOOSE WHERE TO SHOP</h1></center></td></tr>
+                    <tr style="height:60%;">
+                        <td>
+                            <img src="images/logo2.png" style="width:100%" />
+                        </td>
+                    </tr>
+                    <tr style="height:10%;">
+                        <td id="select_placeholder">
+                        </td>
+                    </tr>
+                    <tr style="height:10%;">
+                        <td>
+                            <center><a data-role="button" class="blueButton" onclick="loadSupermarket();" style=" border-radius:12px; width:80% ;padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">START SHOPPING</a></center>
+                        </td>
+                    </tr>
+                </table>
+            </center>
+        </div>
+        <script>
+            $("#selectSupermarket").on("pageshow", showSupermarkets());
+        </script>
+    </div>
+
+    <!--selectCart-->
+    <div data-role="page" class="pages" id="selectCart">
+        <div data-role="content" class="page_content" id="selectCart_content">
+            <center style="height:100%;">
+                <table style="height:95%; width:100%;">
+                    <tr style="width:100%; height:10%;"><td id="selectCart_username" style="width:inherit; "></td></tr>
+                    <tr style="width:100%; height:10%;"><td><center><h1 style="color:white">ENTER CART ID</h1></center></td></tr>
+                    <tr style="width:100%; height:10%;">
+                        <td>
+                            <center><h1 id="number" style="color:white;">- - -</h1></center>
+                        </td>
+                    </tr>
+                    <tr style="width:100%; height:60%;">
+                        <td>
+                            <table id="numpad" style="height:100%; width:100%; border:solid; border-color:black; background-color:white;">
+                                <tr style=" border:solid; border-color:black; ">
+                                    <td style="width:33%; background-color:lightgray; border:solid; border-color:black;" onclick="addNum(1);"><center><h1>1</h1></center></td>
+                                    <td style="width:33%; background-color:lightgray; border:solid; border-color:black; " onclick="addNum(2);"><center><h1>2</h1></center></td>
+                                    <td style="width:33%; background-color:lightgray; border:solid; border-color:black; " onclick="addNum(3);"><center><h1>3</h1></center></td>
+                                </tr>
+
+                                <tr style=" border:solid; border-color:black; ">
+                                    <td style="width:33%; background-color:lightgray; border:solid; border-color:black; " onclick="addNum(4);"><center><h1>4</h1></center></td>
+                                    <td style="width:33%; background-color:lightgray; border:solid; border-color:black; " onclick="addNum(5);"><center><h1>5</h1></center></td>
+                                    <td style="width:33%; background-color:lightgray; border:solid; border-color:black; " onclick="addNum(6);"><center><h1>6</h1></center></td>
+                                </tr>
+
+                                <tr style=" border:solid; border-color:black; ">
+                                    <td style="width:33%; background-color:lightgray; border:solid; border-color:black; " onclick="addNum(7);"><center><h1>7</h1></center></td>
+                                    <td style="width:33%; background-color:lightgray; border:solid; border-color:black; " onclick="addNum(8);"><center><h1>8</h1></center></td>
+                                    <td style="width:33%; background-color:lightgray; border:solid; border-color:black; " onclick="addNum(9);"><center><h1>9</h1></center></td>
+                                </tr>
+
+                                <tr style=" border:solid; border-color:black; ">
+                                    <td style="width:33%; background-color:lightgray; border:solid; border-color:black; "><center><h1> </h1></center></td>
+                                    <td style="width:33%; background-color:lightgray; border:solid; border-color:black; " onclick="addNum(0);"><center><h1>0</h1></center></td>
+                                    <td style="width:33%; background-color:lightgray; border:solid; border-color:black; " onclick="addNum(-1);"><center><h1>X</h1></center></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr style="height:10%;">
+                        <td>
+                            <center><a data-role="button" class="blueButton" onclick="" style=" border-radius:12px; width:80% ;padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">START SHOPPING</a></center>
                         </td>
                     </tr>
                 </table>

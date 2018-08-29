@@ -1,4 +1,11 @@
-﻿function checkNotEmpty(idList) {
+﻿function openPopup1(name) {
+    alert("open popup");
+    $("#name_of_item").text("HOW MANY " + name.toUpperCase() + " WOULD YOU LIKE?");
+    $("#itemName").val(name);
+    $("#quantity_popup").popup("open");
+}
+
+function checkNotEmpty(idList) {
     for (let id of idList) {
         if ($("#" + id).val() === "" || $("#" + id).val() === null) {
             alert("all fields must be filled.");
@@ -92,13 +99,14 @@ function createListView(data) {
     var json, id, date;
     var lst = "";
     var array = data.split("|");
+    $('#oldListsView').html("");
     for (let item of array) {
         json = JSON.parse(item);
         id = json['orderNum'];
         date = json['Date'];
-        lst += "<li data-icon='check'><a class='ui-btn ui-btn-icon-right ui-icon-check' style='color:#095680; border-color:#095680; border:solid; background-color:white; font-size:larger; ' href='#' onclick=useList(" + id + ");" + ">" + date + "</a></li>";
+        $('<li>').append('<a href="#" onclick="useList(' + id + ');" style="color: #095680; border-color: #095680; border: solid; background-color: white; font-size: larger;">' + date + '</a>').appendTo('#oldListsView');
     }
-    $("#oldListsView").html(lst);
+    $('#oldListsView').listview().listview('refresh');
 }
 
 function oldLists(username) {
@@ -124,12 +132,36 @@ function oldLists(username) {
 }
 
 function showMakeList() {
-    window.location.href = "#makeList";
+    if (localStorage.makeList) {
+        //load list
+        var json, name, quantity;
+        var array = (localStorage.shoppingList).split("|");
+        alert(array);
+        $('#current_list').html("");
+        for (let item of array) {
+            alert(item);
+            json = JSON.parse(item);
+            name = json["itemName"];
+            quantity = json["itemQuantity"];
 
+            str = "";
+            str += "<table style='width:100%;  background-color:white;'><tr style='width:100%;'>";
+            str += "<td style='width:33%;'><center>" + name.toUpperCase() + "</center></td>";
+            str += "<td style='width:33%;'><center> <input type='number' style='opacity: 1; ' value='" + quantity + "'> </center></td>";
+            str += "<td style='width:33%;'><center> <a data-role='button' class='fa fa-close' style='color: #095680; border-radius: 12px;' role='button' onclick='removeFromList(\"" + name + "\")'></a> </center></td>";
+            str += "</tr></table>";
+            $('<li>').attr({ 'id': 'item_' + name, 'style': 'color:#095680;' }).append(str).appendTo('#current_list');
+        }
+        $('#makeList').trigger('create');
+    }
+    //new list
+    getAllItems2();
+}
+/*
+function showMakeList1() {
     if (localStorage.listId) {
         //load list
         var id = localStorage.listId;
-        var table = "";
         var json, name, quantity;
         var parameters = JSON.stringify({ 'ordernum': id });
         $.ajax({
@@ -138,56 +170,159 @@ function showMakeList() {
             type: "GET",
             error: function () { alert('an error occured please try again later'); },
             success: function (data) {
-                //var count = 0;
-                var lst = "";
+                var str = "";
                 var array = data.split("|");
+                $('#current_list').html("");
                 for (let item of array) {
                     json = JSON.parse(item);
                     name = json['itemName'];
                     quantity = json['itemQuantity'];
 
-                    lst += '<li id="item_'+name+'" style="color:#095680; height:44px; padding-top:5px;" class="ui-li-static ui-body-inherit ui-first-child">';
-                    lst += '<table><tbody><tr style="height:initial;">';
-                    lst += ('<td style="width:60%"><center>' + name.toUpperCase() + '</center></td>');
-                    lst += ('<td style="width:20%"><center><div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset"><input type="number" style="opacity:1;" value="' + quantity + '"></div></center></td>');
-                    lst += '<td style="width:20%"><center><a data-role="button" class="fa fa-close ui-btn" style="color:#095680; border-radius:12px;" role="button" onclick="removeFromList(\'' + name+'\')"></a></center></td>';
-                    lst += '</tr></tbody></table>';
-                    lst += '</li>';
-                    //count = count + 1;
-
+                    str = "";
+                    str += "<table style='width:100%;  background-color:white;'><tr style='width:100%;'>";
+                    str += "<td style='width:33%;'><center>" + name.toUpperCase() + "</center></td>";
+                    str += "<td style='width:33%;'><center> <input type='number' style='opacity: 1; ' value='" + quantity + "'> </center></td>";
+                    str += "<td style='width:33%;'><center> <a data-role='button' class='fa fa-close' style='color: #095680; border-radius: 12px;' role='button' onclick='removeFromList(\"" + name + "\")'></a> </center></td>";
+                    str += "</tr></table>";
+                    $('<li>').attr({ 'id': 'item_' + name, 'style': 'color:#095680;' }).append(str).appendTo('#current_list');
                 }
-                $("#current_list").html(lst);
+                $('#makeList').trigger('create');
             }
         });
     }
     //new list
+    alert("makelist");
+    getAllItems2();
 
 
+}*/
+
+function removeFromList(id) {
+    var i;
+    var toRemove = "#item_" + id.replace(" ", "\\ ");
+    alert(toRemove);
+    alert($(toRemove));
+    var array = localStorage.shoppingList.split("|");
+    var json, name, newShoppingList = "";;
+    for (i = 0; i < array.length; i++) {
+        json = JSON.parse(array[i]);
+        name = json["itemName"];
+        if (name === id) {
+            continue;
+        }
+        newShoppingList += "|";
+        newShoppingList += array[i];
+    }
+    
+    newShoppingList = newShoppingList.substring(1);
+    localStorage.shoppingList = newShoppingList;
+
+    $(toRemove).remove();
+    $('#makeList').trigger('create');
 
 }
 
+function addItem(name) {
+    //TODO:
+    //maybe check if item is already on the list and just change quantity or alert about it. 
 
-function removeFromList(id) {
-    var toRemove = "#item_" + id.replace(" ", "\\ ");
-    $(toRemove).remove();
+    //open a popup to enter quantity and then go to addToList
+    $("#quantity_popup").popup("close");
+    var quantity = $("#quantity_of_item").val();
+    alert("add " + quantity + " of " + name);
+
+    addToList(name, quantity);
 }
 
 function addToList(name, quantity) {
-    lst = $("#current_list").html();
-    lst += '<li id="item_' + name + '" style="color:#095680; height:44px; padding-top:5px;" class="ui-li-static ui-body-inherit ui-first-child">';
-    lst += '<table><tbody><tr style="height:initial;">';
-    lst += ('<td style="width:60%"><center>' + name.toUpperCase() + '</center></td>');
-    lst += ('<td style="width:20%"><center><div class="ui-input-text ui-body-inherit ui-corner-all ui-shadow-inset"><input type="number" style="opacity:1;" value="' + quantity + '"></div></center></td>');
-    lst += '<td style="width:20%"><center><a data-role="button" class="fa fa-close ui-btn" style="color:#095680; border-radius:12px;" role="button" onclick="removeFromList(\'' + name + '\')"></a></center></td>';
-    lst += '</tr></tbody></table>';
-    lst += '</li>';
-    $("#current_list").html(lst);
+    var newItem = JSON.stringify({ 'itemName': name, 'itemQuantity': quantity });
+    localStorage.shoppingList += "|";
+    localStorage.shoppingList += newItem;
+
+    str = "";
+    str += "<table style='width:100%;  background-color:white;'><tr style='width:100%;'>";
+    str += "<td style='width:33%;'><center>" + name.toUpperCase() + "</center></td>";
+    str += "<td style='width:33%;'><center> <input type='number' style='opacity: 2; ' value='" + quantity + "'> </center></td>";
+    str += "<td style='width:33%;'><center> <a data-role='button' class='fa fa-close' style='color: #095680; border-radius: 12px;' role='button' onclick='removeFromList(\"" + name + "\")'></a> </center></td>";
+    str += "</tr></table>";
+    $('<li>').attr({ 'id': 'item_' + name, 'style': 'color:#095680;' }).append(str).appendTo('#current_list');
+    $('#makeList').trigger('create');
+
+}
+
+function getAllItems2() {
+    $.ajax({
+        contentType: JSON,
+        url: "https://manageitemlist.azurewebsites.net/api/GetAllItems?code=Ws3K2/EREH0e34YfpzH12ptdVNWbAjwTV/B7cSsV8L6RHOgetOkTCA==",
+        type: "GET",
+        error: function () { alert('an error occured please try again later'); },
+        success: function (data) {
+            if (data.includes("error")) {
+                alert('an error occured please try again later');
+            }
+            else {
+                $("#items_list").html("");
+                items = data.split("|");
+                for (let item of items) {
+                    $('<li>').attr({ 'id': 'item_' + item, 'style': 'color:#095680;', 'onclick':'openPopup1(\''+item+'\');' }).append(item).appendTo('#items_list');
+                }
+                $('#items_list').listview().listview('refresh');
+            }
+        }
+    });
+}
+
+/*
+function getAllItems1() {
+    $.ajax({
+        contentType: JSON,
+        url: "https://manageitemlist.azurewebsites.net/api/GetAllItems?code=Ws3K2/EREH0e34YfpzH12ptdVNWbAjwTV/B7cSsV8L6RHOgetOkTCA==",
+        type: "GET",
+        error: function () { alert('an error occured please try again later'); },
+        success: function (data) {
+            if (data.includes("error")) {
+                alert('an error occured please try again later');
+            }
+            else {
+                $("#select_placeholder2").html("");
+                $('<select>').attr({ 'name': 'itemsList', 'id': 'itemsList', 'data-native-menu': 'false', 'class': 'filterable-select' }).appendTo('#select_placeholder2');
+                $('<option>').html('ADD TO LIST').appendTo('#itemsList');
+                items = data.split("|");
+                for (let item of items) {
+                    $('<option>').attr({ 'value': item, 'data-filtertext': item }).html(item).appendTo('#itemsList');
+                }
+                $('#makeList').trigger('create');
+            }
+        }
+    });
+}*/
+
+function loadOldList(id) {
+    var json, name, quantity;
+    var parameters = JSON.stringify({ 'ordernum': id });
+    $.ajax({
+        contentType: JSON,
+        url: "https://manageitemlist.azurewebsites.net/api/getList?code=aqr86fF0swe0KotNyXaD7Mo8ZUSKxELH0YK24aSoKI1lsGbaWNjc3Q==&parameters=" + parameters,
+        type: "GET",
+        error: function () { alert('an error occured please try again later'); },
+        success: function (data) {
+            localStorage.shoppingList = data;
+        }
+    });
 }
 
 function useList(id) {
+    localStorage.makeList = true;
+    localStorage.saved = false;
+    loadOldList(id);
+    window.location.href = "#makeList";
+}
+/*
+function useList1(id) {
     localStorage.listId = id;
     window.location.href = "#makeList";
 }
+*/
 
 function saveList() {
     var lst = $("#current_list").html();
@@ -221,6 +356,47 @@ function showUsername(id) {
         $(id).text(" ");
 }
 
+function startShopping() {
+    alert("startShopping");
+}
+
+function loadSupermarket() {
+    var supermarket = $("#market").val();
+    localStorage.super = supermarket;
+    startShopping();
+}
+
+function showSupermarkets() {
+    //alert(1);
+    $.ajax({
+        contentType: JSON,
+        //data: JSON.stringify({ 'parameters': params }),
+        url: "https://getallsupermarkets.azurewebsites.net/api/getAllSupermarkets?code=kjYa9Mra0OSLQC/94/Rh4IK2tslhZVNr1azudyaqgU44ZoYZjfwBOw==",
+        type: "GET",
+        error: function () { alert('an error occured please try again later'); },
+        success: function (data) {
+            if (data === 'empty') {
+                alert(data);
+            }
+            else {
+                var json, id, name;
+                $("#select_placeholder").html("");
+                $('<select>').attr({ 'name': 'market', 'id': 'market', 'data-native-menu': 'false' }).appendTo('#select_placeholder');
+                $('<option>').html('CHOOSE:').appendTo('#market');
+                var array = data.split("|");
+                for (let item of array) {
+                    json = JSON.parse(item);
+                    id = json['superID'];
+                    name = json['name'];                    
+                    $('<option>').attr({ 'value': id }).html(name).appendTo('#market');
+                }
+                $('select').selectmenu();
+            }
+        }
+    });
+
+}
+
 function addToPage() {
     var page = $(location).attr('href');
     var hashtag = page.indexOf("#");
@@ -242,4 +418,33 @@ function addToPage() {
         showUsername("#oldLists_username");
         oldLists(localStorage.username);
     }
+    else if (page === "#selectSupermarket") {
+        if (!localStorage.username) {
+            window.location.href = "#homePage";
+        }
+        //showSupermarkets();
+    }
+}
+
+function addNum(num) {
+    var curr = $("#number").text();
+    var arr = curr.split(" ");
+    if (num === -1) {
+        if (arr[2] === '-') return;
+        else {
+            arr[2] = arr[1];
+            arr[1] = arr[0];
+            arr[0] = '-';
+        }
+    }
+    else {
+        if (arr[0] !== '-') return;
+        else {
+            arr[0] = arr[1];
+            arr[1] = arr[2];
+            arr[2] = num;
+        }
+    }
+    var newNum = arr[0] + " " + arr[1] + " " + arr[2];
+    $("#number").text(newNum);
 }
