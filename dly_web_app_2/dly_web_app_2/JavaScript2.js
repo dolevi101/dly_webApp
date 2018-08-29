@@ -237,6 +237,8 @@ function createLine3(canvasName, startWPos, startHPos, cellWidth, wDistance, hDi
     var onEdgeWDistance = (cellWidth - wDistance) / 4; //Width distance between points of the same rectangle
     var already1Div6 = 0;
     var need1Div6 = 0;
+    var directionsOfItems = [];
+    var absoluteDirection = 1;
 
     var c = document.getElementById(canvasName);
     var ctx = c.getContext("2d");
@@ -279,6 +281,7 @@ function createLine3(canvasName, startWPos, startHPos, cellWidth, wDistance, hDi
                     hPos += hDistance / 6;
                     ctx.lineTo(wPos, hPos);
                     already1Div6++;
+
                 }
             }
             if (Math.abs(curr[0] - next[0]) == 0.5) {
@@ -286,6 +289,7 @@ function createLine3(canvasName, startWPos, startHPos, cellWidth, wDistance, hDi
                     wPos += betRectsWDistance * (next[0] - curr[0]);
                 else
                     wPos += onEdgeWDistance * (next[0] - curr[0]) * 2;
+                (next[0] - curr[0] > 0) ? absoluteDirection = 1 : absoluteDirection = 0;////////////////////////////////////////
                 ctx.lineTo(wPos, hPos);
             }
             else {
@@ -294,16 +298,22 @@ function createLine3(canvasName, startWPos, startHPos, cellWidth, wDistance, hDi
                         wPos += sameRectWDistance;
                     else //Going downwards
                         wPos -= sameRectWDistance;
+                    (curr[0] < next[0]) ? absoluteDirection = 1 : absoluteDirection = 0;
                 }
                 else { //The points are of different rectangles
                     if (curr[0] < next[0]) //Going upwards
                         wPos += betRectsWDistance;
                     else //Going downwards
                         wPos -= betRectsWDistance;
+                    (curr[0] < next[0]) ? absoluteDirection = 1 : absoluteDirection = 0;
                 }
                 ctx.lineTo(wPos, hPos);
             }
         }
+        if (curr[0] % 1 == 0)
+            directionsOfItems.push(absoluteDirection);
+        else
+            directionsOfItems.push(2);
     }
     if (need1Div6 > 0)
         hPos += hDistance / 6 * need1Div6;
@@ -328,6 +338,7 @@ function createLine3(canvasName, startWPos, startHPos, cellWidth, wDistance, hDi
 
     ctx.lineWidth = 1;
     ctx.strokeStyle = "black";
+    return directionsOfItems;
 }
 
 
@@ -421,32 +432,19 @@ function drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat) { //aisleL
     var startHPos = space * height;
     var maxRow = parseInt(aisleLength) * 3 - 1;
     var exitRectPos = width - (1 - rectWidthPercent) / 2 * (width / aisleLength);
-    createLine3("mapCanvas", startWPos, startHPos, cellWidth, wDistance, hDistance, route, maxRow, exitRectPos);
     window.location.href = "#MapPage";
+    return createLine3("mapCanvas", startWPos, startHPos, cellWidth, wDistance, hDistance, route, maxRow, exitRectPos);
+    
 }
 
 function recolorCircle(canvasName, xPos, yPos, radius, isToColor, i, j) {
     if (isToColor) {
-        /*var c = document.getElementById(canvasName);
-        var p = c.getContext("2d");
-        p.beginPath();
-        p.arc(xPos, yPos, radius*1.2, 0, 2 * Math.PI);
-        p.lineWidth = 0;
-        //p.stroke();
-        p.fillStyle = '#777';
-        p.fill();*/
         var c = document.getElementById(canvasName);
         var ctx = c.getContext("2d");
         ctx.beginPath();
         ctx.arc(xPos, yPos, radius * 1.2, 0, 2 * Math.PI);
-        //if (isToColor)
-        ctx.fillStyle = '#00b300'; //'green';
-        //ctx.strokeStyle = "#00b300";
-
-        //else
-        //    ctx.fillStyle = '#397DA1';//'LawnGreen';
+        ctx.fillStyle = '#00b300';
         ctx.fill();
-        //ctx.stroke();
     }
 }
 
@@ -480,22 +478,37 @@ function computePositionAndRecolorCircles(i, j, numOfAisles, aisleLength, itemsD
     recolorCircle("mapCanvas", xPos, yPos2, radius, isToColor2);
 }
 
-function displayItems(curr, itemsDirectionsMat, row, col) {
+function displayItems(curr, itemsDirectionsMat, row, col, directionOfItem) {
     if (itemsDirectionsMat[row][col] != "|") {
         //alert(itemsDirectionsMat[row][col]);
-        allItems = itemsDirectionsMat[row][col].split("|");
-        leftItems = allItems[0].substring(0, allItems[0].length - 1).split(","); //substring() in order to remove the last comma
-        rightItems = allItems[1].substring(1).split(","); //substring() in order to remove the first comma
-        if (curr.split(",")[3] == 0) { // The direction is down --> Changing oriantaion
+        var allItems = itemsDirectionsMat[row][col].split("|");
+        var leftItems = allItems[0].substring(0, allItems[0].length - 1).split(","); //substring() in order to remove the last comma
+        var rightItems = allItems[1].substring(1).split(","); //substring() in order to remove the first comma
+        if (directionOfItem == 0) { // The direction is down --> Changing oriantaion
             var tmp = leftItems;
             leftItems = rightItems;
             rightItems = tmp;
         }
+        
+        var quantities = JSON.parse(localStorage.quantities);
+
         var reminder = "Don't forget!!";
-        if (leftItems != "")
-            reminder += "\nOn your left: " + leftItems;
-        if (rightItems != "")
-            reminder += "\nOn your right: " + rightItems;
+        if (leftItems != "") {
+            //reminder += "\nOn your left: " + leftItems;
+            reminder += "\nOn your left: ";
+            for (var i = 0; i < leftItems.length; i++) {
+                reminder += "\n" + quantities[leftItems[i]] + " " + leftItems[i];
+            }
+            //reminder += "\n" + quantities[leftItems[leftItems.length - 1]] + " " + leftItems[i];
+        }
+        if (rightItems != "") {
+            //reminder += "\nOn your right: " + rightItems;
+            reminder += "\nOn your right: ";
+            for (var i = 0; i < rightItems.length; i++) {
+                reminder += "\n" + quantities[rightItems[i]] + " " + rightItems[i];
+            }
+            //reminder += "\n" + quantities[rightItems[rightItems.length - 1]] + " " + rightItems[i];
+        }
         alert(reminder);
     }
     else {
@@ -503,26 +516,152 @@ function displayItems(curr, itemsDirectionsMat, row, col) {
     }
 }
 
-function navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat, routeIndex, row, col) {
-    //alert("here1   route = " + route + ", routeIndex = " + routeIndex);
-    while (routeIndex < route.length && route[routeIndex].split(",")[0] % 1 != 0) { //Break when the route is finished        
-        //alert("here2   current position = " + route[routeIndex]);
-        routeIndex++;
+function recolorLine(route, routeIndex, aisleLength, numOfShelves, done) { 
+    var canvasName = "mapCanvas";
+    var width = window.screen.availWidth;
+    var height = window.screen.availHeight;
+    var rectWidthPercent = 0.7;
+    var space = 0.05;
+    var cellWidth = width / aisleLength;
+    var cellHeight = (1 - 2 * space) * height / numOfShelves;
+    var wDistance = rectWidthPercent * cellWidth;
+    var hDistance = cellHeight;
+    var startWPos = (cellWidth - wDistance) / 2;
+    var startHPos = space * height;
+    var maxRow = parseInt(aisleLength) * 3 - 1;
+    var exitRectPos = width - (1 - rectWidthPercent) / 2 * (width / aisleLength);
+    
+    var wPos = startWPos;
+    var hPos = startHPos;
+    var sameRectWDistance = wDistance / 2; //Width distance between points of the same rectangle
+    var betRectsWDistance = (cellWidth - wDistance); //Width distance between points of different rectangles
+    var onEdgeWDistance = (cellWidth - wDistance) / 4; //Width distance between points of the same rectangle
+    var already1Div6 = 0;
+    var need1Div6 = 0;
+
+    var c = document.getElementById(canvasName);
+    var ctx = c.getContext("2d");
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = "gray";
+    var curr;
+    var next;
+
+    ctx.beginPath();
+    ctx.moveTo(wPos, hPos);
+    wPos -= onEdgeWDistance;
+    ctx.lineTo(wPos, hPos);
+    hPos += hDistance;
+    ctx.lineTo(wPos, hPos);
+
+    if (done)
+        routeIndex = route.length - 2;
+
+    for (var i = 0; i <= routeIndex; i++) {
+    //while (i < routeIndex) {
+        curr = route[i].split(',');
+        next = route[i + 1].split(',');
+        if (curr[0] == next[0]) { //Stays on the same row --> add a line from (wPos, hPos) to (wPos, hPos + hDistance)
+            if (need1Div6 > 0) { //Adding the missing hDistance/6
+                hPos += hDistance / 6 * need1Div6;
+                need1Div6 = 0;
+            }
+            if (i < route.length - 2) { //In the next aisle, not going in the same direction as planned
+                var after = route[i + 2].split(',');
+                if (next[0] != after[0] && Math.sign(after[3] - 0.5) != Math.sign(after[0] - next[0])) {
+                    hPos -= hDistance / 6;
+                    need1Div6++;
+                }
+            }
+            if (already1Div6 > 0) {
+                hPos -= hDistance / 6 * already1Div6;
+                already1Div6 = 0;
+            }
+            hPos += hDistance;
+            ctx.lineTo(wPos, hPos);
+        }
+        else { //Stays on the same column --> add a line from (wPos, hPos) to (wPos, hPos + hDistance)
+            if (i > 0) {
+                var prev = route[i - 1].split(',');
+                if (Math.sign(prev[0] - curr[0]) == Math.sign(next[0] - curr[0])) { // changing direction after getting to max/min of the aisle
+                    hPos += hDistance / 6;
+                    ctx.lineTo(wPos, hPos);
+                    already1Div6++;
+                }
+            }
+            if (Math.abs(curr[0] - next[0]) == 0.5) {
+                if (curr[0] > 0 && curr[0] < maxRow)
+                    wPos += betRectsWDistance * (next[0] - curr[0]);
+                else
+                    wPos += onEdgeWDistance * (next[0] - curr[0]) * 2;
+                ctx.lineTo(wPos, hPos);
+            }
+            else {
+                if (curr[0] % 3 == 1 || next[0] % 3 == 1) { //The points are of the same rectangle
+                    if (curr[0] < next[0]) //Going upwards
+                        wPos += sameRectWDistance;
+                    else //Going downwards
+                        wPos -= sameRectWDistance;
+                }
+                else { //The points are of different rectangles
+                    if (curr[0] < next[0]) //Going upwards
+                        wPos += betRectsWDistance;
+                    else //Going downwards
+                        wPos -= betRectsWDistance;
+                }
+                ctx.lineTo(wPos, hPos);
+            }
+        }
+        if (i == routeIndex - 1) {
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(wPos, hPos);
+        }
+        if (i == routeIndex && already1Div6 > 0) {
+            ctx.stroke();
+        }
     }
+    if (done) {
+        if (need1Div6 > 0)
+            hPos += hDistance / 6 * need1Div6;
+        if (already1Div6 > 0)
+            hPos -= hDistance / 6 * already1Div6;
+        hPos += hDistance * 6 / 7;///////Change both of line if needed
+        ctx.lineTo(wPos, hPos);
+        wPos = exitRectPos;
+        ctx.lineTo(wPos, hPos);
+        hPos += hDistance / 7;///////////Change both of line if needed
+        ctx.lineTo(wPos, hPos);
+        //drawing arrowhead
+        //var headlen = 20;   // length of head in pixels
+        var headlen = hDistance / 7 * 0.6; // length of head in pixels
+        var angle = Math.atan2(hDistance, 0);
+        ctx.lineTo(wPos - headlen * Math.cos(angle - Math.PI / 6), hPos - headlen * Math.sin(angle - Math.PI / 6));
+        ctx.moveTo(wPos, hPos);
+        ctx.lineTo(wPos - headlen * Math.cos(angle + Math.PI / 6), hPos - headlen * Math.sin(angle + Math.PI / 6));/**/
+        ctx.stroke();
+    }
+    /*ctx.lineWidth = 5;
+    ctx.strokeStyle = "gray";*/
+    //ctx.stroke();
+}
+
+function navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat, routeIndex, row, col, directionsOfItems) {
+    while (routeIndex < route.length && route[routeIndex].split(",")[0] % 1 != 0) //Break when the route is finished        
+        routeIndex++;
+    
     if (routeIndex == route.length) {
+        recolorLine(route, routeIndex, aisleLength, parseInt(numOfAisles) + 1, true);
         alert("Done!");
         return;
     }
 
-    ////////////////////////////maually updating shopping carts positions
     var newPosition = route[routeIndex].split(",");
-    //alert(newPosition[0] + "," + newPosition[1] + "," + cartID);
     $.ajax({
         contentType: JSON,
         url: "https://manageitemslist.azurewebsites.net/api/UpdatingPositionManualy?code=VS25ItApL1ijOh1CaI7tLU/97UziIT5PGIAT5am1ljDm0Dm9UkNeHQ==&parameters=" + newPosition[0] + "," + newPosition[1] + "," + cartID,
         type: "GET",
         error: function () { alert('Failed updating...'); },
-        success: function () { alert("Updated successfully: " + newPosition[0] + "," + newPosition[1]); }
+        success: function () { }//alert("Updated successfully : " + newPosition[0] + " " + newPosition[1]);}
     });
 
     setTimeout(function () {
@@ -532,30 +671,47 @@ function navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsM
             type: "GET",
             error: function () { alert('An error occured...'); },
             success: function (response) { //response = json(row,col)
-                //alert("response = " + response);
+                alert("response = " + response);
                 var responseJson = JSON.parse(response);
                 var newPosition = route[routeIndex].split(",");
                 if (responseJson['row'] != row || responseJson['col'] != col) {
-                    if (newPosition[0] = responseJson['row'] || newPosition[1] == responseJson['col']) {
+                    //alert("responseJson['row'] = " + responseJson['row'] + "\nrow = " + row + "\nresponseJson['col'] = " + responseJson['col'] + "\ncol = " + col + "\nnewPosition[0] = " + newPosition[0] + "\nnewPosition[1] = " + newPosition[1]);
+                    if (newPosition[0] == responseJson['row'] && newPosition[1] == responseJson['col']) {
                         row = responseJson['row'];
                         col = responseJson['col'];
-                        if (newPosition[2] == 1) //There are products now
+                        if (newPosition[2] == 1) { //There are products now
                             computePositionAndRecolorCircles(row, col, numOfAisles, aisleLength, itemsDirectionsMat);
-                        displayItems(route[routeIndex], itemsDirectionsMat, row, col);
+                        }
+
+
+
+                        recolorLine(route, routeIndex, aisleLength, parseInt(numOfAisles) + 1, false);
+
+
+
+                        displayItems(route[routeIndex], itemsDirectionsMat, row, col, directionsOfItems[routeIndex]);
                         routeIndex++;
                     }
                     else
                         alert("Please continue along the suggested route :)");
                 }
                 setTimeout(function () {
-                    navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat, routeIndex, row, col);
+                    navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat, routeIndex, row, col, directionsOfItems);
                 }, 10);
             }
         });
     }, 1000);
-
 }
 
+function resetCartPosition(cartID) { ////////////////////////////maually updating shopping carts positions
+    $.ajax({
+        contentType: JSON,
+        url: "https://manageitemslist.azurewebsites.net/api/UpdatingPositionManualy?code=VS25ItApL1ijOh1CaI7tLU/97UziIT5PGIAT5am1ljDm0Dm9UkNeHQ==&parameters=" + "-1,-1," + cartID,
+        type: "GET",
+        error: function () { alert('Failed reseting...'); },
+        success: function () { /*alert("Updated successfully");*/ }
+    });
+}
 
 function computeRoute(superID, cartID, itemsList) {
     var parameters = JSON.stringify({ 'superID': superID, 'itemsList': itemsList });
@@ -574,9 +730,11 @@ function computeRoute(superID, cartID, itemsList) {
             /*var*/ itemsDirectionsMat = directionsStringToMat(responseJson['directions'], rows, cols);
             /*var*/ aisleLength = rows / 3;
             /*var*/ numOfAisles = cols
-            drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat);
+            var directionsOfItems = drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat);
+            alert(directionsOfItems);
             setTimeout(function () {
-                navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat, 0, -1, -1);
+                navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat, 0, -1, -1, directionsOfItems);
+                resetCartPosition(cartID);
             }, 1000);
             /*computePositionAndRecolorCircles(0, 0, numOfAisles, aisleLength, itemsDirectionsMat)
             computePositionAndRecolorCircles(1, 0, numOfAisles, aisleLength, itemsDirectionsMat)
@@ -590,9 +748,4 @@ function computeRoute(superID, cartID, itemsList) {
         navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat, 0, -1, -1);
     }, 5000);
     /**/
-}
-
-function openPopup() {
-    $("#popupWin").popup("open");
-    //evt.preventDefault();
 }
