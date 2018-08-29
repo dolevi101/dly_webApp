@@ -23,7 +23,6 @@ function login() {
     var parameters = JSON.stringify({ 'username': username, 'password': password });
     $.ajax({
         contentType: JSON,
-        //data: JSON.stringify({ 'parameters': params }),
         url: "https://manageuser1.azurewebsites.net/api/CheckUserPassword?code=2iiKpSILpGlmte7kFrmhoylGJbLacEVVQw9K/z5hXzN2k/Oprv8LVg==&parameters=" + parameters,
         type: "GET",
         error: function () { alert('an error occured please try again later'); },
@@ -136,10 +135,8 @@ function showMakeList() {
         //load list
         var json, name, quantity;
         var array = (localStorage.shoppingList).split("|");
-        alert(array);
         $('#current_list').html("");
         for (let item of array) {
-            alert(item);
             json = JSON.parse(item);
             name = json["itemName"];
             quantity = json["itemQuantity"];
@@ -157,51 +154,10 @@ function showMakeList() {
     //new list
     getAllItems2();
 }
-/*
-function showMakeList1() {
-    if (localStorage.listId) {
-        //load list
-        var id = localStorage.listId;
-        var json, name, quantity;
-        var parameters = JSON.stringify({ 'ordernum': id });
-        $.ajax({
-            contentType: JSON,
-            url: "https://manageitemlist.azurewebsites.net/api/getList?code=aqr86fF0swe0KotNyXaD7Mo8ZUSKxELH0YK24aSoKI1lsGbaWNjc3Q==&parameters=" + parameters,
-            type: "GET",
-            error: function () { alert('an error occured please try again later'); },
-            success: function (data) {
-                var str = "";
-                var array = data.split("|");
-                $('#current_list').html("");
-                for (let item of array) {
-                    json = JSON.parse(item);
-                    name = json['itemName'];
-                    quantity = json['itemQuantity'];
-
-                    str = "";
-                    str += "<table style='width:100%;  background-color:white;'><tr style='width:100%;'>";
-                    str += "<td style='width:33%;'><center>" + name.toUpperCase() + "</center></td>";
-                    str += "<td style='width:33%;'><center> <input type='number' style='opacity: 1; ' value='" + quantity + "'> </center></td>";
-                    str += "<td style='width:33%;'><center> <a data-role='button' class='fa fa-close' style='color: #095680; border-radius: 12px;' role='button' onclick='removeFromList(\"" + name + "\")'></a> </center></td>";
-                    str += "</tr></table>";
-                    $('<li>').attr({ 'id': 'item_' + name, 'style': 'color:#095680;' }).append(str).appendTo('#current_list');
-                }
-                $('#makeList').trigger('create');
-            }
-        });
-    }
-    //new list
-    alert("makelist");
-    getAllItems2();
-
-
-}*/
 
 function removeFromList(id) {
-    var i;
     var toRemove = "#item_" + id.replace(" ", "\\ ");
-    alert(toRemove);
-    alert($(toRemove));
+    var i;
     var array = localStorage.shoppingList.split("|");
     var json, name, newShoppingList = "";;
     for (i = 0; i < array.length; i++) {
@@ -216,11 +172,12 @@ function removeFromList(id) {
     
     newShoppingList = newShoppingList.substring(1);
     localStorage.shoppingList = newShoppingList;
-
+    
     $(toRemove).remove();
     $('#makeList').trigger('create');
 
 }
+
 
 function addItem(name) {
     //TODO:
@@ -264,38 +221,13 @@ function getAllItems2() {
                 $("#items_list").html("");
                 items = data.split("|");
                 for (let item of items) {
-                    $('<li>').attr({ 'id': 'item_' + item, 'style': 'color:#095680;', 'onclick':'openPopup1(\''+item+'\');' }).append(item).appendTo('#items_list');
+                    $('<li>').attr({ 'id': item, 'style': 'color:#095680;', 'onclick':'openPopup1(\''+item+'\');' }).append(item).appendTo('#items_list');
                 }
                 $('#items_list').listview().listview('refresh');
             }
         }
     });
 }
-
-/*
-function getAllItems1() {
-    $.ajax({
-        contentType: JSON,
-        url: "https://manageitemlist.azurewebsites.net/api/GetAllItems?code=Ws3K2/EREH0e34YfpzH12ptdVNWbAjwTV/B7cSsV8L6RHOgetOkTCA==",
-        type: "GET",
-        error: function () { alert('an error occured please try again later'); },
-        success: function (data) {
-            if (data.includes("error")) {
-                alert('an error occured please try again later');
-            }
-            else {
-                $("#select_placeholder2").html("");
-                $('<select>').attr({ 'name': 'itemsList', 'id': 'itemsList', 'data-native-menu': 'false', 'class': 'filterable-select' }).appendTo('#select_placeholder2');
-                $('<option>').html('ADD TO LIST').appendTo('#itemsList');
-                items = data.split("|");
-                for (let item of items) {
-                    $('<option>').attr({ 'value': item, 'data-filtertext': item }).html(item).appendTo('#itemsList');
-                }
-                $('#makeList').trigger('create');
-            }
-        }
-    });
-}*/
 
 function loadOldList(id) {
     var json, name, quantity;
@@ -317,32 +249,23 @@ function useList(id) {
     loadOldList(id);
     window.location.href = "#makeList";
 }
-/*
-function useList1(id) {
-    localStorage.listId = id;
-    window.location.href = "#makeList";
-}
-*/
 
 function saveList() {
-    var lst = $("#current_list").html();
-    var id, name, quantity, index;
-    //parse the name and quantity of every line in the list
-    var lines = lst.split('<li id="');
-    for (let line of lines) {
-        index = line.indexOf("\"");
-        id = line.substring(0, index);
-        name = id.substring(5);
-        id = id.replace(" ", "\"");
-        quantity = $("#" + id).val();
-        addToShoppingList(name, quantity);
-    }
+    var lst = localStorage.shoppingList;
+
+    //ajax to save full list to database
+    // need to finishh
+    var parameters = JSON.stringify({ 'username': username });
+    $.ajax({
+        contentType: JSON,
+        url: "https://manageitemlist.azurewebsites.net/api/InsertListToDB?code=VOrl1V1S0ma1y0nf3tlHySknxO/fveqh0RmVcEgViH7DOF3xY3T/Kg==&parameters=" + parameters,
+        type: "GET",
+        error: function () { alert('an error occured please try again later'); },
+        success: function (data) { }
+    });
 }
 
-function addToShoppingList(name, quantity) {
-    //TO DO: 
-    //this function sends ajax to add this item to a shopping list
-}
+
 
 function showUsername(id) {
     var username_line="";
@@ -358,16 +281,82 @@ function showUsername(id) {
 
 function startShopping() {
     alert("startShopping");
+    var cartID = $("#number").text();
+    cartID = cartID[0] + "" + cartID[2] + "" + cartID[4];
+    var i;
+    for (i = 0; i < 5; i++) { if (cartID[i] !== '-') { break; } }
+    cartID = cartID.substring(i);
+    var cartNum = parseInt(cartID, 10); 
+
+    //start shopping with this cart. 
+    computeRoute(localStorage.super, cartNum, localStorage.names);
+}
+
+function makeNewList() {
+    localStorage.makeList = true;
+    localStorage.saved = false;
+    window.location.href = "#makeList";
 }
 
 function loadSupermarket() {
     var supermarket = $("#market").val();
     localStorage.super = supermarket;
-    startShopping();
+    var lst = localStorage.shoppingList.split("|");
+    var onlyNames = "";
+    var expectedQuantities = {};
+    //parse the name and quantity of every line in the list
+    for (let item of lst) {
+        json = JSON.parse(item);
+        name = json["itemName"];
+        quantity = json["itemQuantity"];
+        onlyNames += ",";
+        onlyNames += name;
+        expectedQuantities[name] = quantity;
+    }
+
+    onlyNames = onlyNames.substring(1);
+    var changes = "";
+    var newOnlyNames = "";
+    var q= {};
+    //ajax to check if all items exists in inventory
+    var parameters = JSON.stringify({ 'superID': supermarket, 'items': onlyNames });
+    $.ajax({
+        contentType: JSON,
+        url: "https://manageitemlist.azurewebsites.net/api/GetQuantities?code=aOtFuDMEPFQKJoMUub1RCU9QiiOYjqOVz2Fb4k6bPC8VNN5PccWMKA==&parameters=" + parameters,
+        type: "GET",
+        error: function () { alert('an error occured please try again later'); },
+        success: function (data) {
+            onlyNames = onlyNames.split(",");
+            if (!data.includes('error')) {
+                for (let item of onlyNames) {
+                    // alert the changes 
+                    var actualQuantities = JSON.parse(data);
+                    if (expectedQuantities[item] > actualQuantities[item])
+                        changes += "Only " + actualQuantities[item] + " of " + item + " in stock. \n";
+                    if (actualQuantities[item] !== 0) {
+                        //need to remove from items list !!
+                        newOnlyNames += ",";
+                        newOnlyNames += item;
+                        q[item] = Math.min(expectedQuantities[item], actualQuantities[item]);
+                    }
+                }
+                newOnlyNames = newOnlyNames.substring(1);
+                if (changes !== "")
+                    alert(changes);
+                localStorage.names = newOnlyNames;
+                localStorage.quantities = JSON.stringify(q);
+                localStorage.removeItem("shoppingList");
+                localStorage.makeList = false;
+                window.location.href = "#selectCart";
+            }
+            else {
+                alert(data);
+            }
+        }
+    });
 }
 
 function showSupermarkets() {
-    //alert(1);
     $.ajax({
         contentType: JSON,
         //data: JSON.stringify({ 'parameters': params }),
