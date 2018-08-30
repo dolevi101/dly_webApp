@@ -1,5 +1,4 @@
 ﻿function openPopup1(name) {
-    alert("open popup");
     $("#name_of_item").text("HOW MANY " + name.toUpperCase() + " WOULD YOU LIKE?");
     $("#itemName").val(name);
     $("#quantity_popup").popup("open");
@@ -131,7 +130,7 @@ function oldLists(username) {
 }
 
 function showMakeList() {
-    if (localStorage.makeList) {
+    if (localStorage.shoppingList) {
         //load list
         var json, name, quantity;
         var array = (localStorage.shoppingList).split("|");
@@ -193,7 +192,9 @@ function addItem(name) {
 
 function addToList(name, quantity) {
     var newItem = JSON.stringify({ 'itemName': name, 'itemQuantity': quantity });
-    localStorage.shoppingList += "|";
+    if (localStorage.shoppingList != null && localStorage.shoppingList != "")
+        localStorage.shoppingList += "|";
+    else { localStorage.shoppingList = "";}
     localStorage.shoppingList += newItem;
 
     str = "";
@@ -346,7 +347,7 @@ function loadSupermarket() {
                 localStorage.names = newOnlyNames;
                 localStorage.quantities = JSON.stringify(q);
                 localStorage.removeItem("shoppingList");
-                localStorage.makeList = false;
+                localStorage.removeItem("makeList");
                 window.location.href = "#selectCart";
             }
             else {
