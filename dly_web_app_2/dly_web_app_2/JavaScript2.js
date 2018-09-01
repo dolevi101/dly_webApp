@@ -53,182 +53,6 @@ function create3Circles(canvasName, startXPos, yPos, radius, distanceBetweenCirc
     }
 }
 
-
-function createLine2(canvasName, startWPos, startHPos, cellWidth, wDistance, hDistance, route, maxRow, exitRectPos) {//starting point: row -1, col 0 
-    var wPos = startWPos;
-    var hPos = startHPos;
-    var sameRectWDistance = wDistance / 2; //Width distance between points of the same rectangle
-    var betRectsWDistance = (cellWidth - wDistance); //Width distance between points of different rectangles
-    var onEdgeWDistance = (cellWidth - wDistance) / 4; //Width distance between points of the same rectangle
-    var already1Div6 = 0;
-    var need1Div6 = 0;
-
-    var c = document.getElementById(canvasName);
-    var ctx = c.getContext("2d");
-    var curr;
-    var next;
-
-    ctx.beginPath();
-    ctx.moveTo(wPos, hPos);
-    wPos -= onEdgeWDistance;
-    ctx.lineTo(wPos, hPos);
-    hPos += hDistance;
-    ctx.lineTo(wPos, hPos);
-
-    //var toRun = 9;
-    for (var i = 0; i < route.length - 1; i++) {
-        //for (var i = 0; i <= toRun && i < route.length - 1; i++) {
-        curr = route[i].split(',');
-        next = route[i + 1].split(',');
-        /*if (i == toRun) {
-            alert("toRun: " + curr + " , " + next + " ,    i,routeLen = " + i + " " + route.length);
-        }/**/
-        if (curr[0] == next[0]) { //Stays on the same row --> add a line from (wPos, hPos) to (wPos, hPos + hDistance)
-            if (need1Div6 > 0/*&& Math.sign(curr[3] - 0.5) == Math.sign(next[0] - curr[0]) && next[1] != after[1]*/) { //Adding the missing hDistance/6
-
-
-                //alert("here4   curr = " + curr);
-
-
-                hPos += hDistance / 6 * need1Div6;
-                //ctx.lineTo(wPos, hPos);
-                need1Div6 = 0;
-            }
-            if (i < route.length - 2) { //In the next aisle, not going in the same direction as planned
-                var after = route[i + 2].split(',');
-                //alert("here0  curr = " + curr + ", next  = " + next + ", after = " + after + "    " + (/*next[0] != after[0] &&*/ Math.sign(after[3] - 0.5) != Math.sign(after[0] - next[0])));
-                if (next[0] != after[0] && Math.sign(after[3] - 0.5) != Math.sign(after[0] - next[0])) {
-
-                    //  if (curr[1] == 2)
-                    //alert("here1  curr = " + curr);
-
-
-                    hPos -= hDistance / 6;
-                    need1Div6++;
-                }
-            }
-            if (already1Div6 > 0) {
-                //if (curr[1] == 2)
-                //alert("here2  curr = " + curr);
-
-
-                hPos -= hDistance / 6 * already1Div6;
-                already1Div6 = 0;
-            }
-            hPos += hDistance;
-            ctx.lineTo(wPos, hPos);
-        }
-        else { //Stays on the same column --> add a line from (wPos, hPos) to (wPos, hPos + hDistance)
-            if (i > 0) {
-                var prev = route[i - 1].split(',');
-                if (Math.sign(prev[0] - curr[0]) == Math.sign(next[0] - curr[0])) { // changing direction after getting to max/min of the aisle
-
-
-
-                    //alert("here3  curr = " + curr);
-
-
-
-                    hPos += hDistance / 6;
-                    ctx.lineTo(wPos, hPos);
-                    already1Div6++;
-                }
-            }
-            if (Math.abs(curr[0] - next[0]) == 0.5) {
-                if (curr[0] > 0 && curr[0] < maxRow) {
-                    wPos += betRectsWDistance * (next[0] - curr[0]);
-                }
-                else {
-                    wPos += onEdgeWDistance * (next[0] - curr[0]) * 2;
-                }
-                ctx.lineTo(wPos, hPos);
-            }
-            else {
-                /*if (i > 0) {
-                    var prev = route[i - 1].split(',');
-                    if (prev[0] == next[0]) {
-                        hPos += hDistance / 6;
-                        ctx.lineTo(wPos, hPos);
-                        already1Div6 = true;
-                    }
-                }*/
-                if (curr[0] % 3 == 1 || next[0] % 3 == 1) { //The points are of the same rectangle
-                    if (curr[0] < next[0]) //Going upwards
-                        wPos += sameRectWDistance;
-                    else //Going downwards
-                        wPos -= sameRectWDistance;
-                }
-                else { //The points are of different rectangles
-                    if (curr[0] < next[0]) //Going upwards
-                        wPos += betRectsWDistance;
-                    else //Going downwards
-                        wPos -= betRectsWDistance;
-                }
-                ctx.lineTo(wPos, hPos);
-                /*if (i < route.length - 2) {
-                    alert("here3.5  curr = " + curr);
-                    var after = route[i + 2].split(',');
-                    if (need1Div6 && /*Math.sign(curr[3] - 0.5) == Math.sign(next[0] - curr[0]) &&* / next[1] != after[1]) { //Adding the missing hDistance/6
-
-
-                        alert("here4   curr = " + curr);
-
-
-                        hPos += hDistance / 6;
-                        ctx.lineTo(wPos, hPos);
-                        need1Div6 = false;
-                    }
-                }*/
-            }
-        }
-    }
-    //ctx.lineTo(wPos - betRectsWDistance / 2, hPos + hDistance / 6);
-    // Drawing line to the exit
-    /*curr = route[route.length - 1].split(',');
-    if (curr[0] == 0) {
-        wPos -= onEdgeWDistance;
-        ctx.lineTo(wPos, hPos);
-    }
-    else if (curr[0] == maxRow) {
-        wPos += onEdgeWDistance;
-        ctx.lineTo(wPos, hPos);
-    }
-    else if (parseInt(curr[0]) % 3 == 0) {
-        wPos += betRectsWDistance;
-        ctx.lineTo(wPos, hPos);
-    }
-    else { //curr[0] % 3 = 2
-        wPos += betRectsWDistance;
-        ctx.lineTo(wPos, hPos);
-    }*/
-
-    if (need1Div6 > 0) {
-        hPos += hDistance / 6 * need1Div6;
-        //alert("Need 1Div6 in the end");
-    }
-    if (already1Div6 > 0) {
-        hPos -= hDistance / 6 * already1Div6;
-        //alert("Need already1Div6 in the end");
-    }
-
-    hPos += hDistance * 6 / 7;///////Change both of line if needed
-    ctx.lineTo(wPos, hPos);
-    wPos = exitRectPos;
-    ctx.lineTo(wPos, hPos);
-    hPos += hDistance / 7;///////////Change both of line if needed
-    ctx.lineTo(wPos, hPos);
-    //drawing arrowhead
-    //var headlen = 20;   // length of head in pixels
-    var headlen = hDistance / 7 * 0.6; // length of head in pixels
-    var angle = Math.atan2(hDistance, 0);
-    ctx.lineTo(wPos - headlen * Math.cos(angle - Math.PI / 6), hPos - headlen * Math.sin(angle - Math.PI / 6));
-    ctx.moveTo(wPos, hPos);
-    ctx.lineTo(wPos - headlen * Math.cos(angle + Math.PI / 6), hPos - headlen * Math.sin(angle + Math.PI / 6));/**/
-    ctx.lineWidth = 5;
-    ctx.strokeStyle = "white";
-    ctx.stroke();
-}
-
 function createLine3(canvasName, startWPos, startHPos, cellWidth, wDistance, hDistance, route, maxRow, exitRectPos) {//starting point: row -1, col 0 
     var wPos = startWPos;
     var hPos = startHPos;
@@ -340,7 +164,6 @@ function createLine3(canvasName, startWPos, startHPos, cellWidth, wDistance, hDi
     ctx.strokeStyle = "black";
     return directionsOfItems;
 }
-
 
 function createEntrance(canvasName, cellHeight, x, y) {
     var c = document.getElementById(canvasName);
@@ -489,7 +312,7 @@ function displayItems(curr, itemsDirectionsMat, row, col, directionOfItem) {
             leftItems = rightItems;
             rightItems = tmp;
         }
-        
+
         var quantities = JSON.parse(localStorage.quantities);
 
         var reminder = "Don't forget!!";
@@ -509,11 +332,11 @@ function displayItems(curr, itemsDirectionsMat, row, col, directionOfItem) {
             }
             //reminder += "\n" + quantities[rightItems[rightItems.length - 1]] + " " + rightItems[i];
         }
-        alert(reminder);
+        setTimeout(function () { alert(reminder); }, 10);
     }
-    else {
+    /*else {
         alert("Let's continue!");
-    }
+    }*/
 }
 
 function recolorLine(route, routeIndex, aisleLength, numOfShelves, done) { 
@@ -542,7 +365,7 @@ function recolorLine(route, routeIndex, aisleLength, numOfShelves, done) {
     var c = document.getElementById(canvasName);
     var ctx = c.getContext("2d");
     ctx.lineWidth = 5;
-    ctx.strokeStyle = "gray";
+    ctx.strokeStyle = 'gray';
     var curr;
     var next;
 
@@ -671,7 +494,7 @@ function navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsM
             type: "GET",
             error: function () { alert('An error occured...'); },
             success: function (response) { //response = json(row,col)
-                alert("response = " + response);
+                //alert("response = " + response);
                 var responseJson = JSON.parse(response);
                 var newPosition = route[routeIndex].split(",");
                 if (responseJson['row'] != row || responseJson['col'] != col) {
@@ -715,7 +538,6 @@ function resetCartPosition(cartID) { ////////////////////////////maually updatin
 
 function computeRoute(superID, cartID, itemsList) {
     var parameters = JSON.stringify({ 'superID': superID, 'itemsList': itemsList });
-    var route, numOfAisles, aisleLength, itemsDirectionsMat;
     $.ajax({
         contentType: JSON,
         url: "https://manageitemslist.azurewebsites.net/api/HttpTriggerCSharp1?code=GHkR/DMv0Cvw77Hp5bT6KaD4OK5X8xHnJMhGtDXwaS1VzoNPm/s8KQ==&parameters=" + parameters,
@@ -724,28 +546,18 @@ function computeRoute(superID, cartID, itemsList) {
         success: function (response) {
             //alert(response);
             var responseJson = JSON.parse(response);
-            /*var*/ route = responseJson['route'].split("|");
+            var route = responseJson['route'].split("|");
             var rows = responseJson['rows'];
             var cols = responseJson['cols'];
-            /*var*/ itemsDirectionsMat = directionsStringToMat(responseJson['directions'], rows, cols);
-            /*var*/ aisleLength = rows / 3;
-            /*var*/ numOfAisles = cols
+            var itemsDirectionsMat = directionsStringToMat(responseJson['directions'], rows, cols);
+            var aisleLength = rows / 3;
+            var numOfAisles = cols;
             var directionsOfItems = drawMap(aisleLength, numOfAisles, route, itemsDirectionsMat);
-            alert(directionsOfItems);
+            //alert(directionsOfItems);
             setTimeout(function () {
                 navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat, 0, -1, -1, directionsOfItems);
                 resetCartPosition(cartID);
             }, 1000);
-            /*computePositionAndRecolorCircles(0, 0, numOfAisles, aisleLength, itemsDirectionsMat)
-            computePositionAndRecolorCircles(1, 0, numOfAisles, aisleLength, itemsDirectionsMat)
-            computePositionAndRecolorCircles(2, 0, numOfAisles, aisleLength, itemsDirectionsMat)            
-            computePositionAndRecolorCircles(3, 0, numOfAisles, aisleLength, itemsDirectionsMat)*/
-
         }
     });
-    /*
-    setTimeout(function () {
-        navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat, 0, -1, -1);
-    }, 5000);
-    /**/
 }
