@@ -116,11 +116,8 @@ function oldLists(username) {
         error: function () { alert('an error occured please try again later'); },
         success: function (data) {
             if (data === "empty") {
-                var str = "<h1 style='color: white'><center>";
-                str += "YOU DON'T HAVE ANY LISTS YET.";
-                str += "</h1></center>";
-                str += "<center><a data-role='button' href='#makeList' class='blueButton' style='border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white;'>MAKE A LIST</a></center>";
-                $("#oldListsView").html(str);
+                alert("You don't have any lists yet. Create a new one.");
+                window.location.href = "#makeList";
             }
             else {
                 createListView(data);
@@ -130,11 +127,11 @@ function oldLists(username) {
 }
 
 function showMakeList() {
+    $('#current_list').html("");
     if (localStorage.shoppingList) {
         //load list
         var json, name, quantity;
         var array = (localStorage.shoppingList).split("|");
-        $('#current_list').html("");
         for (let item of array) {
             json = JSON.parse(item);
             name = json["itemName"];
@@ -251,19 +248,50 @@ function useList(id) {
     window.location.href = "#makeList";
 }
 
+function startNav() {
+    lst = localStorage.shoppingList;
+    if (lst == undefined || lst == null || lst == "") {
+        alert("your list is empty!")
+        localStorage.removeItem("shoppingList");
+        localStorage.removeItem("makeList");
+        window.location.href = "#options";
+        return;
+    }
+    else {
+        window.location.href = "#selectSupermarket";
+    }
+}
+
 function saveList() {
     var lst = localStorage.shoppingList;
+    if (lst == undefined || lst == null || lst == "") {
+        localStorage.removeItem("shoppingList");
+        localStorage.removeItem("makeList");
+        window.location.href = "#options";
+        return; 
+    }
 
     //ajax to save full list to database
     // need to finishh
-    var parameters = JSON.stringify({ 'username': username });
+    var userAndSuperId = JSON.stringify({ 'username': localStorage.username, 'superID': 0});
+    var parameters = userAndSuperId + "|" + lst;
     $.ajax({
         contentType: JSON,
         url: "https://manageitemlist.azurewebsites.net/api/InsertListToDB?code=VOrl1V1S0ma1y0nf3tlHySknxO/fveqh0RmVcEgViH7DOF3xY3T/Kg==&parameters=" + parameters,
         type: "GET",
         error: function () { alert('an error occured please try again later'); },
-        success: function (data) { }
+        success: function (data) {
+            if (data.includes('Success'))
+                alert('list saved');
+            else
+                alert(data);
+            
+            localStorage.removeItem("shoppingList");
+            localStorage.removeItem("makeList");
+            window.location.href = "#options";
+        }
     });
+
 }
 
 
@@ -295,6 +323,7 @@ function startShopping() {
 
 function makeNewList() {
     localStorage.makeList = true;
+    localStorage.removeItem("shoppingList");
     localStorage.saved = false;
     window.location.href = "#makeList";
 }
@@ -302,9 +331,24 @@ function makeNewList() {
 function loadSupermarket() {
     var supermarket = $("#market").val();
     localStorage.super = supermarket;
+    //save the shoppinglist
+    var lst1 = localStorage.shoppingList;
     var lst = localStorage.shoppingList.split("|");
     var onlyNames = "";
     var expectedQuantities = {};
+
+    //ajax to save full list to database
+    // need to finishh
+    var userAndSuperId = JSON.stringify({ 'username': localStorage.username, 'superID': 0 });
+    var parameters = userAndSuperId + "|" + lst1;
+    $.ajax({
+        contentType: JSON,
+        url: "https://manageitemlist.azurewebsites.net/api/InsertListToDB?code=VOrl1V1S0ma1y0nf3tlHySknxO/fveqh0RmVcEgViH7DOF3xY3T/Kg==&parameters=" + parameters,
+        type: "GET",
+        error: function () { alert('an error occured please try again later'); },
+        success: function (data) { if (data.includes('Success')) alert('list saved'); }
+    });
+
     //parse the name and quantity of every line in the list
     for (let item of lst) {
         json = JSON.parse(item);
