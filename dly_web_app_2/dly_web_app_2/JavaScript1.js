@@ -7,7 +7,7 @@
 function checkNotEmpty(idList) {
     for (let id of idList) {
         if ($("#" + id).val() === "" || $("#" + id).val() === null) {
-            alert("all fields must be filled.");
+            alert("All fields must be filled.");
             return false;
         }
     }
@@ -24,7 +24,7 @@ function login() {
         contentType: JSON,
         url: "https://manageuser1.azurewebsites.net/api/CheckUserPassword?code=2iiKpSILpGlmte7kFrmhoylGJbLacEVVQw9K/z5hXzN2k/Oprv8LVg==&parameters=" + parameters,
         type: "GET",
-        error: function () { alert('an error occured please try again later'); },
+        error: function () { alert('An error occured please try again later.'); },
         success: function (data) {
             if (data === 'Success') {
                 window.localStorage.setItem('username', username);
@@ -53,7 +53,7 @@ function isUsernameOK() {
         contentType: JSON,
         url: "https://manageuser1.azurewebsites.net/api/isUsernameOK?code=35GCQ4W2iySJ/hYjQs38Dmh9R3aEYNqPtFwCqMDOOn5MC8/UHQzS5w==&parameters=" + parameters,
         type: "GET",
-        error: function () { alert('an error occured please try again later'); },
+        error: function () { alert('An error occured please try again later.'); },
         success: function (data) {
             if (data === 'Success') {
                 $("#isUsernameOK").html(OK);
@@ -71,7 +71,7 @@ function register() {
     var isOK = $("#isUsernameOK").html();
     var OK = "<center> username is OK</center>";
     if (isOK !== OK) {
-        alert("problem with username.");
+        alert("Problem with username.");
         return false;
     }
     var name = $("#name_r").val();
@@ -82,7 +82,7 @@ function register() {
         contentType: JSON,
         url: "https://manageuser1.azurewebsites.net/api/CreateNewUser?code=a3TvjtUk6/wx3rSFj30skJ/Jyd/IE1HemHn1H2Mle0UhjM8kFHshRg==&parameters=" + parameters,
         type: "GET",
-        error: function () { alert('an error occured please try again later'); },
+        error: function () { alert('An error occured please try again later.'); },
         success: function (data) {
             if (data === 'Success') {
                 window.localStorage.setItem('username', username);
@@ -113,7 +113,7 @@ function oldLists(username) {
         contentType: JSON,
         url: "https://manageitemlist.azurewebsites.net/api/GetOrdersFromUsername?code=QdVmZB//EFLn4uCowic9fiWH7il53maCT2Pp7UxVJvG7a0bGrWDQ1A==&parameters=" + parameters,
         type: "GET",
-        error: function () { alert('an error occured please try again later'); },
+        error: function () { alert('An error occured please try again later.'); },
         success: function (data) {
             if (data === "empty") {
                 alert("You don't have any lists yet. Create a new one.");
@@ -128,6 +128,7 @@ function oldLists(username) {
 
 function showMakeList() {
     $('#current_list').html("");
+    localStorage.changed = false;
     if (localStorage.shoppingList) {
         //load list
         var json, name, quantity;
@@ -140,7 +141,7 @@ function showMakeList() {
             str = "";
             str += "<table style='width:100%;  background-color:white;'><tr style='width:100%;'>";
             str += "<td style='width:33%;'><center>" + name.toUpperCase() + "</center></td>";
-            str += "<td style='width:33%;'><center> <input type='number' style='opacity: 1; ' value='" + quantity + "'> </center></td>";
+            str += "<td style='width:33%;'><center> <input type='number' id='" + name + "_number' onchange='changeQuantity(\"" + name + "\");' style='opacity: 2; ' value='" + quantity + "'> </center></td>";
             str += "<td style='width:33%;'><center> <a data-role='button' class='fa fa-close' style='color: #095680; border-radius: 12px;' role='button' onclick='removeFromList(\"" + name + "\")'></a> </center></td>";
             str += "</tr></table>";
             $('<li>').attr({ 'id': 'item_' + name, 'style': 'color:#095680;' }).append(str).appendTo('#current_list');
@@ -152,10 +153,11 @@ function showMakeList() {
 }
 
 function removeFromList(id) {
+    localStorage.changed = true;
     var toRemove = "#item_" + id.replace(" ", "\\ ");
     var i;
     var array = localStorage.shoppingList.split("|");
-    var json, name, newShoppingList = "";;
+    var json, name, newShoppingList = "";
     for (i = 0; i < array.length; i++) {
         json = JSON.parse(array[i]);
         name = json["itemName"];
@@ -182,12 +184,15 @@ function addItem(name) {
     //open a popup to enter quantity and then go to addToList
     $("#quantity_popup").popup("close");
     var quantity = $("#quantity_of_item").val();
-    alert("add " + quantity + " of " + name);
+    if (quantity == "") {
+        quantity = 1;
+    }
 
     addToList(name, quantity);
 }
 
 function addToList(name, quantity) {
+    localStorage.changed = true;
     var newItem = JSON.stringify({ 'itemName': name, 'itemQuantity': quantity });
     if (localStorage.shoppingList != null && localStorage.shoppingList != "")
         localStorage.shoppingList += "|";
@@ -197,11 +202,33 @@ function addToList(name, quantity) {
     str = "";
     str += "<table style='width:100%;  background-color:white;'><tr style='width:100%;'>";
     str += "<td style='width:33%;'><center>" + name.toUpperCase() + "</center></td>";
-    str += "<td style='width:33%;'><center> <input type='number' style='opacity: 2; ' value='" + quantity + "'> </center></td>";
+    str += "<td style='width:33%;'><center> <input type='number' id='" + name +"_number' onchange='changeQuantity(\""+name+"\");' style='opacity: 2; ' value='" + quantity + "'> </center></td>";
     str += "<td style='width:33%;'><center> <a data-role='button' class='fa fa-close' style='color: #095680; border-radius: 12px;' role='button' onclick='removeFromList(\"" + name + "\")'></a> </center></td>";
     str += "</tr></table>";
     $('<li>').attr({ 'id': 'item_' + name, 'style': 'color:#095680;' }).append(str).appendTo('#current_list');
     $('#makeList').trigger('create');
+
+}
+
+function changeQuantity(id) {
+    var newQuantity = $(id+"_number").val();
+    var array = localStorage.shoppingList.split("|");
+    var json, name, newShoppingList = "";
+    for (i = 0; i < array.length; i++) {
+        newShoppingList += "|";
+        json = JSON.parse(array[i]);
+        name = json["itemName"];
+        if (name === id) {
+            alert(JSON.stringify({ "itemName": id, "itemQuantity": newQuantity }));
+            newShoppingList += JSON.stringify({ "itemName": id, "itemQuantity": newQuantity });
+        }
+        else {
+            newShoppingList += array[i];
+        }
+    }
+
+    newShoppingList = newShoppingList.substring(1);
+    localStorage.shoppingList = newShoppingList;
 
 }
 
@@ -210,10 +237,10 @@ function getAllItems2() {
         contentType: JSON,
         url: "https://manageitemlist.azurewebsites.net/api/GetAllItems?code=Ws3K2/EREH0e34YfpzH12ptdVNWbAjwTV/B7cSsV8L6RHOgetOkTCA==",
         type: "GET",
-        error: function () { alert('an error occured please try again later'); },
+        error: function () { alert('An error occured please try again later.'); },
         success: function (data) {
             if (data.includes("error")) {
-                alert('an error occured please try again later');
+                alert('An error occured please try again later.');
             }
             else {
                 $("#items_list").html("");
@@ -234,7 +261,7 @@ function loadOldList(id) {
         contentType: JSON,
         url: "https://manageitemlist.azurewebsites.net/api/getList?code=aqr86fF0swe0KotNyXaD7Mo8ZUSKxELH0YK24aSoKI1lsGbaWNjc3Q==&parameters=" + parameters,
         type: "GET",
-        error: function () { alert('an error occured please try again later'); },
+        error: function () { alert('An error occured please try again later.'); },
         success: function (data) {
             localStorage.shoppingList = data;
         }
@@ -249,20 +276,35 @@ function useList(id) {
 }
 
 function startNav() {
-    lst = localStorage.shoppingList;
-    if (lst == undefined || lst == null || lst == "") {
-        alert("your list is empty!")
+    if (!localStorage.shoppingList) {
+        alert("Your list is empty!")
         localStorage.removeItem("shoppingList");
         localStorage.removeItem("makeList");
         window.location.href = "#options";
         return;
     }
-    else {
-        window.location.href = "#selectSupermarket";
+
+    lst = localStorage.shoppingList;
+    if (lst == undefined || lst == null || lst == "") {
+        alert("Your list is empty!")
+        localStorage.removeItem("shoppingList");
+        localStorage.removeItem("makeList");
+        window.location.href = "#options";
+        return;
     }
+
+    window.location.href = "#selectSupermarket";
 }
 
 function saveList() {
+    if (!localStorage.shoppingList) {
+        alert("Your list is empty!")
+        //localStorage.removeItem("shoppingList");
+        localStorage.removeItem("makeList");
+        window.location.href = "#options";
+        return;
+    }
+
     var lst = localStorage.shoppingList;
     if (lst == undefined || lst == null || lst == "") {
         localStorage.removeItem("shoppingList");
@@ -271,18 +313,25 @@ function saveList() {
         return; 
     }
 
+    if (localStorage.changed === "false") {
+        alert("No changes where made to the list, nothing to save.");
+        localStorage.removeItem("makeList");
+        localStorage.removeItem("changed");
+        window.location.href = "#options";
+        return;
+    }
+
     //ajax to save full list to database
-    // need to finishh
     var userAndSuperId = JSON.stringify({ 'username': localStorage.username, 'superID': 0});
     var parameters = userAndSuperId + "|" + lst;
     $.ajax({
         contentType: JSON,
         url: "https://manageitemlist.azurewebsites.net/api/InsertListToDB?code=VOrl1V1S0ma1y0nf3tlHySknxO/fveqh0RmVcEgViH7DOF3xY3T/Kg==&parameters=" + parameters,
         type: "GET",
-        error: function () { alert('an error occured please try again later'); },
+        error: function () { alert('An error occured please try again later.'); },
         success: function (data) {
             if (data.includes('Success'))
-                alert('list saved');
+                alert('List saved.');
             else
                 alert(data);
             
@@ -309,7 +358,6 @@ function showUsername(id) {
 }
 
 function startShopping() {
-    alert("startShopping");
     var cartID = $("#number").text();
     cartID = cartID[0] + "" + cartID[2] + "" + cartID[4];
     var i;
@@ -318,7 +366,10 @@ function startShopping() {
     var cartNum = parseInt(cartID, 10); 
 
     //start shopping with this cart. 
-    computeRoute(localStorage.super, cartNum, localStorage.names);
+    var superid = localStorage.super;
+    var names = localStorage.names;
+    localStorage.removeItem("names");
+    computeRoute(superid, cartNum, names);
 }
 
 function makeNewList() {
@@ -338,17 +389,22 @@ function loadSupermarket() {
     var expectedQuantities = {};
 
     //ajax to save full list to database
-    // need to finishh
+    if (localStorage.changed === "false") {
+        alert("No changes where made to the list, nothing to save");
+        localStorage.removeItem("makeList");
+        localStorage.removeItem("changed");
+    }
+    else {
     var userAndSuperId = JSON.stringify({ 'username': localStorage.username, 'superID': 0 });
     var parameters = userAndSuperId + "|" + lst1;
     $.ajax({
         contentType: JSON,
         url: "https://manageitemlist.azurewebsites.net/api/InsertListToDB?code=VOrl1V1S0ma1y0nf3tlHySknxO/fveqh0RmVcEgViH7DOF3xY3T/Kg==&parameters=" + parameters,
         type: "GET",
-        error: function () { alert('an error occured please try again later'); },
-        success: function (data) { if (data.includes('Success')) alert('list saved'); }
+        error: function () { alert('An error occured please try again later.'); },
+        success: function (data) { if (data.includes('Success')) alert('List saved.'); }
     });
-
+}
     //parse the name and quantity of every line in the list
     for (let item of lst) {
         json = JSON.parse(item);
@@ -369,7 +425,7 @@ function loadSupermarket() {
         contentType: JSON,
         url: "https://manageitemlist.azurewebsites.net/api/GetQuantities?code=aOtFuDMEPFQKJoMUub1RCU9QiiOYjqOVz2Fb4k6bPC8VNN5PccWMKA==&parameters=" + parameters,
         type: "GET",
-        error: function () { alert('an error occured please try again later'); },
+        error: function () { alert('An error occured please try again later.'); },
         success: function (data) {
             onlyNames = onlyNames.split(",");
             if (!data.includes('error')) {
@@ -407,15 +463,15 @@ function showSupermarkets() {
         //data: JSON.stringify({ 'parameters': params }),
         url: "https://getallsupermarkets.azurewebsites.net/api/getAllSupermarkets?code=kjYa9Mra0OSLQC/94/Rh4IK2tslhZVNr1azudyaqgU44ZoYZjfwBOw==",
         type: "GET",
-        error: function () { alert('an error occured please try again later'); },
+        error: function () { alert('An error occured please try again later.'); },
         success: function (data) {
             if (data === 'empty') {
                 alert(data);
             }
             else {
                 var json, id, name;
-                $("#select_placeholder").html("");
-                $('<select>').attr({ 'name': 'market', 'id': 'market', 'data-native-menu': 'false' }).appendTo('#select_placeholder');
+                $("#market").html("");
+                //$('<select>').attr({ 'name': 'market', 'id': 'market', 'data-native-menu': 'false'}).appendTo('#select_placeholder');
                 $('<option>').html('CHOOSE:').appendTo('#market');
                 var array = data.split("|");
                 for (let item of array) {
@@ -424,7 +480,7 @@ function showSupermarkets() {
                     name = json['name'];                    
                     $('<option>').attr({ 'value': id }).html(name).appendTo('#market');
                 }
-                $('select').selectmenu();
+                $('#market').selectmenu('refresh');
             }
         }
     });
@@ -435,28 +491,67 @@ function addToPage() {
     var page = $(location).attr('href');
     var hashtag = page.indexOf("#");
     page = page.substring(hashtag);
-    //alert(page);
     if (page === "#login" || page === "#register") {
         if (localStorage.username) {
-            alert("you are aleady logged in as " + localStorage.username);
+            alert("You are aleady logged in as " + localStorage.username+".");
             window.location.href = "#logged_in";
+            return;
         }
     } else if (page === "#makeList") {
-        if (!localStorage.username)
-            window.location.href = "#homePage";
+        if (!localStorage.username) {
+            window.location.href = "#home";
+            return;
+        }
         showUsername("#makeList_username");
         showMakeList();
     } else if (page === "#oldLists") {
-        if (!localStorage.username)
-            window.location.href = "#homePage";
+        if (!localStorage.username) {
+            window.location.href = "#home";
+            return;
+        }
         showUsername("#oldLists_username");
         oldLists(localStorage.username);
     }
+    else if (page === "#options") {
+        if (!localStorage.username) {
+            window.location.href = "#home";
+            return;
+        }
+        showUsername("#options_username");
+    }
     else if (page === "#selectSupermarket") {
         if (!localStorage.username) {
-            window.location.href = "#homePage";
+            window.location.href = "#home";
+            return;
         }
-        //showSupermarkets();
+        if (!localStorage.shoppingList) {
+            alert("Oops! you are not supposedd to be here.");
+            window.location.href = "#options";
+            return;
+        }
+        if (localStorage.shoppingList == undefined || localStorage.shoppingList == null || localStorage.shoppingList == "") {
+            alert("Oops! you are not supposed to be here.");
+            window.location.href = "#options";
+            return;
+        }
+        showSupermarkets();
+    }
+    else if (page === "#selectCart") {
+        if (!localStorage.username) {
+            window.location.href = "#home";
+            return;
+        }
+        if (!localStorage.names) {
+            alert("Oops! you are not supposed to be here.");
+            window.location.href = "#options";
+            return;
+        }
+
+        if (localStorage.names == undefined || localStorage.names == null || localStorage.names == "") {
+            alert("Oops! you are not supposedd to be here.");
+            window.location.href = "#options";
+            return;
+        }
     }
 }
 
@@ -464,20 +559,16 @@ function addNum(num) {
     var curr = $("#number").text();
     var arr = curr.split(" ");
     if (num === -1) {
-        if (arr[2] === '-') return;
-        else {
-            arr[2] = arr[1];
-            arr[1] = arr[0];
-            arr[0] = '-';
-        }
+        var i;
+        for (i = 2; i >=0  ; i--) { if (arr[i] !== '-') break; }
+        if (i < 0) { return; }
+        else { arr[i] = '-'; }
     }
     else {
-        if (arr[0] !== '-') return;
-        else {
-            arr[0] = arr[1];
-            arr[1] = arr[2];
-            arr[2] = num;
-        }
+        var i;
+        for (i = 0; i < 3; i++) { if (arr[i] === '-') break; }
+        if (i == -1) { return; }
+        else { arr[i] = num; }
     }
     var newNum = arr[0] + " " + arr[1] + " " + arr[2];
     $("#number").text(newNum);

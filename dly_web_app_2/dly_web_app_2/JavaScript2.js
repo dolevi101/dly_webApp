@@ -479,13 +479,13 @@ function navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsM
     }
 
     var newPosition = route[routeIndex].split(",");
-    $.ajax({
+    /*$.ajax({
         contentType: JSON,
         url: "https://manageitemslist.azurewebsites.net/api/UpdatingPositionManualy?code=VS25ItApL1ijOh1CaI7tLU/97UziIT5PGIAT5am1ljDm0Dm9UkNeHQ==&parameters=" + newPosition[0] + "," + newPosition[1] + "," + cartID,
         type: "GET",
         error: function () { alert('Failed updating...'); },
         success: function () { }//alert("Updated successfully : " + newPosition[0] + " " + newPosition[1]);}
-    });
+    });*/
 
     setTimeout(function () {
         $.ajax({

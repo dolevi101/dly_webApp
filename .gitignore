@@ -259,3 +259,4 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/dly_web_app_2/dly_web_app_2/Properties/PublishProfiles/SmartCartTauIot - Web Deploy.pubxml

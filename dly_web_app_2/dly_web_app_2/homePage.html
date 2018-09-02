@@ -3,12 +3,12 @@
 <head>
     <!-- Include meta tag to ensure proper rendering and touch zooming -->
     <!-- Include jQuery Mobile stylesheets -->
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- Include the jQuery library -->
-    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
     <!-- Include the jQuery Mobile library -->
-    <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
     <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0" />
 
     <title>SmartCart</title>
@@ -176,7 +176,7 @@
                     <tr style="height:30%; width:100%;">
                         <!--<td colspan="2" style="border:solid;" id="select_placeholder2">
 
-            </td>-->
+                        </td>-->
                         <td colspan="2" style="border:solid;">
                             <div style="overflow:scroll; height:100%; width:100%; width:inherit;">
                                 <ul data-role="listview" id="items_list" data-filter="true" data-filter-placeholder="Search for item..." data-inset="true" style="height:initial;"></ul>
@@ -190,7 +190,7 @@
                             </div>
                         </td>
                     </tr>
-                    <tr style="width:100%; height:10%;"><td style="width:50%;"><center><a data-role="button" href="#" onclick="saveList();" class="blueButton" style=" border-radius:12px; width:80% ;padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">SAVE&EXIT</a></center></td><td style="width:50%;"><center><a data-role="button" href="#" onclick="startNav();" class ="blueButton" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">NAVIGATE</a></center></td></tr>
+                    <tr style="width:100%; height:10%;"><td style="width:50%;"><center><a data-role="button" href="#" onclick="saveList();" class="blueButton" style=" border-radius:12px; width:80% ;padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">SAVE&EXIT</a></center></td><td style="width:50%;"><center><a data-role="button" href="#" onclick="startNav();" class="blueButton" style=" border-radius:12px; width:80%; padding-bottom:5%; padding-top:5%; background-color:#095680; border-width:0; color:white; ">NAVIGATE</a></center></td></tr>
                 </table>
             </center>
         </div>
@@ -228,6 +228,7 @@
                     </tr>
                     <tr style="height:10%;">
                         <td id="select_placeholder">
+                            <select id="market" name="market" data-native-menu="false"></select>
                         </td>
                     </tr>
                     <tr style="height:10%;">
@@ -238,9 +239,6 @@
                 </table>
             </center>
         </div>
-        <script>
-            $("#selectSupermarket").on("pageshow", showSupermarkets());
-        </script>
     </div>
 
     <!--selectCart-->
@@ -293,5 +291,10 @@
             </center>
         </div>
     </div>
+
+    <div data-role="page" id="MapPage">
+
+    </div>
+
 </body>
 </html>
