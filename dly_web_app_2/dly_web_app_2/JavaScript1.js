@@ -211,7 +211,7 @@ function addToList(name, quantity) {
 }
 
 function changeQuantity(id) {
-    var newQuantity = $(id+"_number").val();
+    var newQuantity = $("#"+id+"_number").val();
     var array = localStorage.shoppingList.split("|");
     var json, name, newShoppingList = "";
     for (i = 0; i < array.length; i++) {
@@ -219,7 +219,6 @@ function changeQuantity(id) {
         json = JSON.parse(array[i]);
         name = json["itemName"];
         if (name === id) {
-            alert(JSON.stringify({ "itemName": id, "itemQuantity": newQuantity }));
             newShoppingList += JSON.stringify({ "itemName": id, "itemQuantity": newQuantity });
         }
         else {
