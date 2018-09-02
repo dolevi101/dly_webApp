@@ -24,13 +24,15 @@ function login() {
         contentType: JSON,
         url: "https://manageuser1.azurewebsites.net/api/CheckUserPassword?code=2iiKpSILpGlmte7kFrmhoylGJbLacEVVQw9K/z5hXzN2k/Oprv8LVg==&parameters=" + parameters,
         type: "GET",
-        error: function () { alert('An error occured please try again later.'); },
+        error: function () { //alert('An error occured please try again later.'); 
+        },
         success: function (data) {
             if (data === 'Success') {
                 window.localStorage.setItem('username', username);
                 window.location.href = "#options";
             }
-            else { alert(data); }
+            else { //alert(data); 
+            }
         }
     });
 }
@@ -53,7 +55,8 @@ function isUsernameOK() {
         contentType: JSON,
         url: "https://manageuser1.azurewebsites.net/api/isUsernameOK?code=35GCQ4W2iySJ/hYjQs38Dmh9R3aEYNqPtFwCqMDOOn5MC8/UHQzS5w==&parameters=" + parameters,
         type: "GET",
-        error: function () { alert('An error occured please try again later.'); },
+        error: function () { //alert('An error occured please try again later.'); 
+        },
         success: function (data) {
             if (data === 'Success') {
                 $("#isUsernameOK").html(OK);
@@ -82,13 +85,15 @@ function register() {
         contentType: JSON,
         url: "https://manageuser1.azurewebsites.net/api/CreateNewUser?code=a3TvjtUk6/wx3rSFj30skJ/Jyd/IE1HemHn1H2Mle0UhjM8kFHshRg==&parameters=" + parameters,
         type: "GET",
-        error: function () { alert('An error occured please try again later.'); },
+        error: function () { //alert('An error occured please try again later.');
+        },
         success: function (data) {
             if (data === 'Success') {
                 window.localStorage.setItem('username', username);
                 window.location.href = "#options";
             }
-            else { alert(data); }
+            else { //alert(data); 
+            }
         }
     });
 }
@@ -113,7 +118,8 @@ function oldLists(username) {
         contentType: JSON,
         url: "https://manageitemlist.azurewebsites.net/api/GetOrdersFromUsername?code=QdVmZB//EFLn4uCowic9fiWH7il53maCT2Pp7UxVJvG7a0bGrWDQ1A==&parameters=" + parameters,
         type: "GET",
-        error: function () { alert('An error occured please try again later.'); },
+        error: function () {// alert('An error occured please try again later.'); 
+        },
         success: function (data) {
             if (data === "empty") {
                 alert("You don't have any lists yet. Create a new one.");
@@ -236,10 +242,11 @@ function getAllItems2() {
         contentType: JSON,
         url: "https://manageitemlist.azurewebsites.net/api/GetAllItems?code=Ws3K2/EREH0e34YfpzH12ptdVNWbAjwTV/B7cSsV8L6RHOgetOkTCA==",
         type: "GET",
-        error: function () { alert('An error occured please try again later.'); },
+        error: function () { //alert('An error occured please try again later.');
+        },
         success: function (data) {
             if (data.includes("error")) {
-                alert('An error occured please try again later.');
+                //alert('An error occured please try again later.');
             }
             else {
                 $("#items_list").html("");
@@ -260,7 +267,8 @@ function loadOldList(id) {
         contentType: JSON,
         url: "https://manageitemlist.azurewebsites.net/api/getList?code=aqr86fF0swe0KotNyXaD7Mo8ZUSKxELH0YK24aSoKI1lsGbaWNjc3Q==&parameters=" + parameters,
         type: "GET",
-        error: function () { alert('An error occured please try again later.'); },
+        error: function () { //alert('An error occured please try again later.');
+        },
         success: function (data) {
             localStorage.shoppingList = data;
         }
@@ -291,7 +299,6 @@ function startNav() {
         window.location.href = "#options";
         return;
     }
-
     window.location.href = "#selectSupermarket";
 }
 
@@ -313,7 +320,7 @@ function saveList() {
     }
 
     if (localStorage.changed === "false") {
-        alert("No changes where made to the list, nothing to save.");
+        //alert("No changes where made to the list, nothing to save.");
         localStorage.removeItem("makeList");
         localStorage.removeItem("changed");
         window.location.href = "#options";
@@ -327,13 +334,14 @@ function saveList() {
         contentType: JSON,
         url: "https://manageitemlist.azurewebsites.net/api/InsertListToDB?code=VOrl1V1S0ma1y0nf3tlHySknxO/fveqh0RmVcEgViH7DOF3xY3T/Kg==&parameters=" + parameters,
         type: "GET",
-        error: function () { alert('An error occured please try again later.'); },
-        success: function (data) {
+        error: function () { //alert('An error occured please try again later.');
+        },
+        success: function (data) {/*
             if (data.includes('Success'))
                 alert('List saved.');
             else
                 alert(data);
-            
+            */
             localStorage.removeItem("shoppingList");
             localStorage.removeItem("makeList");
             window.location.href = "#options";
@@ -389,7 +397,7 @@ function loadSupermarket() {
 
     //ajax to save full list to database
     if (localStorage.changed === "false") {
-        alert("No changes where made to the list, nothing to save");
+        //alert("No changes where made to the list, nothing to save");
         localStorage.removeItem("makeList");
         localStorage.removeItem("changed");
     }
@@ -400,8 +408,10 @@ function loadSupermarket() {
         contentType: JSON,
         url: "https://manageitemlist.azurewebsites.net/api/InsertListToDB?code=VOrl1V1S0ma1y0nf3tlHySknxO/fveqh0RmVcEgViH7DOF3xY3T/Kg==&parameters=" + parameters,
         type: "GET",
-        error: function () { alert('An error occured please try again later.'); },
-        success: function (data) { if (data.includes('Success')) alert('List saved.'); }
+        error: function () { //alert('An error occured please try again later.'); 
+        },
+        success: function (data) { //if (data.includes('Success')) alert('List saved.'); 
+        }
     });
 }
     //parse the name and quantity of every line in the list
@@ -424,7 +434,8 @@ function loadSupermarket() {
         contentType: JSON,
         url: "https://manageitemlist.azurewebsites.net/api/GetQuantities?code=aOtFuDMEPFQKJoMUub1RCU9QiiOYjqOVz2Fb4k6bPC8VNN5PccWMKA==&parameters=" + parameters,
         type: "GET",
-        error: function () { alert('An error occured please try again later.'); },
+        error: function () { //alert('An error occured please try again later.'); 
+        },
         success: function (data) {
             onlyNames = onlyNames.split(",");
             if (!data.includes('error')) {
@@ -450,7 +461,7 @@ function loadSupermarket() {
                 window.location.href = "#selectCart";
             }
             else {
-                alert(data);
+                //alert(data);
             }
         }
     });
@@ -462,10 +473,11 @@ function showSupermarkets() {
         //data: JSON.stringify({ 'parameters': params }),
         url: "https://getallsupermarkets.azurewebsites.net/api/getAllSupermarkets?code=kjYa9Mra0OSLQC/94/Rh4IK2tslhZVNr1azudyaqgU44ZoYZjfwBOw==",
         type: "GET",
-        error: function () { alert('An error occured please try again later.'); },
+        error: function () { //alert('An error occured please try again later.'); 
+        },
         success: function (data) {
             if (data === 'empty') {
-                alert(data);
+                //alert(data);
             }
             else {
                 var json, id, name;

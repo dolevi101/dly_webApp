@@ -492,7 +492,8 @@ function navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsM
             contentType: JSON,
             url: "https://manageitemslist.azurewebsites.net/api/PollingForNewVertex?code=SP3MAK6X4vwWPgJuUEcc2nBTPiTSWsaOm4qPSFB1ONXnmxSnmYgMQw==&cartID=" + cartID,
             type: "GET",
-            error: function () { alert('An error occured...'); },
+            error: function () { //alert('An error occured...'); 
+            },
             success: function (response) { //response = json(row,col)
                 //alert("response = " + response);
                 var responseJson = JSON.parse(response);
@@ -531,7 +532,8 @@ function resetCartPosition(cartID) { ////////////////////////////maually updatin
         contentType: JSON,
         url: "https://manageitemslist.azurewebsites.net/api/UpdatingPositionManualy?code=VS25ItApL1ijOh1CaI7tLU/97UziIT5PGIAT5am1ljDm0Dm9UkNeHQ==&parameters=" + "-1,-1," + cartID,
         type: "GET",
-        error: function () { alert('Failed reseting...'); },
+        error: function () { //alert('Failed reseting...'); 
+        },
         success: function () { /*alert("Updated successfully");*/ }
     });
 }
@@ -542,7 +544,8 @@ function computeRoute(superID, cartID, itemsList) {
         contentType: JSON,
         url: "https://manageitemslist.azurewebsites.net/api/HttpTriggerCSharp1?code=GHkR/DMv0Cvw77Hp5bT6KaD4OK5X8xHnJMhGtDXwaS1VzoNPm/s8KQ==&parameters=" + parameters,
         type: "GET",
-        error: function () { alert('An error occured in computeRoute...'); },
+        error: function () { //alert('An error occured in computeRoute...'); 
+        },
         success: function (response) {
             //alert(response);
             var responseJson = JSON.parse(response);
@@ -558,6 +561,8 @@ function computeRoute(superID, cartID, itemsList) {
                 navigateRoute(route, cartID, numOfAisles, aisleLength, itemsDirectionsMat, 0, -1, -1, directionsOfItems);
                 resetCartPosition(cartID);
             }, 1000);
+            setTimeout(function () { window.location.href = "#options";}, 5000);
+            
         }
     });
 }
